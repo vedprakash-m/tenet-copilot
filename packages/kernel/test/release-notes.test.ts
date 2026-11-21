@@ -11,13 +11,13 @@ const PLAN = [
   "|---|---|---|---|",
   "| S2 | Approve the change procedure. | approve | |",
   "## 1. Dashboard", "", "**Current R1 structural mapping: 1 mapped / 0 host-only / 0 unmapped of 1 Musts, 0 qualified.**", "",
-  "## 6. Host track", "", "**H1 ◐ SP-08 evidence — owner run required.**", "",
-  "## 7. Questions for the owner and backlog", "",
+  "## 4. Host track", "", "**H1 ◐ SP-08 evidence — owner run required.**", "",
+  "## 5. Open decisions and backlog", "",
   "| Date | Item | Question and options | Recommendation | Owner answer |",
   "|---|---|---|---|---|",
   "| 2026-11-21 | Project name | Finalize the project name. | Approve. | |",
   "| 2026-11-20 | License | Choose the license. | MIT. | MIT selected. |",
-  "## 9. Target C work", "", "### 9.1 Source status", "",
+  "## 6. Remaining work, target C", "", "### 6.1 Source status", "",
   "| Area | Status | What remains |",
   "|---|---|---|",
   "| Traits | ⛔ | Owner semantics and implementation. |",
@@ -27,7 +27,7 @@ const PLAN = [
 function repo(root: string) {
   write(root, "specs/PRD.md", "| TST-01 | Example | Must | M0 | AC-01 |\n");
   write(root, "specs/tech-spec.md", "| AC-01 | T1 | Suite |\nThese controls do not implement signing.\n");
-  write(root, "specs/re-plan.md", PLAN);
+  write(root, "specs/plan.md", PLAN);
   write(root, "packages/kernel/test/example.test.ts", `it("maps [TST-01]", () => {});\n`);
   write(root, "packages/kernel/src/verbs/example.ts", "");
   write(root, "packages/kernel/src/decisions/example.ts", "");
@@ -84,7 +84,7 @@ describe("release notes enumerate the disclosure items", () => {
       assert.match(notes, /Known limit: These controls do not implement signing\./);
       assert.match(notes, /Changed paths: not computed \(no base\)/);
 
-      write(root, "specs/re-plan.md", PLAN.replace("1 mapped / 0 host-only", "2 mapped / 0 host-only"));
+      write(root, "specs/plan.md", PLAN.replace("1 mapped / 0 host-only", "2 mapped / 0 host-only"));
       assert.match(draft(root, null), /DIFFERS or absent/);
     } finally {
       cleanup(root);

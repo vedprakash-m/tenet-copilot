@@ -1,4 +1,4 @@
-<!-- Preview. The release tarball route was checked from the public download through a running kernel; installation inside a clean VS Code profile has not been observed (specs/re-plan.md host track). -->
+<!-- Preview. The release tarball route was checked from the public download through a running kernel; installation inside a clean VS Code profile has not been observed (specs/plan.md host track). -->
 # Install and remove
 
 ## Before you install

@@ -1,12 +1,12 @@
 <!-- DRAFT, prepared 2026-11-03 for the owner under decision 12 A (specs/decision-packet.md section 12). Nothing here has been sent. Every name, address and identifier is a placeholder in angle brackets. Figures that the plan owns are cited by section, not copied. -->
 # External requests: drafts and tracking
 
-These are four requests that have long lead times. Preparing them is not running anything. A request only asks someone to confirm that access or help exists. Each spike, evaluation run, recruitment, spend and publication still needs its own authorization from the owner (`specs/re-plan.md` §7 and §9), and no reply to a request here grants one.
+These are four requests that have long lead times. Preparing them is not running anything. A request only asks someone to confirm that access or help exists. Each spike, evaluation run, recruitment, spend and publication still needs its own authorization from the owner (`specs/plan.md` §5 and §6), and no reply to a request here grants one.
 
 ## How to use this file
 
 1. The owner fills the placeholders (`<OWNER NAME>`, `<RECIPIENT>`, and so on) and sends each draft by hand. Nobody and nothing else sends them.
-2. Record the send date and the reply in the tracking table below, then record what the reply settles in `specs/re-plan.md` (owner backlog and progress log). This file is not a progress record and is not evidence of any requirement.
+2. Record the send date and the reply in the tracking table below, then record what the reply settles in `specs/plan.md` (owner backlog and progress log). This file is not a progress record and is not evidence of any requirement.
 3. Do not put real account identifiers, tenant identifiers, credentials, personal addresses or participant names in this file or anywhere in the repository. Keep them with the owner.
 
 Every draft states the same four limits in its "Does not authorize" line: no run, no spend, no recruitment, no publication.
@@ -16,8 +16,8 @@ Every draft states the same four limits in its "Does not authorize" line: no run
 | # | Request | Recipient | Reply owner | Drafted | Sent | Replied | Settles (record in) | Unblocks |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Host access: macOS arm64 workstation, VS Code stable, Local agent harness, Copilot plan and policy | `<RECIPIENT: workstation provider and Copilot organization administrator>` | `<OWNER NAME>` | 2026-11-03 | not sent | none | Tuple fields and policy answers (`docs/audits/2026-11-21/target-a-host-checklist.md`; `docs/user/qualified-tuple.md`) | SP-08, SP-01, SP-02, SP-06, SP-10, SP-12 can be authorized; AC-28, AC-16, AC-17, AC-25 host-visible cases |
-| 2 | Model tuple and evaluation account | `<RECIPIENT: account or billing administrator>` | `<OWNER NAME>` | 2026-11-03 | not sent | none | Open owner rows in `specs/re-plan.md` §7 | SP-04, SP-05, SP-11, Q-16 funding, RSC-08, AC-12 and AC-19 cost measures |
-| 3 | Participants: interest request, no commitment | `<RECIPIENT LIST: held by the owner, not in this repository>` | `<OWNER NAME>` | 2026-11-03 | not sent | none | Count of interested builders by cohort | AC-02 formative sessions, AC-12 pilot (PRD section 6.6.2; `specs/re-plan.md` §9) |
+| 2 | Model tuple and evaluation account | `<RECIPIENT: account or billing administrator>` | `<OWNER NAME>` | 2026-11-03 | not sent | none | Open owner rows in `specs/plan.md` §5 | SP-04, SP-05, SP-11, Q-16 funding, RSC-08, AC-12 and AC-19 cost measures |
+| 3 | Participants: interest request, no commitment | `<RECIPIENT LIST: held by the owner, not in this repository>` | `<OWNER NAME>` | 2026-11-03 | not sent | none | Count of interested builders by cohort | AC-02 formative sessions, AC-12 pilot (PRD section 6.6.2; `specs/plan.md` §6) |
 | 4 | Release and review prerequisites: publisher and name, signing identity, external reviewer, clean rebuild environment, reserved tasks storage | `<RECIPIENT: one per item>` | `<OWNER NAME>` | 2026-11-03 | not sent | none | Plan sections 4.5, 9.3, 9.5, 12.12 row J | ENG-11, AC-11, release chain, qualification campaign (reserved tasks) |
 
 Reply states to use: `not sent`, `sent`, `partial reply`, `answered`, `declined`. Add the date with each change.
@@ -50,7 +50,7 @@ Reply states to use: `not sent`, `sent`, `partial reply`, `answered`, `declined`
 
 | Spike | Why it needs this host |
 |---|---|
-| SP-08 | Completion cases on the qualified tuple (reviewer tool list, context isolation, parallel dispatch, dead or cancelled child, native questions, `usages`). Its earlier authority is used up; `specs/re-plan.md` §6 requires a newly authorized owner run. |
+| SP-08 | Completion cases on the qualified tuple (reviewer tool list, context isolation, parallel dispatch, dead or cancelled child, native questions, `usages`). Its earlier authority is used up; `specs/plan.md` §6 requires a newly authorized owner run. |
 | SP-01 | The 15-minute command test needs a rerun; the earlier attempt hit a test-runner timeout and measured nothing about the host. Also enable, disable and uninstall. |
 | SP-02 | Which instruction file loads, `.tenet/` indexing, plugin data path, token estimate accuracy. |
 | SP-06, SP-10 | Dispositions on the qualified tuple. |
@@ -58,7 +58,7 @@ Reply states to use: `not sent`, `sent`, `partial reply`, `answered`, `declined`
 
 **Unobserved today (do not read any request as claiming otherwise).** Parallel dispatch on the tuple, cancelled children, `usages`, instruction-file precedence, and whether `.tenet/` is excluded from the host's indexing. The full list is in `docs/user/qualified-tuple.md`.
 
-**Does not authorize.** No spike or run (each needs its own named authorization in `specs/re-plan.md` §7); no spend; no recruitment; no publication; no account setup, switching of accounts or installation by anyone other than the owner.
+**Does not authorize.** No spike or run (each needs its own named authorization in `specs/plan.md` §5); no spend; no recruitment; no publication; no account setup, switching of accounts or installation by anyone other than the owner.
 
 **Owner of the reply.** `<OWNER NAME>`, who ran the earlier host observations with their own Copilot account.
 
@@ -68,7 +68,7 @@ Reply states to use: `not sent`, `sent`, `partial reply`, `answered`, `declined`
 
 ## Request 2: Model tuple and evaluation account
 
-**Purpose.** A qualified tuple names a model, and Tenet needs to know how that model is observed. How `Auto` behaves is SP-04. Labeling a model for RSC-08 needs golden-suite results, which need an evaluation account. Decisions 21 B and 22 A already say: use the existing account in serialized windows, use included allowance only, and allow no overages. The items below remain open in `specs/re-plan.md` §7.
+**Purpose.** A qualified tuple names a model, and Tenet needs to know how that model is observed. How `Auto` behaves is SP-04. Labeling a model for RSC-08 needs golden-suite results, which need an evaluation account. Decisions 21 B and 22 A already say: use the existing account in serialized windows, use included allowance only, and allow no overages. The items below remain open in `specs/plan.md` §5.
 
 **Exact ask (draft text).**
 
@@ -87,19 +87,19 @@ Reply states to use: `not sent`, `sent`, `partial reply`, `answered`, `declined`
 >
 > Please reply with the answers and with anything that cannot be provided.
 
-**Still open in `specs/re-plan.md` §7, listed so the reply can be matched to them.** The account identifier; terms and organization-policy checks; externally verified enforcement of no overages; finite included-usage and case limits; isolation; run authorization. No paid fallback, purchase, account switching, credentials or live access is authorized. Funding for Q-16 is tied to SP-05 and SP-11 and must be confirmed before the golden-task spend begins.
+**Still open in `specs/plan.md` §5, listed so the reply can be matched to them.** The account identifier; terms and organization-policy checks; externally verified enforcement of no overages; finite included-usage and case limits; isolation; run authorization. No paid fallback, purchase, account switching, credentials or live access is authorized. Funding for Q-16 is tied to SP-05 and SP-11 and must be confirmed before the golden-task spend begins.
 
 **Does not authorize.** No run, including SP-04, SP-05 or SP-11; no spend, no upgrade and no purchase; no recruitment; no publication; no use of the account by anyone, including the sender.
 
 **Owner of the reply.** `<OWNER NAME>`.
 
-**Unblocks when answered.** The owner can decide whether SP-04, SP-05 and SP-11 may be authorized and whether Q-16 funding is confirmed. Those feed the model qualification table, RSC-08, the cost measures of AC-12 and AC-19 (PRD section 1.6 targets), and the golden-task campaign in `specs/re-plan.md` §9.
+**Unblocks when answered.** The owner can decide whether SP-04, SP-05 and SP-11 may be authorized and whether Q-16 funding is confirmed. Those feed the model qualification table, RSC-08, the cost measures of AC-12 and AC-19 (PRD section 1.6 targets), and the golden-task campaign in `specs/plan.md` §6.
 
 ---
 
 ## Request 3: Participants (interest request, no commitment)
 
-**Purpose.** The qualification pilot needs 8 to 12 external technical builders, each doing at least 2 task pairs, with a follow-up two weeks later (PRD section 6.6.2). Separately, the formative first-use check for AC-02 needs 5 builders who do not already know Tenet, and `specs/re-plan.md` §9 requires six formative sessions. Scheduling takes the longest, so the first step is to find out who might be interested.
+**Purpose.** The qualification pilot needs 8 to 12 external technical builders, each doing at least 2 task pairs, with a follow-up two weeks later (PRD section 6.6.2). Separately, the formative first-use check for AC-02 needs 5 builders who do not already know Tenet, and `specs/plan.md` §6 requires six formative sessions. Scheduling takes the longest, so the first step is to find out who might be interested.
 
 **Exact ask (draft text, for the owner to send to people the owner chooses).**
 
@@ -119,7 +119,7 @@ Reply states to use: `not sent`, `sent`, `partial reply`, `answered`, `declined`
 
 | Cohort | Size and shape | Source |
 |---|---|---|
-| Formative first use | 5 builders who do not know Tenet; six formative sessions in all | PRD AC-02; `specs/re-plan.md` §9 |
+| Formative first use | 5 builders who do not know Tenet; six formative sessions in all | PRD AC-02; `specs/plan.md` §6 |
 | Qualification pilot | 8 to 12 external technical builders, at least 2 task pairs each, two-week follow-up | PRD section 6.6.2 |
 
 Whether a person may be in both cohorts is not settled in the sources; the owner decides before sorting replies.
@@ -128,13 +128,13 @@ Whether a person may be in both cohorts is not settled in the sources; the owner
 
 **Owner of the reply.** `<OWNER NAME>` reads and holds all replies. Names and contact details of respondents stay outside the repository.
 
-**Unblocks when answered.** The owner can authorize recruitment for the formative sessions (AC-02) and, later, the pilot (AC-12, PRD section 6.6.4; `specs/re-plan.md` §9). The decision packet notes that if the owner worries about scheduling people against an unfinished build, group 3 is held until decisions 1 and 2 settle (alternative B); this draft asks for interest only and fixes no dates.
+**Unblocks when answered.** The owner can authorize recruitment for the formative sessions (AC-02) and, later, the pilot (AC-12, PRD section 6.6.4; `specs/plan.md` §6). The decision packet notes that if the owner worries about scheduling people against an unfinished build, group 3 is held until decisions 1 and 2 settle (alternative B); this draft asks for interest only and fixes no dates.
 
 ---
 
 ## Request 4: Release and review prerequisites
 
-**Purpose.** Five items must exist before release and each takes time to arrange. They are asked for together because they close the owner, qualification and release gates in `specs/re-plan.md` §7 and §9. They can be sent to different people; send each part on its own if the recipients differ.
+**Purpose.** Five items must exist before release and each takes time to arrange. They are asked for together because they close the owner, qualification and release gates in `specs/plan.md` §5 and §6. They can be sent to different people; send each part on its own if the recipients differ.
 
 **Exact ask (draft text, one part per item).**
 
@@ -154,7 +154,7 @@ Whether a person may be in both cohorts is not settled in the sources; the owner
 >
 > Please reply with what is possible and any conditions.
 
-**Does not authorize.** No reservation of a name, publisher or namespace; no creation of a key or signature; no review of anything private; no rebuild or evaluation run; no storing of tasks until the owner confirms the location; no recruitment; no spend; no publication, signing or tagging. Release approval stays with the owner roles named in the canonical PRD and `specs/re-plan.md` §2.
+**Does not authorize.** No reservation of a name, publisher or namespace; no creation of a key or signature; no review of anything private; no rebuild or evaluation run; no storing of tasks until the owner confirms the location; no recruitment; no spend; no publication, signing or tagging. Release approval stays with the owner roles named in the canonical PRD and `specs/plan.md` §2.
 
 **Owner of the reply.** `<OWNER NAME>`.
 
@@ -162,10 +162,10 @@ Whether a person may be in both cohorts is not settled in the sources; the owner
 
 | Part | Settles | Needed for |
 |---|---|---|
-| 4a | Publisher, namespace and final name (`specs/re-plan.md` §7 and §9) | Finalized `README.md`, `.github/CONTRIBUTING.md`, `.github/SECURITY.md`, `NOTICE`; publication |
-| 4b | Signing identity | Signed tag and provenance attestation (`specs/re-plan.md` §9); AC-11 (never waivable) |
+| 4a | Publisher, namespace and final name (`specs/plan.md` §5 and §6) | Finalized `README.md`, `.github/CONTRIBUTING.md`, `.github/SECURITY.md`, `NOTICE`; publication |
+| 4b | Signing identity | Signed tag and provenance attestation (`specs/plan.md` §6); AC-11 (never waivable) |
 | 4c | External reviewer for the 72-hour window | ENG-11 (PRD section 5.9.2) and the disclosure in release notes |
-| 4d | Clean environment | Independent source and dependency rebuild (`specs/re-plan.md` §9) |
-| 4e | Reserved task storage | The 10 reserved qualification tasks, protected grading and the qualification campaign (`specs/re-plan.md` §9) |
+| 4d | Clean environment | Independent source and dependency rebuild (`specs/plan.md` §6) |
+| 4e | Reserved task storage | The 10 reserved qualification tasks, protected grading and the qualification campaign (`specs/plan.md` §6) |
 
 Before any publication, the pre-publication source review in `docs/release-checklist.md` is also required. It is not part of this request.

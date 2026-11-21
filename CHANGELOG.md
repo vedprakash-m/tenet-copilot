@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-21 — Replace the re-plan with a condensed plan of remaining work
+
+- Added `specs/plan.md` (remaining work, owner decisions, host track, launch follow-ups) and archived `specs/re-plan.md` and its finished runbook to the git-ignored `.archive/specs/`. `.gitignore` now tracks `specs/plan.md` instead. Recorded completed work in PRD Appendix D (v0.17.1) and Tech Spec Appendix D. `tools/release-notes.ts` and its test read the new plan's headings; CONTRIBUTING, `copilot-instructions.md`, README and the release docs point at `specs/plan.md`, and the wrong "re-plan is local-only" wording is corrected.
+
 ## 2026-11-21 — Move community files into `.github/`
 
 - Moved `CONTRIBUTING.md`, `SECURITY.md` and `CODE_OF_CONDUCT.md` from the repository root to `.github/`, where GitHub still recognizes them. Updated their relative links, the README and issue-form links, and the three tests that read them (`readme.test.ts`, `process-policy.test.ts`, `dependency-maintenance.test.ts`). The content is unchanged.

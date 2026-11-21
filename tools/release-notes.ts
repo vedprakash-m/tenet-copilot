@@ -47,12 +47,12 @@ const section = (plan: string, heading: string): string => {
 };
 const short = (line: string): string => line.length > 150 ? `${line.slice(0, 147)}...` : line;
 const openHostGates = (plan: string): string[] =>
-  section(plan, "## 6. Host track").split("\n").flatMap((line) => {
+  section(plan, "## 4. Host track").split("\n").flatMap((line) => {
     const gate = /^\*\*(H\d+) ◐ (.*?)\*\*/.exec(line);
     return gate ? [`${gate[1]} ${gate[2]}`] : [];
   });
 const openOwnerGates = (plan: string): string[] =>
-  section(plan, "## 7. Questions for the owner and backlog").split("\n").flatMap((line) => {
+  section(plan, "## 5. Open decisions and backlog").split("\n").flatMap((line) => {
     if (!line.startsWith("|") || /^\|\s*-{3}/.test(line)) return [];
     const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
     if (cells.length !== 5 || cells[0] === "Date" || cells[4]) return [];
@@ -66,7 +66,7 @@ const openSignoffGates = (plan: string): string[] =>
     return !cells[3] || /pending|unsigned/i.test(cells[3]) ? [short(`${cells[0]} - ${cells[1]}`)] : [];
   });
 const openSourceGates = (plan: string): string[] => {
-  const heading = plan.split("\n").find((line) => line.startsWith("### 9.1 "));
+  const heading = plan.split("\n").find((line) => line.startsWith("### 6.1 "));
   if (!heading) return [];
   return section(plan, heading).split("\n").flatMap((line) => {
     if (!line.startsWith("|") || /^\|\s*-{3}/.test(line)) return [];
@@ -77,7 +77,7 @@ const openSourceGates = (plan: string): string[] => {
 };
 
 export function facts(root: string): string[] {
-  const plan = readFileSync(join(root, "specs/re-plan.md"), "utf8");
+  const plan = readFileSync(join(root, "specs/plan.md"), "utf8");
   const r = report(root, "R1");
   const audit = releaseAuditReport(r);
   const total = r.covered.length + r.disabled.length + r.hostOnly.length + r.unreachable.length + r.unmapped.length;

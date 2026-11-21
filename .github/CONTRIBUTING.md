@@ -13,18 +13,18 @@ Changes to executable content, hooks, helpers, permissions, destinations or eval
 
 ## What the specs are
 
-Three tracked specs say what Tenet is, and a tracked re-plan sequences the work:
+Three tracked specs say what Tenet is, and a tracked plan holds the remaining work:
 
 | File | Owns |
 |---|---|
 | [specs/PRD.md](../specs/PRD.md) | Meaning: what Tenet must do and why |
 | [specs/tech-spec.md](../specs/tech-spec.md) | Mechanism: how |
 | [specs/ux-spec.md](../specs/ux-spec.md) | Wording: what the user reads |
-| `specs/re-plan.md` | Sequence and the progress record |
+| `specs/plan.md` | Remaining work and the progress record |
 
-If code, plan and a spec disagree, the spec wins. Fix the plan or the code. A defect in a spec is logged in the re-plan defect list and not routed around.
+If code, plan and a spec disagree, the spec wins. Fix the plan or the code. A defect in a spec is logged in the plan's spec-defect list (`specs/plan.md` §7) and not routed around.
 
-`specs/PRD.md`, `specs/tech-spec.md`, `specs/ux-spec.md` and the active `specs/re-plan.md` are tracked. Other feature specs, reviews and the historical plan, plus the entire `.archive/` directory, stay local and git-ignored. Do not force-add them. Create local planning records when needed; build, coverage and CI do not require ignored records. The candidate release-notes draft tool reads `specs/re-plan.md` to report open gates; it is not proof of release qualification.
+`specs/PRD.md`, `specs/tech-spec.md`, `specs/ux-spec.md` and the active `specs/plan.md` are tracked. Other feature specs, reviews and the historical plan, plus the entire `.archive/` directory, stay local and git-ignored. Do not force-add them. Create local planning records when needed; build, coverage and CI do not require ignored records. The candidate release-notes draft tool reads `specs/plan.md` to report open gates; it is not proof of release qualification.
 
 ## The lifecycle for a feature
 
@@ -36,7 +36,7 @@ Do the steps in order. Do not skip one.
 4. **Implement test-first.** A failing test, then the code, then the next test. Use real processes, real Git and real signals when the behavior is about them. Tag the test that proves a PRD requirement with `[REQ-ID]` in its title (`tools/coverage.ts` reads the tags).
 5. **Validate.** `npm run ci` passes: typecheck, both lints, coverage, the bundle build within its size budget, and every test. Tests do not depend on your Git configuration or host credentials.
 6. **Try it as a user would.** Build the bundle (`npm run build`) and drive `plugin/kernel/tenet.mjs` through the feature on a scratch repository. Compare with the spec's examples and write down what you saw and what you did not.
-7. **Finalize.** Backfill the canonical specs if a rule or component was added. Move the feature spec to `.archive/specs/`. Add a dated entry to `CHANGELOG.md` (what changed, files, tests). Update `specs/re-plan.md`. Check `.gitignore`.
+7. **Finalize.** Backfill the canonical specs if a rule or component was added. Move the feature spec to `.archive/specs/`. Add a dated entry to `CHANGELOG.md` (what changed, files, tests). Update `specs/plan.md`. Check `.gitignore`.
 8. **Privacy check.** Run `npm run privacy` on the staged change; before a push also `node tools/privacy-check.ts --range @{u}..HEAD`. It looks for keys, tokens, credential assignments, personal paths and real addresses in added lines. It finds likely leaks and proves nothing; read the result. Never commit credentials or `.env*`. `.tenet/` is git-ignored and is never edited by hand.
 9. **Commit and push when asked.** Code and tests first, then spec, plan and changelog. After a push, confirm CI passes before calling it done.
 
@@ -90,7 +90,7 @@ Skill and agent text is executable behavior. Keep it within the token budgets. N
 
 ## Claims about the host
 
-Behavior of VS Code, Copilot, subagents and approvals is unobserved until a spike records it, and each spike needs the owner's separate authorization. Write "unobserved", never "should work". A requirement is marked implemented only with a commit or CI run, and observed only with a dated observation on the real host. The active progress record and status words are defined in `specs/re-plan.md`.
+Behavior of VS Code, Copilot, subagents and approvals is unobserved until a spike records it, and each spike needs the owner's separate authorization. Write "unobserved", never "should work". A requirement is marked implemented only with a commit or CI run, and observed only with a dated observation on the real host. The active progress record and status words are defined in `specs/plan.md`.
 
 ## Writing
 

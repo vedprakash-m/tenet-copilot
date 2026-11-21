@@ -166,7 +166,7 @@ Full details: [docs/user/install-and-remove.md](docs/user/install-and-remove.md)
 <details>
 <summary><b>Status and evidence</b></summary>
 
-The [November 4 implementation audit](docs/audits/2026-11-04/implementation-audit.md) is a historical assessment of earlier source; its findings need reconciliation against subsequent repairs. The active progress record for personal target A is `specs/re-plan.md`. The deterministic evidence below is for implementation commit `b7869a09613984b127504503d81b14e08f2e5a90`:
+The [November 4 implementation audit](docs/audits/2026-11-04/implementation-audit.md) is a historical assessment of earlier source; its findings need reconciliation against subsequent repairs. The active plan and progress record is [`specs/plan.md`](specs/plan.md). The deterministic evidence below is for implementation commit `b7869a09613984b127504503d81b14e08f2e5a90`:
 
 | Area | State |
 |---|---|
@@ -247,7 +247,7 @@ In each project where you used Tenet, ask "help uninstall" before removing the p
 | [Three starter requests](docs/user/starter-requests.md) | [SECURITY.md](.github/SECURITY.md) |
 | [Install and remove](docs/user/install-and-remove.md) | [NOTICE](NOTICE) |
 | [The Autopilot limit](docs/user/autopilot.md) | Specifications: [PRD](specs/PRD.md), [tech spec](specs/tech-spec.md), [UX spec](specs/ux-spec.md) |
-| [The qualified tuple, as it stands](docs/user/qualified-tuple.md) | Progress record: [re-plan](specs/re-plan.md) |
+| [The qualified tuple, as it stands](docs/user/qualified-tuple.md) | Progress record: [plan](specs/plan.md) |
 
 Found a problem or tried it on your setup? [Open an issue](https://github.com/vedprakash-m/tenet/issues/new/choose); host observation reports are how this preview improves.
 

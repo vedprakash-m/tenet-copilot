@@ -6,7 +6,7 @@ treated as complete by a source pass, local CI run or draft release.
 ## Source and candidate
 
 - [ ] All intended source, plugin, test, documentation and evidence-ledger
-  changes are recorded in `CHANGELOG.md` and `specs/re-plan.md`.
+  changes are recorded in `CHANGELOG.md` and `specs/plan.md`.
 - [ ] `npm run ci` passes on the exact committed source.
 - [ ] `npm run uat` passes against the bundle built from that source.
 - [ ] `npm run privacy` and
