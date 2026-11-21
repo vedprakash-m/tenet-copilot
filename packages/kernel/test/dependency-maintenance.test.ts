@@ -4,7 +4,7 @@ import { it } from "node:test";
 
 const root = new URL("../../../", import.meta.url);
 const dependabot = readFileSync(new URL(".github/dependabot.yml", root), "utf8");
-const security = readFileSync(new URL("SECURITY.md", root), "utf8");
+const security = readFileSync(new URL(".github/SECURITY.md", root), "utf8");
 
 it("schedules monthly updates for repository and starter npm dependencies [QLT-16]", () => {
   const entries = [...dependabot.matchAll(

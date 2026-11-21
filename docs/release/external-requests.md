@@ -162,7 +162,7 @@ Whether a person may be in both cohorts is not settled in the sources; the owner
 
 | Part | Settles | Needed for |
 |---|---|---|
-| 4a | Publisher, namespace and final name (`specs/re-plan.md` §7 and §9) | Finalized `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `NOTICE`; publication |
+| 4a | Publisher, namespace and final name (`specs/re-plan.md` §7 and §9) | Finalized `README.md`, `.github/CONTRIBUTING.md`, `.github/SECURITY.md`, `NOTICE`; publication |
 | 4b | Signing identity | Signed tag and provenance attestation (`specs/re-plan.md` §9); AC-11 (never waivable) |
 | 4c | External reviewer for the 72-hour window | ENG-11 (PRD section 5.9.2) and the disclosure in release notes |
 | 4d | Clean environment | Independent source and dependency rebuild (`specs/re-plan.md` §9) |

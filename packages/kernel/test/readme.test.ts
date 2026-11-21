@@ -5,7 +5,7 @@ import { describe, it } from "node:test";
 const readme = readFileSync(new URL("../../../README.md", import.meta.url), "utf8");
 const pluginReadme = readFileSync(new URL("../../../plugin/README.md", import.meta.url), "utf8");
 const removalGuide = readFileSync(new URL("../../../docs/user/install-and-remove.md", import.meta.url), "utf8");
-const contributing = readFileSync(new URL("../../../CONTRIBUTING.md", import.meta.url), "utf8");
+const contributing = readFileSync(new URL("../../../.github/CONTRIBUTING.md", import.meta.url), "utf8");
 
 describe("installation README [INS-02]", () => {
   it("states publisher and source-verification limits without draft placeholders", () => {

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-21 — Move community files into `.github/`
+
+- Moved `CONTRIBUTING.md`, `SECURITY.md` and `CODE_OF_CONDUCT.md` from the repository root to `.github/`, where GitHub still recognizes them. Updated their relative links, the README and issue-form links, and the three tests that read them (`readme.test.ts`, `process-policy.test.ts`, `dependency-maintenance.test.ts`). The content is unchanged.
+
 ## 2026-11-21 — Give the README a professional layout
 
 - `README.md` now opens with a centered title, tagline, status badges and a navigation row, a warning callout, a with-and-without comparison table and a loop diagram (`docs/assets/loop.svg`). Long evidence, support-matrix and evaluation-tool text moved into collapsible sections. No required statement was removed; the readme tests pass unchanged. The Quick start anchor is now `#quick-start`.

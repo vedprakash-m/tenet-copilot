@@ -50,13 +50,13 @@ Tenet is a local tool. It gives the host's agent a small kernel that records wha
 ## What to know before relying on Tenet
 
 - **The audit trail is local and is not tamper-proof.** Anyone with write access to the project and the temp folder can alter it.
-- **Autopilot.** Tenet cannot detect Copilot's Autopilot, which can answer native questions automatically. Under it, every decision record is unverifiable. Authority questions are asked in plain chat for this reason. See [docs/user/autopilot.md](docs/user/autopilot.md).
+- **Autopilot.** Tenet cannot detect Copilot's Autopilot, which can answer native questions automatically. Under it, every decision record is unverifiable. Authority questions are asked in plain chat for this reason. See [docs/user/autopilot.md](../docs/user/autopilot.md).
 - **Several host controls are cooperative.** Tool restrictions for the reviewer, `.tenet/` exclusion from host indexing, and exclusions in agent file tools depend on the host honoring them or on the agent following instructions. Which of them the host enforces on VS Code is unobserved. Tenet's own kernel enforces its exclusions, but the host's agent can read what the host lets it read.
 - **Approval mode and containment are recorded as unknown.** Tenet does not infer them.
 - **The kernel runs the `node` found on your `PATH`.** Helper scripts are located by the plugin's install path, not by `PATH`, but the Node binary is not pinned. This is a documented residual risk.
 - **Redaction is incomplete.** Tenet removes common token patterns from what it displays, logs or exports, and says detection is incomplete. If a real credential reaches model context, rotate it. Tenet can remove its own copies and not copies held elsewhere.
 - **Checks run your project's code.** Tests, linters and servers run as local processes with a reduced environment, under limits on time and output. They are not isolated from your machine.
-- **Nothing is qualified on a real host yet.** See [docs/user/qualified-tuple.md](docs/user/qualified-tuple.md).
+- **Nothing is qualified on a real host yet.** See [docs/user/qualified-tuple.md](../docs/user/qualified-tuple.md).
 
 ## How the kernel limits itself (design, verified by local tests only)
 
@@ -64,6 +64,6 @@ The kernel validates all input with size and depth limits; uses no `eval`, `Func
 
 ## Release verification
 
-The [release verification procedure](docs/release/release-verification.md) describes the pinned build inputs, double-build comparison, signed-tag gate, provenance attestation and installed version/source checks. Workflow code exists; no public release has run through the chain. Branch protection, signing identity and the protected release environment remain owner actions. Until publication and verification, a downloaded copy is not authenticated by this policy.
+The [release verification procedure](../docs/release/release-verification.md) describes the pinned build inputs, double-build comparison, signed-tag gate, provenance attestation and installed version/source checks. Workflow code exists; no public release has run through the chain. Branch protection, signing identity and the protected release environment remain owner actions. Until publication and verification, a downloaded copy is not authenticated by this policy.
 
 While there is one maintainer, a change to hooks, helpers, permissions, destinations or evaluators waits a public 72-hour review window on an open pull request, and release notes will say that no second maintainer reviewed it.

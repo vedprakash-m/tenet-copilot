@@ -1,15 +1,15 @@
 # Contributing
 
-Tenet records what is true about engineering work, so changes to it are held to the same standard: nothing is called done on a claim alone. This file says how a change gets in. The project rules for people and agents are in [.github/copilot-instructions.md](.github/copilot-instructions.md); read that file first.
+Tenet records what is true about engineering work, so changes to it are held to the same standard: nothing is called done on a claim alone. This file says how a change gets in. The project rules for people and agents are in [.github/copilot-instructions.md](copilot-instructions.md); read that file first.
 
 ## Before you start
 
-- **License:** Tenet and its own starter-template code use [MIT](LICENSE), selected by the owner on 2026-10-24. Contributions must be compatible with that license; incorporated third-party code retains its applicable licenses/notices. Remaining contribution and release-process decisions are not settled by license selection.
+- **License:** Tenet and its own starter-template code use [MIT](../LICENSE), selected by the owner on 2026-10-24. Contributions must be compatible with that license; incorporated third-party code retains its applicable licenses/notices. Remaining contribution and release-process decisions are not settled by license selection.
 - **Code of conduct:** [Contributor Covenant 2.1](CODE_OF_CONDUCT.md) applies to project participation.
 - **Security problems** go to the channel in [SECURITY.md](SECURITY.md), not to a public issue.
 - **Maintainers:** one person holds all maintainer roles today. There is no second maintainer, and independent review of consequential work is done by a fresh-context reviewer agent or by the owner (plan section 4.5).
 
-Changes to executable content, hooks, helpers, permissions, destinations or evaluators must wait a public 72-hour window on an open PR before the owner merges. Request an external reviewer when available. Release notes disclose that no second-maintainer review occurred and record the actual window; an agent pass is not a second maintainer. Use the [PR template](.github/pull_request_template.md) and [release-notes procedure](docs/release/release-verification.md).
+Changes to executable content, hooks, helpers, permissions, destinations or evaluators must wait a public 72-hour window on an open PR before the owner merges. Request an external reviewer when available. Release notes disclose that no second-maintainer review occurred and record the actual window; an agent pass is not a second maintainer. Use the [PR template](pull_request_template.md) and [release-notes procedure](../docs/release/release-verification.md).
 
 ## What the specs are
 
@@ -17,9 +17,9 @@ Three tracked specs say what Tenet is, and a tracked re-plan sequences the work:
 
 | File | Owns |
 |---|---|
-| [specs/PRD.md](specs/PRD.md) | Meaning: what Tenet must do and why |
-| [specs/tech-spec.md](specs/tech-spec.md) | Mechanism: how |
-| [specs/ux-spec.md](specs/ux-spec.md) | Wording: what the user reads |
+| [specs/PRD.md](../specs/PRD.md) | Meaning: what Tenet must do and why |
+| [specs/tech-spec.md](../specs/tech-spec.md) | Mechanism: how |
+| [specs/ux-spec.md](../specs/ux-spec.md) | Wording: what the user reads |
 | `specs/re-plan.md` | Sequence and the progress record |
 
 If code, plan and a spec disagree, the spec wins. Fix the plan or the code. A defect in a spec is logged in the re-plan defect list and not routed around.
@@ -78,7 +78,7 @@ The untrusted workflow runs preflight once, validates the source lane on macOS a
 
 ### Build payload integrity
 
-The build checks every file in `plugin/` against the explicit [payload inclusion list](tools/payload-files.json), including hidden starter files, and writes `plugin/SHA256SUMS` with exact-byte SHA-256 hashes. Only the checksum file itself is excluded from hashing. Missing, additional, linked or nonregular payload files fail the build; unexpected files are not deleted automatically. Add or remove an inventory entry when an intentional payload change adds or removes a file.
+The build checks every file in `plugin/` against the explicit [payload inclusion list](../tools/payload-files.json), including hidden starter files, and writes `plugin/SHA256SUMS` with exact-byte SHA-256 hashes. Only the checksum file itself is excluded from hashing. Missing, additional, linked or nonregular payload files fail the build; unexpected files are not deleted automatically. Add or remove an inventory entry when an intentional payload change adds or removes a file.
 
 The generated checksum file is invalidated before compilation and is git-ignored. After building, run `npm run verify:payload` to check the complete current payload against it. Editing payload files after building requires rebuilding; line-ending changes also change hashes. These local checks provide neither authenticity nor atomic protection from concurrent file replacement. They do not replace independent clean release builds, signed provenance, installed-payload verification or qualification.
 

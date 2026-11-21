@@ -24,9 +24,9 @@ describe("release process", () => {
   });
 
   it("publishes the OSS documents and supported-version policy [OSS-01]", () => {
-    for (const path of ["LICENSE", "NOTICE", "CONTRIBUTING.md", "CODE_OF_CONDUCT.md", "SECURITY.md"]) assert.ok(read(path).length);
-    assert.match(read("CODE_OF_CONDUCT.md"), /version 2\.1/);
-    const security = read("SECURITY.md");
+    for (const path of ["LICENSE", "NOTICE", ".github/CONTRIBUTING.md", ".github/CODE_OF_CONDUCT.md", ".github/SECURITY.md"]) assert.ok(read(path).length);
+    assert.match(read(".github/CODE_OF_CONDUCT.md"), /version 2\.1/);
+    const security = read(".github/SECURITY.md");
     assert.match(security, /https:\/\/github\.com\/vedprakash-m\/tenet\/security\/advisories\/new/);
     assert.match(security, /previous minor.*security fixes for 3 months/);
     assert.doesNotMatch(security, /PLACEHOLDER/);

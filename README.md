@@ -243,8 +243,8 @@ In each project where you used Tenet, ask "help uninstall" before removing the p
 
 | For users | For maintainers |
 |---|---|
-| [What Tenet adds](docs/user/what-tenet-adds.md) | [CONTRIBUTING.md](CONTRIBUTING.md) |
-| [Three starter requests](docs/user/starter-requests.md) | [SECURITY.md](SECURITY.md) |
+| [What Tenet adds](docs/user/what-tenet-adds.md) | [CONTRIBUTING.md](.github/CONTRIBUTING.md) |
+| [Three starter requests](docs/user/starter-requests.md) | [SECURITY.md](.github/SECURITY.md) |
 | [Install and remove](docs/user/install-and-remove.md) | [NOTICE](NOTICE) |
 | [The Autopilot limit](docs/user/autopilot.md) | Specifications: [PRD](specs/PRD.md), [tech spec](specs/tech-spec.md), [UX spec](specs/ux-spec.md) |
 | [The qualified tuple, as it stands](docs/user/qualified-tuple.md) | Progress record: [re-plan](specs/re-plan.md) |
