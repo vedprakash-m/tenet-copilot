@@ -48,17 +48,18 @@ describe("whole-call process boundary [NFR-01]", () => {
     const root = fixture();
     const script = join(root, "external.mjs");
     writeFileSync(script, [
-      `const { markExternal } = await import(${JSON.stringify(
-        new URL("../src/adapters/call-boundary.ts", import.meta.url).href,
-      )});`,
-      "await markExternal(true);",
-      "await new Promise((resolve) => setTimeout(resolve, 150));",
-      "await markExternal(false);",
+      "const send = (tenet, id) => new Promise((resolve, reject) => {",
+      "  const received = message => { if (message?.tenet === 'external-ack' && message.id === id) { process.off('message', received); resolve(); } };",
+      "  process.on('message', received); process.send({ tenet, id }, error => error && reject(error));",
+      "});",
+      "await send('external-start', 1);",
+      "await new Promise((resolve) => setTimeout(resolve, 350));",
+      "await send('external-end', 2);",
       "process.stdout.write('done\\n');",
     ].join("\n"));
 
     const result = await runBoundedCall({
-      script, argv: [], cwd: root, env: process.env, timeoutMs: 100,
+      script, argv: [], cwd: root, env: process.env, timeoutMs: 250,
     });
     assert.equal(result.timedOut, false);
     assert.equal(result.code, 0);

@@ -20,7 +20,9 @@ if (!findUserByEmail(app.db, browserEmail)) insertUser(app.db, { id: "browser-me
 const api = await app.listen({ host: "127.0.0.1", port: 0 });
 const webDirectory = mkdtempSync(join(dirname(config.databaseUrl), "browser-web-"));
 process.on("exit", () => rmSync(webDirectory, { recursive: true, force: true }));
-const ui = { configFile: false as const, root: "web", logLevel: "silent" as const, cacheDir: join(webDirectory, "cache"), build: { outDir: join(webDirectory, "dist"), emptyOutDir: true } };
+const ui = { configFile: false as const, root: "web", logLevel: "silent" as const, cacheDir: join(webDirectory, "cache"), build: {
+  outDir: join(webDirectory, "dist"), emptyOutDir: true, minify: false, reportCompressedSize: false,
+} };
 await build(ui);
 const web = await preview({ ...ui,
   preview: { host: "127.0.0.1", port: config.port, strictPort: true, proxy: { "/api": api } },

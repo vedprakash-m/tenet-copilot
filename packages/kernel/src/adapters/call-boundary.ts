@@ -132,24 +132,15 @@ function stopSelfTree(): void {
 /** A detached bounded child must not survive a parent that died before releasing the call boundary. */
 export function watchBoundaryParent(onLoss: () => void | Promise<void> = () => {}): () => void {
   if (!callBoundaryChild()) return () => {};
-  const parent = process.ppid;
   let stopping = false;
   const disconnect = () => {
     if (stopping) return;
     stopping = true;
-    clearInterval(timer);
     process.off("disconnect", disconnect);
     void Promise.resolve(onLoss()).then(stopSelfTree, stopSelfTree);
   };
-  const timer = setInterval(() => {
-    try { process.kill(parent, 0); } catch { disconnect(); }
-  }, 10);
-  timer.unref();
   process.once("disconnect", disconnect);
-  return () => {
-    clearInterval(timer);
-    process.off("disconnect", disconnect);
-  };
+  return () => process.off("disconnect", disconnect);
 }
 
 export function callTimeoutResponse(verb: string): KernelResponse {
