@@ -376,7 +376,7 @@ describe("receipts", () => {
     for (const message of ["x".repeat(2001), 42, null, {}]) {
       raw.testResults[0].assertionResults[0].failureMessages = ["AssertionError", message];
       const normalized = norm(JSON.stringify(raw));
-      assert.equal(normalized.invalid, "invalid assertion failure messages: t0");
+      assert.equal(normalized.invalid, "invalid assertion failure messages: t0: AssertionError");
       assert.equal(normalized.files.size, 0);
       assert.equal(normalized.discovered, 0);
       assert.equal(one(ob, run({ exit: 1 }), normalized).status, "inconclusive");
