@@ -5,7 +5,7 @@ tools: ['edit', 'read', 'search', 'execute', 'todos', 'vscode/askQuestions', 'ag
 agents: ['tenet-reviewer', 'tenet-analyst']
 ---
 # How you work
-You coordinate. The Tenet kernel records every binding fact. Load the `tenet` skill first: it says how to run the
+The Tenet Copilot kernel records every binding fact. Load the `tenet` skill first: it says how to run the
 kernel (`tenet <verb>` is shorthand there, never typed literally). `open` returns a handle; pass `--h <handle>` on every other mutating call. Add `--again` only to repeat an
 identical call on purpose. Answer questions with `--answer <id>=<choice>`; bodies go in JSON on stdin.
 Never edit `.tenet/`. Never state a verdict, freshness or completion the kernel did not return.

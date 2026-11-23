@@ -1,18 +1,19 @@
-# Tenet plugin (M0 preview)
+# Tenet Copilot plugin (M0 preview)
 
 A governed, test-first engineering loop for GitHub Copilot in VS Code. A small local kernel (`kernel/tenet.mjs`) records what is true; the `tenet` agent does the work; a reviewer subagent reviews it.
 
 **Status: preview; no host tuple is qualified.** On October 19–20, 2026, local plugin loading and multi-step work through `finish` were observed in VS Code on macOS. One observation used VS Code 1.143.0 with `@github/copilot` 1.0.100-1; the earlier VS Code 1.142.0 run did not record the Copilot extension version. Reviewer dispatch was observed, including refusal and retry of a partial result. Host enforcement of reviewer tool restrictions, context isolation, update and uninstall remain unobserved. Approval behavior was observed only as one terminal approval per session; the approval mode remains unknown. These partial observations do not establish an installed-and-working or qualified product. See the [qualified tuple record](../docs/user/qualified-tuple.md).
 
 ## What you need
-- VS Code with GitHub Copilot Chat in agent mode, and the setting that enables agent plugins
-- Node.js 22.12 or newer and Git (Tenet reuses your Node; it installs nothing)
+- VS Code 1.142 or newer with GitHub Copilot Chat in agent mode, and the setting that enables agent plugins
+- macOS arm64 for the proposed public R1 qualification tuple
+- Node.js 22.12 or newer and Git (Tenet Copilot reuses your Node; it installs nothing)
 - A TypeScript or JavaScript project with Vitest for full checking; other setups get a lower assistance level, stated up front
-- Policy that allows agent mode, agent plugins, custom agents and subagents. If a policy blocks installation or one of these, Tenet does not work around it: read the host's message and ask whoever manages your Copilot settings to allow it (unobserved; see the root README)
+- Policy that allows agent mode, agent plugins, custom agents and subagents. If a policy blocks installation or one of these, Tenet Copilot does not work around it: read the host's message and ask whoever manages your Copilot settings to allow it (unobserved; see the root README)
 
 ## What it does and does not do
 - Works on a branch of your repository and commits only the files it authored. Deterministic undo and dirty-tree preservation tests exist, but installed-host preservation is not qualified. Use disposable projects without valuable work, sensitive data or credentials
-- On Windows, Tenet can follow linked installed Vitest metadata and read a file outside the project. Do not use Tenet in untrusted workspaces or with untrusted installed dependencies
+- On Windows, Tenet Copilot can follow linked installed Vitest metadata and read a file outside the project. Do not use Tenet Copilot in untrusted workspaces or with untrusted installed dependencies
 - Runs only through the kernel, which keeps records in `.tenet/` (git-ignored; exclusion from host indexing is unobserved)
 - Does not deploy, push or open pull requests; those arrive later and only on your request
 - Hooks: none ship in this preview, so the kernel cannot observe edits you or the agent make outside its own calls; it detects them by comparison instead
@@ -26,8 +27,8 @@ waiting are host observations or unknown with provenance, never estimates.
 The shipped binding does not observe host timings. Per-contract budget minutes
 remain separate; a historical retry retains the earlier call's timing.
 
-In each project where you used Tenet, ask "help uninstall" before removing the plugin from `chat.pluginLocations`. The residue listing is incomplete; review it and the cleanup preview before confirming removal. Tenet removes a run entry only while it still matches the preview; it never removes `.tenet/`. Optionally remove `.tenet/` yourself after uninstalling; this deletes Tenet's project records. Installed-host uninstall and cleanup behavior remain unobserved.
+In each project where you used Tenet Copilot, ask "help uninstall" before removing the plugin from `chat.pluginLocations`. The residue listing is incomplete; review it and the cleanup preview before confirming removal. Tenet Copilot removes a run entry only while it still matches the preview; it never removes `.tenet/`. Optionally remove `.tenet/` yourself after uninstalling; this deletes Tenet Copilot's project records. Installed-host uninstall and cleanup behavior remain unobserved.
 
 ## License
 
-Tenet and its own starter-template code use the [MIT License](LICENSE). Third-party components retain their respective licenses; the built payload includes [NOTICE](NOTICE). License selection does not qualify this preview or authorize publication.
+Tenet Copilot and its own starter-template code use the [MIT License](LICENSE). Third-party components retain their respective licenses; the built payload includes [NOTICE](NOTICE). License selection does not qualify this preview or authorize publication.

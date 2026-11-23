@@ -159,7 +159,7 @@
   },
   "remote": {
     "run": 41177820140,
-    "url": "https://github.com/vedprakash-m/tenet/actions/runs/41177820140",
+    "url": "https://github.com/vedprakash-m/tenet-copilot/actions/runs/41177820140",
     "headSha": "28555763ee720b7b4f33c5380107c93b010afc98",
     "conclusion": "failure",
     "jobs": { "ubuntu": "success", "windows": "success", "macos": "failure" },

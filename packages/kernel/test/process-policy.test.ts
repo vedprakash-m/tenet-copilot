@@ -27,7 +27,7 @@ describe("release process", () => {
     for (const path of ["LICENSE", "NOTICE", ".github/CONTRIBUTING.md", ".github/CODE_OF_CONDUCT.md", ".github/SECURITY.md"]) assert.ok(read(path).length);
     assert.match(read(".github/CODE_OF_CONDUCT.md"), /version 2\.1/);
     const security = read(".github/SECURITY.md");
-    assert.match(security, /https:\/\/github\.com\/vedprakash-m\/tenet\/security\/advisories\/new/);
+    assert.match(security, /https:\/\/github\.com\/vedprakash-m\/tenet-copilot\/security\/advisories\/new/);
     assert.match(security, /previous minor.*security fixes for 3 months/);
     assert.doesNotMatch(security, /PLACEHOLDER/);
   });
@@ -65,6 +65,8 @@ describe("release process", () => {
     const text = read(".github/workflows/system-budgets.yml");
     const workflow = parse(text);
     const commands = Object.values<{ steps: { run?: string }[] }>(workflow.jobs).flatMap(job => job.steps.map(step => step.run));
+    assert.deepEqual(workflow.jobs["system-budgets"].needs, ["skill-experiment", "frozen-fixtures", "starter-memory"]);
+    assert.equal(workflow.jobs["system-budgets"].name, "System budgets");
     assert.deepEqual(workflow.jobs["frozen-fixtures"].strategy.matrix.fixture, ["small", "large", "long-history"]);
     assert.ok(commands.includes('node tools/bench.ts --fixture "${{ matrix.fixture }}" --json --fsync-trace > "system-budgets-${{ matrix.fixture }}.json"'));
     assert.ok(commands.includes('node --test --test-name-pattern "fsync tracing" packages/kernel/test/bench.test.ts'));

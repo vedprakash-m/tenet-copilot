@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { Password } from "../../shared/schemas.ts";
 import { hashPassword, verifyPassword } from "../src/platform/auth/passwords.ts";
 import { loadConfig } from "../src/platform/config.ts";
-import { ABSOLUTE_MS, IDLE_MS } from "../src/platform/session/session.ts";
+import { ABSOLUTE_MS, IDLE_MS, resolveSession } from "../src/platform/session/session.ts";
 import { safeEqual } from "../src/platform/safe-equal.ts";
 import { PASSWORD, signIn, testApp } from "./helpers.ts";
 
@@ -54,7 +54,7 @@ describe("sign-in and sessions", () => {
 
   it("expires after 8 idle hours and after 7 days absolute, and a forged or tampered cookie is just signed out", async () => {
     let t = 1_000_000;
-    const { app } = await testApp({ now: () => t });
+    const { app, db, config } = await testApp({ now: () => t });
     const a = await signIn(app);
     t += IDLE_MS - 1;
     expect((await app.inject({ method: "GET", url: "/api/auth/me", cookies: { sid: a.sid! } })).statusCode).toBe(200);
@@ -63,11 +63,12 @@ describe("sign-in and sessions", () => {
     expect(idle.statusCode).toBe(401);
     expect(idle.cookies.find((c) => c.name === "sid")?.value).toBe("");
 
-    // Staying active never extends past 7 days: poll just inside the idle window until the absolute limit passes.
+    // Session maintenance can extend activity, but never the 7-day absolute limit.
     const b = await signIn(app);
     const start = t;
     for (let i = 0; i < 25; i++) {
       t += IDLE_MS - 1000;
+      resolveSession(db, b.sid, config.cookieSecret, t);
       const status = (await app.inject({ method: "GET", url: "/api/auth/me", cookies: { sid: b.sid! } })).statusCode;
       expect(status, `${(t - start) / 3600_000} hours in`).toBe(t - start < ABSOLUTE_MS ? 200 : 401);
     }
@@ -76,6 +77,30 @@ describe("sign-in and sessions", () => {
     const c = await signIn(app);
     expect((await app.inject({ method: "GET", url: "/api/auth/me", cookies: { sid: `${c.sid!.slice(0, -2)}xx` } })).statusCode).toBe(401);
     expect((await app.inject({ method: "GET", url: "/api/auth/me", cookies: { sid: "nonsense" } })).statusCode).toBe(401);
+  });
+
+  it("keeps GET /api/auth/me read-only and touches last_seen only on an explicit write path", async () => {
+    let now = 1_000;
+    const { app, db } = await testApp({ now: () => now });
+    const signedIn = await signIn(app);
+    const id = signedIn.sid!.split(".")[0];
+
+    now = 2_000;
+    expect((await app.inject({ method: "GET", url: "/api/auth/me", cookies: { sid: signedIn.sid! } })).statusCode).toBe(200);
+    expect(db.prepare("SELECT last_seen_at FROM sessions WHERE id = ?").get(id)).toEqual({ last_seen_at: 1_000 });
+
+    now = 3_000;
+    const write = await app.inject({
+      method: "POST", url: "/api/auth/password", cookies: { sid: signedIn.sid! },
+      headers: { "x-csrf-token": signedIn.csrf! },
+      payload: { currentPassword: "not the current password", newPassword: "a replacement password" },
+    });
+    expect(write.statusCode).toBe(403);
+    expect(db.prepare("SELECT last_seen_at FROM sessions WHERE id = ?").get(id)).toEqual({ last_seen_at: 3_000 });
+
+    now = 3_000 + IDLE_MS;
+    expect((await app.inject({ method: "GET", url: "/api/auth/me", cookies: { sid: signedIn.sid! } })).statusCode).toBe(401);
+    expect(db.prepare("SELECT last_seen_at FROM sessions WHERE id = ?").get(id)).toEqual({ last_seen_at: 3_000 });
   });
 
   it("revokes every session of the user on password change, and keeps the caller signed in with a fresh one", async () => {
@@ -117,13 +142,41 @@ describe("sign-in and sessions", () => {
 describe("passwords", () => {
   it("enforces length bounds without restricting password composition", () => {
     for (const password of [
-      "lowercase password", "UPPERCASE PASSWORD", "123456789012", "!@#$%^&*()_+",
+      "lowercase password", "UPPERCASE PASSWORD", "987654321098", "!@#$%^&*()_+",
       " leading and trailing ", "密碼密碼密碼密碼密碼密碼", "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
     ]) expect(Password.safeParse(password).success, password).toBe(true);
     expect(Password.safeParse("x".repeat(11)).success).toBe(false);
     expect(Password.safeParse("x".repeat(12)).success).toBe(true);
     expect(Password.safeParse("x".repeat(256)).success).toBe(true);
     expect(Password.safeParse("x".repeat(257)).success).toBe(false);
+  });
+
+  it("rejects the closed common-password set case-insensitively", () => {
+    for (const password of [
+      "123456789012", "letmein123456", "password1234", "password12345",
+      "password123456", "password123!", "password1234!", "p@ssword1234",
+      "p@ssw0rd123!", "qwerty123456",
+    ]) {
+      expect(Password.safeParse(password).success, password).toBe(false);
+      expect(Password.safeParse(password.toUpperCase()).success, password.toUpperCase()).toBe(false);
+    }
+    expect(Password.safeParse("a unique synthetic passphrase").success).toBe(true);
+  });
+
+  it("rejects a common replacement password without changing the session or stored password", async () => {
+    const { app, db } = await testApp();
+    const { sid, csrf } = await signIn(app);
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/auth/password",
+      cookies: { sid: sid! },
+      headers: { "x-csrf-token": csrf! },
+      payload: { currentPassword: PASSWORD, newPassword: "Password123!" },
+    });
+    expect(res.statusCode).toBe(400);
+    expect((await app.inject({ method: "GET", url: "/api/auth/me", cookies: { sid: sid! } })).statusCode).toBe(200);
+    expect((await signIn(app, "ada@example.test", PASSWORD)).res.statusCode).toBe(200);
+    expect(await verifyPassword(PASSWORD, db.prepare("SELECT password_hash FROM users WHERE id = 'u1'").pluck().get() as string)).toBe(true);
   });
 
   it("hashes with scrypt and a fresh salt, verifies in constant time, and rejects a different password", async () => {

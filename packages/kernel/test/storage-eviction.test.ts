@@ -26,6 +26,7 @@ import { KernelError } from "../src/core/errors.ts";
 const roots: string[] = [];
 after(() => { for (const r of roots) cleanup(r); });
 const DAY = 86400_000;
+const MB = 1024 * 1024;
 let now = Date.parse("2026-10-24T12:00:00Z");
 const clock: Clock = { now: () => new Date(now).toISOString(), ms: () => now };
 const ago = (days: number) => { now = Date.parse("2026-10-24T12:00:00Z") - days * DAY; };
@@ -598,13 +599,33 @@ describe("run-file cap and ceiling [CON-08, AC-19]", () => {
   }
 
   it("reports protected data above the ceiling with its largest classes [AC-17, P106]", async () => {
-    const { root } = await fresh();
-    new FsStore(root, clock, systemRandom, LOW).putBlob("x".repeat(3_000));
+    const { root, store: writer } = await fresh();
+    const hash = writer.putBlob("x".repeat(3_000));
+    await writer.transaction("retain", async tx =>
+      tx.publish({ ...tx.state!, _ext: { retainedBlob: hash } }));
     const store = new FsStore(root, clock, systemRandom, { ...LOW, ceilingBytes: 1_500 });
     const r = await evict(store);
     assert.equal(r.overCeiling, true, JSON.stringify(r));
     assert.equal(r.largest[0]!.name, "blobs");
     assert.ok(existsSync(join(root, ".tenet", "state")));
+    assert.equal(store.readBlob(hash), "x".repeat(3_000));
+  });
+
+  it("evicts superseded blobs from aggregate storage while retaining blobs referenced by state [CON-08]", async () => {
+    const { root, store: writer } = await fresh();
+    const superseded = writer.putBlob("s".repeat(3 * MB));
+    const retained = writer.putBlob("r".repeat(3 * MB));
+    await writer.transaction("retain", async tx =>
+      tx.publish({ ...tx.state!, _ext: { retainedBlob: retained } }));
+    const store = new FsStore(root, clock, systemRandom, { ...LOW, ceilingBytes: 4 * MB });
+
+    const r = await evict(store);
+
+    assert.equal(r.refusal, undefined, JSON.stringify(r));
+    assert.equal(store.readBlob(superseded), null);
+    assert.equal(store.readBlob(retained), "r".repeat(3 * MB));
+    assert.ok(store.storageBytes() <= 4 * MB);
+    assert.match(r.message ?? "", /superseded blob/);
   });
 });
 
@@ -703,7 +724,9 @@ describe("the verbs at a storage boundary [CON-08, AC-19]", () => {
   it("refuses ordinary open and an unreserved stop above the hard ceiling while inspect stays available [AC-17, P106]", async () => {
     const p = project(); roots.push(p.root);
     const h = (await p.call("open", { profile: "plan", request: "first" })).handle!;
-    p.ports().store.putBlob("x".repeat(20_000));
+    const protectedHash = p.ports().store.putBlob("x".repeat(20_000));
+    await p.ports().store.transaction("retain", async tx =>
+      tx.publish({ ...tx.state!, _ext: { retainedBlob: protectedHash } }));
     const tight = withLimits(p, { ceilingBytes: 5_000, reserveBytes: 0 });
     const refused = await call(tight, "open", { profile: "plan", request: "second" });
     assert.equal(refused.exit, 2, JSON.stringify(refused));
@@ -713,6 +736,19 @@ describe("the verbs at a storage boundary [CON-08, AC-19]", () => {
     const stopped = await call(tight, "stop", { h, mode: "pause" });
     assert.equal(stopped.exit, 2, JSON.stringify(stopped));
     assert.equal(stopped.reasons[0]!.code, "storage-protected-full");
+  });
+
+  it("lets an unreserved stop evict superseded storage and publish safely [CON-08]", async () => {
+    const p = project(); roots.push(p.root);
+    const h = (await p.call("open", { profile: "plan", request: "first" })).handle!;
+    const orphan = p.ports().store.putBlob("x".repeat(6 * MB));
+    const tight = withLimits(p, { ceilingBytes: 5 * MB, reserveBytes: 0 });
+
+    const stopped = await call(tight, "stop", { h, mode: "pause" });
+
+    assert.equal(stopped.exit, 0, JSON.stringify(stopped));
+    assert.equal(tight.store.readBlob(orphan), null);
+    assert.ok(tight.store.storageBytes() <= 5 * MB);
   });
 
   it("open reports a journal reduction in its completed effects", async () => {

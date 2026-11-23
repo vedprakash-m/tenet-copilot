@@ -2,9 +2,25 @@
 import fs from 'node:fs';
 import { syncBuiltinESMExports } from 'node:module';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
-const [bundle, point, outside, ...args] = process.argv.slice(2);
+import { fileURLToPath, pathToFileURL } from 'node:url';
+const child = process.env.TENET_CALL_BOUNDARY_CHILD === '1';
+const wrapper = fileURLToPath(import.meta.url);
+const configPath = join(tmpdir(), `tenet-crash-project-${createHash('sha256').update(process.cwd()).digest('hex').slice(0, 16)}.json`);
+if (!child) {
+ const [bundle, point, outside, ...args] = process.argv.slice(2);
+ fs.writeFileSync(configPath, JSON.stringify({ bundle, point, outside }), { mode: 0o600 });
+ process.argv = [process.execPath, wrapper, ...args];
+ try { await import(pathToFileURL(bundle).href); } finally { fs.rmSync(configPath, { force: true }); }
+} else {
+const { bundle, point, outside } = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+const args = process.argv.slice(2);
+const samePath = (actual, expected) => {
+ try { return fs.realpathSync(String(actual)) === fs.realpathSync(expected); }
+ catch { return resolve(String(actual)) === resolve(expected); }
+};
 const open = fs.openSync, close = fs.closeSync, sync = fs.fsyncSync, rename = fs.renameSync, link = fs.linkSync, stat = fs.fstatSync, read = fs.readSync;
 let temporary = -1, published = false, reading = -1, changed = false, readingPath = '';
 const die = () => process.kill(process.pid, 'SIGKILL');
@@ -75,14 +91,15 @@ fs.fsyncSync = fd => {
 };
 fs.renameSync = (from, to) => {
  rename(from, to);
- if (point === 'kill-prepared-call' && String(to) === join(process.cwd(), '.tenet/state')) {
+ if (point === 'kill-prepared-call' && samePath(to, join(process.cwd(), '.tenet/state'))) {
   const state = JSON.parse(fs.readFileSync(to, 'utf8'));
   const call = Object.values(state.work).find(work => work.session.inCall)?.session.inCall;
   if (call && JSON.parse(fs.readFileSync(join(call.runDir, 'run.json'), 'utf8')).prepared === true) die();
  }
- if (String(to) === join(process.cwd(), 'INTENT.md')) { published = true; if (point === 'after-publish') die(); }
+ if (samePath(to, join(process.cwd(), 'INTENT.md'))) { published = true; if (point === 'after-publish') die(); }
 };
 fs.linkSync = (from, to) => { link(from, to); if (point === 'after-first-link' && String(from).includes('.tenet-write-')) die(); };
 syncBuiltinESMExports();
 process.argv = [process.execPath, bundle, ...args];
 await import(pathToFileURL(bundle).href);
+}

@@ -59,7 +59,7 @@ export function bridgeUat({ create, call, bundle, source, env, observations }) {
   const input = { ...config, h: handle };
   const killed = spawnSync(process.execPath, [join(source, 'tools/uat/crash-bundle-bridge.mjs'), bundle, point, 'decide'],
    { cwd: scratch, env, input: JSON.stringify(input), encoding: 'utf8', timeout: 15_000 });
-  assert.equal(killed.signal, 'SIGKILL', killed.stderr + killed.stdout);
+  assert.equal(killed.status, 5, `${point}: signal=${killed.signal ?? 'null'} status=${killed.status ?? 'null'} ${killed.stderr}${killed.stdout}`);
   const protectedBefore = snapshot(owned);
   for (let restart = 0; restart < 2; restart++) {
    const result = call(scratch, 'decide', input);

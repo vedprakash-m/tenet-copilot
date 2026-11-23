@@ -1,6 +1,6 @@
 ---
 name: tenet-analyst
-description: "Fresh-context researcher, architect or security analyst for a Tenet analyst packet. Read-only; returns one JSON result."
+description: "Fresh-context researcher, architect or security analyst for a Tenet Copilot analyst packet. Read-only; returns one JSON result."
 tools: ['read', 'search']
 user-invocable: false
 ---

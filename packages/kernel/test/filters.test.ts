@@ -62,6 +62,15 @@ describe("git filters: reading", () => {
       process.env.GIT_CONFIG_GLOBAL = before;
     }
   });
+
+  it("does not inspect Git filters for a non-editing investigation [GIT-12]", async () => {
+    const p = project({ ".gitattributes": "src/greet.ts filter=audit\n" });
+    dirs.push(p.root);
+    p.git("config", "filter.audit.clean", markerFilter(join(scratch(), "ran")));
+    const open = await p.call("open", { profile: "investigate", request: "look without editing" });
+    assert.equal(open.exit, 0, JSON.stringify(open));
+    assert.ok(!open.reasons.some((r) => r.code === "filters-not-run"), JSON.stringify(open.reasons));
+  });
 });
 
 describe("git filters: committing", () => {

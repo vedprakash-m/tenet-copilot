@@ -1,9 +1,9 @@
-// A real server, started by Tenet for this candidate, never the developer's own process or database (EVD-13).
+// A real server, started by Tenet Copilot for this candidate, never the developer's own process or database (EVD-13).
 // This runs against the actual started process over real HTTP, not `app.inject` — the platform/platform.test.ts
 // suite already proves the application logic in-process; this proves the server-identity and isolation guarantee.
 import { test, expect } from "@playwright/test";
 
-test("the health endpoint names this as the server Tenet started for this run, not an unrelated process on the port", async ({ request }) => {
+test("the health endpoint names this as the server Tenet Copilot started for this run, not an unrelated process on the port", async ({ request }) => {
   const res = await request.get("/api/health");
   expect(res.ok()).toBe(true);
   const body = await res.json();

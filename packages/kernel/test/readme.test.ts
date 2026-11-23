@@ -6,15 +6,33 @@ const readme = readFileSync(new URL("../../../README.md", import.meta.url), "utf
 const pluginReadme = readFileSync(new URL("../../../plugin/README.md", import.meta.url), "utf8");
 const removalGuide = readFileSync(new URL("../../../docs/user/install-and-remove.md", import.meta.url), "utf8");
 const contributing = readFileSync(new URL("../../../.github/CONTRIBUTING.md", import.meta.url), "utf8");
+const workspacePackage = JSON.parse(readFileSync(new URL("../../../package.json", import.meta.url), "utf8")) as { name: string };
+const pluginPackage = JSON.parse(readFileSync(new URL("../../../plugin/plugin.json", import.meta.url), "utf8")) as { name: string };
 
 describe("installation README [INS-02]", () => {
+  it("uses the Tenet Copilot repository and package identity while preserving stable commands", () => {
+    assert.equal(workspacePackage.name, "tenet-copilot-workspace");
+    assert.equal(pluginPackage.name, "tenet-copilot");
+    assert.match(readme, /^# Tenet Copilot$/m);
+    assert.match(readme, /github\.com\/vedprakash-m\/tenet-copilot/);
+    assert.doesNotMatch(readme, /github\.com\/vedprakash-m\/tenet(?:\/|\.git)/);
+    assert.match(readme, /\/tenet help/);
+    assert.match(readme, /plugin\/kernel\/tenet\.mjs/);
+    assert.match(readme, /\.tenet\//);
+  });
+
   it("states publisher and source-verification limits without draft placeholders", () => {
     assert.doesNotMatch(readme, /PLACEHOLDER|<!-- DRAFT/);
     assert.match(readme, /Publisher and verification/);
     assert.match(readme, /publisher.{0,80}not designated/i);
     assert.doesNotMatch(readme, /working name/i);
-    assert.match(readme, /https:\/\/github\.com\/vedprakash-m\/tenet/);
+    assert.match(readme, /https:\/\/github\.com\/vedprakash-m\/tenet-copilot/);
     assert.match(readme, /signed release|provenance/i);
+  });
+
+  it("gives the plugin README the same minimum VS Code and Git prerequisites", () => {
+    assert.match(pluginReadme, /VS Code 1\.142 or newer/i);
+    assert.match(pluginReadme, /\bGit\b/i);
   });
 
   it("documents prerequisites, support, assistance, permissions, first task and lifecycle before use", () => {
@@ -46,7 +64,7 @@ describe("installation README [INS-02]", () => {
   it("warns about the observed Windows metadata-link exposure", () => {
     for (const [name, text] of [["root README", readme], ["plugin README", pluginReadme]] as const) {
       assert.match(text, /On Windows,[^.]*linked installed Vitest metadata[^.]*outside the project/i, name);
-      assert.match(text, /Do not use Tenet in untrusted workspaces or with untrusted installed dependencies/i, name);
+      assert.match(text, /Do not use Tenet Copilot in untrusted workspaces or with untrusted installed dependencies/i, name);
     }
   });
 });
@@ -56,7 +74,7 @@ describe("policy-blocked install [INS-08]", () => {
     const beforeInstall = readme.split("## Install")[0]!;
     assert.match(beforeInstall, /If policy blocks installation or a required feature/);
     assert.match(beforeInstall, /ask whoever manages your Copilot organization settings/);
-    assert.match(beforeInstall, /Tenet cannot see the policy/);
+    assert.match(beforeInstall, /Tenet Copilot cannot see the policy/);
     assert.match(beforeInstall, /unobserved/);
   });
 });

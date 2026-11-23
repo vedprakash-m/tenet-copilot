@@ -3,13 +3,18 @@
 // the marker. A restore killed at any step leaves the marker; the server will not start until it is finished or rolled back.
 import Database from "better-sqlite3";
 import { z } from "zod";
-import { closeSync, copyFileSync, existsSync, fsyncSync, lstatSync, openSync, readFileSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { closeSync, constants, existsSync, fsyncSync, fstatSync, lstatSync, openSync, readFileSync, readSync, realpathSync, renameSync, rmSync, statSync, writeFileSync, writeSync } from "node:fs";
+import { extname } from "node:path";
 import { MIGRATIONS_DIR, loadMigrations, pendingMigrations } from "./migrate.ts";
 import { takeOwner } from "./owner.ts";
 
 export interface Restored { schemaVersion: string; compatibleWith: string; keptAside?: string }
 export const STEPS = ["owned", "validated", "marked", "moved", "copied", "verified", "unmarked"] as const;
 export type Step = (typeof STEPS)[number];
+export const MAX_RESTORE_BYTES = 1024 * 1024 * 1024;
+export const RESTORE_FILE_EXTENSIONS = [".bak", ".db", ".sqlite", ".sqlite3"] as const;
+const SQLITE_HEADER = Buffer.from("SQLite format 3\0", "binary");
+const COPY_BUFFER_BYTES = 64 * 1024;
 const RestoreMarker = z.object({
   backup: z.string().min(1), aside: z.string().min(1),
   at: z.number().finite().nonnegative(), hadOriginal: z.boolean().optional(),
@@ -19,10 +24,28 @@ type Marker = z.infer<typeof RestoreMarker>;
 const SUFFIXES = ["", "-wal", "-shm"] as const;
 const markerPath = (to: string) => `${to}.restore-in-progress`;
 
+function assertRestoreFile(fd: number, filename: string): void {
+  if (!(RESTORE_FILE_EXTENSIONS as readonly string[]).includes(extname(filename).toLowerCase()))
+    throw new Error(`the backup filename extension must describe a SQLite file: ${RESTORE_FILE_EXTENSIONS.join(", ")}`);
+  const info = fstatSync(fd);
+  if (!info.isFile()) throw new Error("the backup must be a regular file");
+  if (info.size > MAX_RESTORE_BYTES)
+    throw new Error(`the backup exceeds the ${MAX_RESTORE_BYTES}-byte restore byte limit`);
+  const header = Buffer.alloc(SQLITE_HEADER.length);
+  if (readSync(fd, header, 0, header.length, 0) !== header.length || !header.equals(SQLITE_HEADER))
+    throw new Error("the backup content is not a SQLite database");
+}
+
+function inspectRestoreFile(file: string, filename = file): void {
+  const fd = openSync(file, "r");
+  try { assertRestoreFile(fd, filename); } finally { closeSync(fd); }
+}
+
 /** The schema version of a database file, after integrity, compatible history/checksums and foreign-key checks. */
-function verified(file: string): string {
+function verified(file: string, filename = file): string {
   let copy: Database.Database | undefined;
   try {
+    inspectRestoreFile(file, filename);
     copy = new Database(file, { readonly: true });
     const check = copy.pragma("integrity_check", { simple: true });
     if (check !== "ok") throw new Error(`failed its integrity check: ${String(check)}`);
@@ -36,6 +59,31 @@ function verified(file: string): string {
   } finally {
     copy?.close();
   }
+}
+
+/** Copies one admitted restore source with bounded memory and a hard copy byte limit. */
+function copyRestoreFile(source: string, destination: string): void {
+  const input = openSync(source, "r");
+  try {
+    assertRestoreFile(input, source);
+    const existing = lstatSync(destination, { throwIfNoEntry: false });
+    if (existing && !existing.isFile()) throw new Error("the restore staging path is not a regular file");
+    if (existing) rmSync(destination);
+    const output = openSync(destination, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL, 0o600);
+    try {
+      const buffer = Buffer.allocUnsafe(COPY_BUFFER_BYTES);
+      let copied = 0;
+      while (true) {
+        const read = readSync(input, buffer, 0, buffer.length, copied);
+        if (!read) break;
+        copied += read;
+        if (copied > MAX_RESTORE_BYTES)
+          throw new Error(`the backup exceeds the ${MAX_RESTORE_BYTES}-byte restore byte limit`);
+        let written = 0;
+        while (written < read) written += writeSync(output, buffer, written, read - written, copied - read + written);
+      }
+    } finally { closeSync(output); }
+  } finally { closeSync(input); }
 }
 
 /** Takes the write lock, folds the log into the file and lets go; fails when another connection is using the database. */
@@ -94,8 +142,8 @@ function moveAside(to: string, aside: string): void {
 
 /** Copies the backup in atomically and checks the copy before it becomes the database. */
 function install(backup: string, to: string): string {
-  copyFileSync(backup, `${to}.restoring`);
-  const schemaVersion = verified(`${to}.restoring`);
+  copyRestoreFile(backup, `${to}.restoring`);
+  const schemaVersion = verified(`${to}.restoring`, backup);
   for (const s of ["-wal", "-shm"]) rmSync(`${to}.restoring${s}`, { force: true });
   renameSync(`${to}.restoring`, to);
   return schemaVersion;
@@ -124,7 +172,7 @@ export function restore(backup: string, to: string, opts: { after?: (step: Step)
     at("moved");
     install(backup, to);
     at("copied");
-    verified(to);
+    verified(to, backup);
     at("verified");
     rmSync(markerPath(to), { force: true });
     release();
@@ -170,7 +218,7 @@ export function recoverRestore(to: string, mode: "finish" | "rollback"): string 
     if (mode === "finish") {
       moveAside(to, marker.aside);
       install(marker.backup, to);
-      verified(to);
+      verified(to, marker.backup);
       result = "the restore is finished";
     } else {
       result = rollback(to, marker);

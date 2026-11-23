@@ -36,7 +36,7 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement through [the repository's issue tracker](https://github.com/vedprakash-m/tenet/issues), without posting personal or sensitive details. For private reports about abusive GitHub content, use [GitHub's report-abuse process](https://docs.github.com/en/site-policy/content-removal-policies/reporting-abuse-or-spam); GitHub handles those reports, not the repository maintainers. All complaints received by community leaders will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement through [the repository's issue tracker](https://github.com/vedprakash-m/tenet-copilot/issues), without posting personal or sensitive details. For private reports about abusive GitHub content, use [GitHub's report-abuse process](https://docs.github.com/en/site-policy/content-removal-policies/reporting-abuse-or-spam); GitHub handles those reports, not the repository maintainers. All complaints received by community leaders will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 

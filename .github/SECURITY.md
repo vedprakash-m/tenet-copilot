@@ -4,7 +4,7 @@
 
 Do not open a public issue for a security problem.
 
-Report it through [GitHub private vulnerability reporting](https://github.com/vedprakash-m/tenet/security/advisories/new). GitHub's repository API reports the setting enabled on 2026-11-21. If the form is unavailable, do not put vulnerability details in a public issue; use GitHub's reporting controls to ask for a private channel without disclosing the vulnerability. Recheck the live setting before release.
+Report it through [GitHub private vulnerability reporting](https://github.com/vedprakash-m/tenet-copilot/security/advisories/new). GitHub's repository API reports the setting enabled on 2026-11-21. If the form is unavailable, do not put vulnerability details in a public issue; use GitHub's reporting controls to ask for a private channel without disclosing the vulnerability. Recheck the live setting before release.
 
 Include: what you found, the version or commit, the steps to reproduce, and what you think the impact is. Do not include real credentials or other people's data.
 
@@ -26,35 +26,35 @@ Treat a critical vulnerability report or alert affecting a starter dependency un
 
 No public release exists yet, so no version is supported. Once releases ship, the latest minor release gets fixes; the previous minor gets security fixes for 3 months after a new minor ships (PRD §5.9.2). Other minors and withdrawn versions are unsupported. The release's support matrix and withdrawal advisories are authoritative; a source preview or a green CI run is not a supported release.
 
-## What Tenet protects, and what it does not
+## What Tenet Copilot protects, and what it does not
 
-Tenet is a local tool. It gives the host's agent a small kernel that records what is true, and it limits what that agent can claim. It is not a sandbox.
+Tenet Copilot is a local tool. It gives the host's agent a small kernel that records what is true, and it limits what that agent can claim. It is not a sandbox.
 
 **In scope for a report:**
 
-- An over-eager or mistaken agent that gets Tenet to record something false: a forged approval, a relabelled outcome, a receipt that does not match what ran.
+- An over-eager or mistaken agent that gets Tenet Copilot to record something false: a forged approval, a relabelled outcome, a receipt that does not match what ran.
 - Malicious or compromised repository content, retrieved documents, tool output and test reports, including a cloned repository that ships a pre-populated `.tenet/`, a loosened shared policy, or hostile report files.
 - Dependencies and their install scripts, and Git hooks.
 - Saved lessons used to carry instructions.
 - Plugin updates and look-alike plugins.
-- Tenet's own build, CI and release pipeline.
+- Tenet Copilot's own build, CI and release pipeline.
 - Path traversal or symlink escape in the kernel, including a symlinked `.tenet/`.
 - Secrets reaching model context, Git, logs or exports.
 
 **Out of scope:**
 
-- A malicious authorized operator (the person using Tenet).
+- A malicious authorized operator (the person using Tenet Copilot).
 - A compromised host application, operating system or model provider.
-- Changes made outside work Tenet can observe.
+- Changes made outside work Tenet Copilot can observe.
 
-## What to know before relying on Tenet
+## What to know before relying on Tenet Copilot
 
 - **The audit trail is local and is not tamper-proof.** Anyone with write access to the project and the temp folder can alter it.
-- **Autopilot.** Tenet cannot detect Copilot's Autopilot, which can answer native questions automatically. Under it, every decision record is unverifiable. Authority questions are asked in plain chat for this reason. See [docs/user/autopilot.md](../docs/user/autopilot.md).
-- **Several host controls are cooperative.** Tool restrictions for the reviewer, `.tenet/` exclusion from host indexing, and exclusions in agent file tools depend on the host honoring them or on the agent following instructions. Which of them the host enforces on VS Code is unobserved. Tenet's own kernel enforces its exclusions, but the host's agent can read what the host lets it read.
-- **Approval mode and containment are recorded as unknown.** Tenet does not infer them.
+- **Autopilot.** Tenet Copilot cannot detect Copilot's Autopilot, which can answer native questions automatically. Under it, every decision record is unverifiable. Authority questions are asked in plain chat for this reason. See [docs/user/autopilot.md](../docs/user/autopilot.md).
+- **Several host controls are cooperative.** Tool restrictions for the reviewer, `.tenet/` exclusion from host indexing, and exclusions in agent file tools depend on the host honoring them or on the agent following instructions. Which of them the host enforces on VS Code is unobserved. Tenet Copilot's own kernel enforces its exclusions, but the host's agent can read what the host lets it read.
+- **Approval mode and containment are recorded as unknown.** Tenet Copilot does not infer them.
 - **The kernel runs the `node` found on your `PATH`.** Helper scripts are located by the plugin's install path, not by `PATH`, but the Node binary is not pinned. This is a documented residual risk.
-- **Redaction is incomplete.** Tenet removes common token patterns from what it displays, logs or exports, and says detection is incomplete. If a real credential reaches model context, rotate it. Tenet can remove its own copies and not copies held elsewhere.
+- **Redaction is incomplete.** Tenet Copilot removes common token patterns from what it displays, logs or exports, and says detection is incomplete. If a real credential reaches model context, rotate it. Tenet Copilot can remove its own copies and not copies held elsewhere.
 - **Checks run your project's code.** Tests, linters and servers run as local processes with a reduced environment, under limits on time and output. They are not isolated from your machine.
 - **Nothing is qualified on a real host yet.** See [docs/user/qualified-tuple.md](../docs/user/qualified-tuple.md).
 

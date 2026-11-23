@@ -3,8 +3,8 @@
 // This is evidence for the feature, not a shipped part of the recipe: tech-spec §12.2 is explicit that
 // `features/<f>/` starts empty in the template, so the fixture files below live here, not in the recipe.
 import { spawnSync } from "node:child_process";
-import { readFileSync, readdirSync } from "node:fs";
-import { join, relative } from "node:path";
+import { cpSync, readFileSync, readdirSync } from "node:fs";
+import { dirname, join, relative } from "node:path";
 import { after, describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { cleanup, fixtureEnv, git, initRepo, tmp, write } from "./helpers.ts";
@@ -55,8 +55,33 @@ describe("golden task: the loan desk feature [QLT-01, QLT-12]", { skip: process.
     // The same scratch journey can drive the shipped CLI during UAT; CI defaults to the source pipeline.
     const rawCall = async (v: string, i: Record<string, unknown>) => {
       const bundle = process.env.TENET_TEST_BUNDLE;
-      if (!bundle) return runVerb(
-        createPorts(root, fixtureEnv(root, { PATH: process.env.PATH, HOME: process.env.HOME })), VERBS, v, i);
+      if (!bundle) {
+        const ports = createPorts(root, fixtureEnv(root, { PATH: process.env.PATH, HOME: process.env.HOME }));
+        const preparedModules = process.env.TENET_STARTER_NODE_MODULES;
+        if (preparedModules) {
+          const expectedLock = join(
+            import.meta.dirname,
+            "../../../plugin/skills/tenet-starter-ts-web-api/template/package-lock.json",
+          );
+          assert.deepEqual(
+            readFileSync(join(dirname(preparedModules), "package-lock.json")),
+            readFileSync(expectedLock),
+            "the prepared dependency tree must use the exact starter lockfile",
+          );
+          const original = ports.runner.run.bind(ports.runner);
+          ports.runner.run = async (spec) => {
+            const install = spec.argv.join("\0") === "npm\0ci\0--ignore-scripts\0--no-audit";
+            const rebuild = spec.argv.join("\0") === "npm\0rebuild\0better-sqlite3";
+            if (!install && !rebuild) return original(spec);
+            if (install) cpSync(preparedModules, join(root, "node_modules"), { recursive: true, errorOnExist: true });
+            return {
+              exit: 0, timedOut: false, durationMs: 0, stdout: "", stderr: "",
+              startedAt: "2026-01-01T00:00:00.000Z", report: null,
+            };
+          };
+        }
+        return runVerb(ports, VERBS, v, i);
+      }
       const readsBody = ["open", "decide", "findings"].includes(v);
       const args = readsBody ? [] : Object.entries(i).flatMap(([key, value]) => [
         `--${key.replace(/[A-Z]/g, c => `-${c.toLowerCase()}`)}`, Array.isArray(value) ? value.join(",") : typeof value === "object" ? JSON.stringify(value) : String(value),
@@ -145,7 +170,7 @@ describe("golden task: the loan desk feature [QLT-01, QLT-12]", { skip: process.
     assert.equal(candidate.exit, 0, JSON.stringify(candidate));
     const suite = d(candidate).receipts.find((r: { obligation: string }) => r.obligation === "OB-suite");
     assert.equal(suite.status, "pass", JSON.stringify(suite));
-    assert.equal(suite.counts.executed, 178, "platform, feature, seed-recovery, process-race and generated-contract cases all ran");
+    assert.equal(suite.counts.executed, 189, "platform, feature, seed-recovery, process-race and generated-contract cases all ran");
     for (const id of ["OB-types", "OB-lint"]) {
       const receipt = d(candidate).receipts.find((r: { obligation: string }) => r.obligation === id);
       assert.equal(receipt?.status, "pass", `${id}: ${JSON.stringify(receipt)}`);
@@ -157,6 +182,7 @@ describe("golden task: the loan desk feature [QLT-01, QLT-12]", { skip: process.
 
     // 5. Synthetic review/architect/security results exercise the Deep-lane gate; no native analyst run
     // is observed here. Migrations raise reversibility/compatibility risk (TS §8.2's signal table).
+    assert.ok(d(candidate).review, JSON.stringify(candidate));
     const manifest = JSON.parse(readFileSync(d(candidate).review.manifest, "utf8"));
     assert.deepEqual(manifest.attention.map((item: { path: string }) => item.path).sort(), ["package.json", "tsconfig.json"]);
     assert.ok(manifest.attention.every((item: { marker: boolean; pattern: string }) => !item.marker && item.pattern === "test or build configuration"));

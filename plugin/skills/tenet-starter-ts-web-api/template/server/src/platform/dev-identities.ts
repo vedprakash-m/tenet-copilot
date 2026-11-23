@@ -1,8 +1,9 @@
 // Development identities: on the first run an admin and a member are seeded with random 24-character passwords, saved to
-// .env.local (git-ignored, excluded from Tenet's reads by default). They are printed to stderr at startup only when no
-// run token is set, so they never reach Tenet's run directories, responses or traces.
+// .env.local (git-ignored, excluded from Tenet Copilot's reads by default). They are printed to stderr at startup only when no
+// run token is set, so they never reach Tenet Copilot's run directories, responses or traces.
 import { randomBytes, randomUUID } from "node:crypto";
 import { readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { Password } from "../../../shared/schemas.ts";
 import { hashPassword } from "./auth/passwords.ts";
 import { writeTx } from "./db.ts";
 import type { Db } from "./db.ts";
@@ -32,7 +33,7 @@ export async function seedDevIdentities(db: Db, envFile: string, now: number): P
     { email: "admin@example.test", role: "admin", password: password() },
     { email: "member@example.test", role: "member", password: password() },
   ];
-  const users = await Promise.all(made.map(async (u) => ({ id: randomUUID(), email: u.email, role: u.role as "admin" | "member", password_hash: await hashPassword(u.password), created_at: now })));
+  const users = await Promise.all(made.map(async (u) => ({ id: randomUUID(), email: u.email, role: u.role as "admin" | "member", password_hash: await hashPassword(Password.parse(u.password)), created_at: now })));
   return writeTx(db, () => {
     if (countUsers(db) > 0) return undefined;
     for (const u of users) insertUser(db, u);

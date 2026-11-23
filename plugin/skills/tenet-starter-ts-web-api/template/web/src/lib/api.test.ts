@@ -37,6 +37,11 @@ describe("browser API boundaries", () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(new Response(null, { status: 204 })).mockResolvedValueOnce(reply(session));
     await expect(signOut("synthetic-csrf")).rejects.toMatchObject({ status: 409 });
   });
+  it("preserves an honest sign-out network failure for the UI to report and retry", async () => {
+    const fetch = vi.spyOn(globalThis, "fetch").mockRejectedValueOnce(new Error("private network detail"));
+    await expect(signOut("synthetic-csrf")).rejects.toEqual(new ApiError(0, "We couldn't connect. Check your connection and try again."));
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
   it("retains aborts and reports connection errors without raw exception text", async () => {
     const fetch = vi.spyOn(globalThis, "fetch").mockRejectedValueOnce(new Error("private network detail"));
     await expect(loadSession()).rejects.toEqual(new ApiError(0, "We couldn't connect. Check your connection and try again."));

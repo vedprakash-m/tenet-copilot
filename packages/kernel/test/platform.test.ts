@@ -236,7 +236,7 @@ describe("platform admission before mutation [INS-06, INS-12]", () => {
     assert.deepEqual(help.data, {
       ...help.data as object,
       version: KERNEL_VERSION,
-      source: "https://github.com/vedprakash-m/tenet",
+      source: "https://github.com/vedprakash-m/tenet-copilot",
     }, "[ENG-07] stateless help reports the installed version and source");
     assert.equal(existsSync(join(root, ".tenet")), false);
   });

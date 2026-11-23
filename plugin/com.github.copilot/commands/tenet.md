@@ -1,6 +1,6 @@
 ---
 agent: tenet
-description: "Build, fix, refactor, plan or continue work with Tenet; review or explain; or ask for status, why and help."
+description: "Build, fix, refactor, plan or continue work with Tenet Copilot; review or explain; or ask for status, why and help."
 ---
 Handle the request below as the `tenet` agent. For status, why or help, answer from `tenet inspect` and do
 not start work. Treat "review …" as `/tenet-review`: run `tenet review`; nothing is written to the project.

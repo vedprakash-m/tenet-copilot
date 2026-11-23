@@ -235,7 +235,7 @@ export async function created(c: Ctx): Promise<Plan> {
     workSeq: state.workSeq + 1,
     ...(editing ? { sourceOwner: { work: w.id, generation: gen } } : {}),
   };
-  const filters = probe.isRepo ? await ports.git.filterGate() : null;
+  const filters = editing && probe.isRepo ? await ports.git.filterGate() : null;
   const imported = "Imported records were set aside as inert data; this contract starts from the current request.";
   const notes = [
     ...(next.quarantine?.choice === "pending" ? [reason("marker-mismatch", imported)] : []),

@@ -7,6 +7,7 @@ import { test } from "node:test";
 import { cleanup, git, initRepo, tmp, write } from "./helpers.ts";
 import { report } from "../../../tools/coverage.ts";
 import { releaseAudit, releaseAuditReport } from "../../../tools/release-audit.ts";
+import { KERNEL_VERSION } from "../src/version.ts";
 
 function fixture(root: string) {
   write(root, "specs/PRD.md", "| TST-01 | Example requirement | Must | M0 | AC-01, AC-02 |\n");
@@ -248,7 +249,7 @@ test("a qualified disposition requires a passing manifest bound to the frozen pr
         organizationPolicyProfile: "standard", osVersion: "macOS", architecture: "arm64",
         executionTarget: "local", workspaceMode: "single-folder", recipeVersion: "1", toolchainVersions: { node: "22.12.0" },
       },
-      tenetVersion: "0.1.0-m0", artifactSha256: createHash("sha256").update(artifact).digest("hex"), observedModel: "unknown",
+      tenetVersion: KERNEL_VERSION, artifactSha256: createHash("sha256").update(artifact).digest("hex"), observedModel: "unknown",
       scope: { milestone: "R1", requirementIds: ["TST-01"], acIds: ["AC-01", "AC-02"] },
       outcomes: [{ requirementId: "TST-01", result: "passed", evidenceRefs: [resultRef] }],
     };

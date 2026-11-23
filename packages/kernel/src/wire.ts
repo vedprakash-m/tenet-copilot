@@ -16,6 +16,9 @@ import { KERNEL_VERSION } from "./version.ts";
 import { sha256 } from "./core/ids.ts";
 import { createMigrationGuard } from "./adapters/marker-rollback.ts";
 import { githubActionsPosixMetadata } from "./adapters/installed-metadata.ts";
+export {
+  callBoundaryChild, callTimeoutResponse, markExternal, runBoundedCall, watchBoundaryParent,
+} from "./adapters/call-boundary.ts";
 
 /** The workspace is the Git top level when there is one, so every subfolder shares one `.tenet/`. */
 function workspaceRoot(cwd: string): string {

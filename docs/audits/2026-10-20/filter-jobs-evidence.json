@@ -11,7 +11,7 @@
     "tipsRecheckedAfterCorrections": true,
     "remoteWrites": false,
     "newCommits": false,
-    "ciForCommittedBaseOnly": "https://github.com/vedprakash-m/tenet/actions/runs/39511805902"
+    "ciForCommittedBaseOnly": "https://github.com/vedprakash-m/tenet-copilot/actions/runs/39511805902"
   },
   "source": {
     "typescriptModules": 88,

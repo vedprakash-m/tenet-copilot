@@ -1,6 +1,6 @@
-# Instructions for working on Tenet
+# Instructions for working on Tenet Copilot
 
-Tenet is a governed engineering loop for Copilot: a small deterministic kernel (`packages/kernel`) that records what is true, a plugin (`plugin/`) of agents, commands and skills that does the work, and a starter recipe. Three specs say what it is: `specs/PRD.md` (meaning), `specs/tech-spec.md` (mechanism), `specs/ux-spec.md` (wording). `specs/plan.md` holds the remaining work and is the progress record. If code, plan and a spec disagree, the spec wins; fix the plan or the code, and log a spec defect in the plan's spec-defect list (`specs/plan.md` §7).
+Tenet Copilot is a governed engineering loop for Copilot: a small deterministic kernel (`packages/kernel`) that records what is true, a plugin (`plugin/`) of agents, commands and skills that does the work, and a starter recipe. Three specs say what it is: `specs/PRD.md` (meaning), `specs/tech-spec.md` (mechanism), `specs/ux-spec.md` (wording). `specs/plan.md` holds the remaining work and is the progress record. If code, plan and a spec disagree, the spec wins; fix the plan or the code, and log a spec defect in the plan's spec-defect list (`specs/plan.md` §7).
 
 Only the three canonical specs and `specs/plan.md` are tracked under `specs/`. All other specs and reviews, plus all of `.archive/`, are local-only and git-ignored. Preserve local records, but never force-add or publish them. A fresh checkout does not contain them; create local planning records when needed. Canonical specs, code, tests and public documentation remain tracked.
 

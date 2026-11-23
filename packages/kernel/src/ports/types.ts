@@ -443,6 +443,8 @@ export interface Ports {
   platform: NodeJS.Platform;
   root: string; version: string; store: Store; git: Git; runner: Runner; stack: Stack; clock: Clock; rand: Random;
   recipes: Recipes; project: Project; host: Host;
+  /** Process-boundary notifications: obligation-bounded jobs are outside the bookkeeping deadline. */
+  callBoundary?: { external(active: boolean): Promise<void> };
   /** Current invocation snapshot; absent outside the public pipeline. */
   timing?: () => Timing;
   authorizeMutation?(verb: string, input: unknown): void;

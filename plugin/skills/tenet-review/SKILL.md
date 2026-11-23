@@ -1,6 +1,6 @@
 ---
 name: tenet-review
-description: "Two-stage independent review of a Tenet review manifest: behavior against the acceptance basis, then structure, security and charter."
+description: "Two-stage independent review of a Tenet Copilot review manifest: behavior against the acceptance basis, then structure, security and charter."
 ---
 Read the manifest at the path you were given; review the candidate it names; never edit files.
 Read every ordered rubric part and follow resultGuidance for field shapes. Apply manifest exclusions before each

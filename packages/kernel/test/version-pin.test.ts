@@ -6,6 +6,7 @@ import { versionDrift, kernelLine, schemaStatus } from "../src/core/versions.ts"
 import { SCHEMA_VERSION } from "../src/core/schemas.ts";
 import { runVerb } from "../src/pipeline.ts";
 import { VERBS } from "../src/verbs/index.ts";
+import { KERNEL_VERSION } from "../src/version.ts";
 import { cleanup } from "./helpers.ts";
 import { BASIS, GREET_IMPL, GREET_TEST, callWithEnvelopeConsent, project } from "./support/fixture.ts";
 import type { Project } from "./support/fixture.ts";
@@ -88,7 +89,7 @@ describe("a pinned contract pauses when Tenet changes [LFC-03]", () => {
   it("records kernel, schema and adapter on a new contract", async () => {
     const p = fresh();
     await open(p);
-    assert.deepEqual(work(p).pinned, { tenet: "0.1.0-m0", schema: SCHEMA_VERSION, adapter: p.ports().stack.adapterVersion() });
+    assert.deepEqual(work(p).pinned, { tenet: KERNEL_VERSION, schema: SCHEMA_VERSION, adapter: p.ports().stack.adapterVersion() });
   });
 
   it("a changed adapter pauses the next call with one question; inspect and stop still work", async () => {
@@ -110,12 +111,12 @@ describe("a pinned contract pauses when Tenet changes [LFC-03]", () => {
     const p = fresh();
     const h = await open(p);
     const before = work(p);
-    const next = as(p, { version: "0.2.0-m0" });
+    const next = as(p, { version: "0.3.0-m0" });
     assert.equal((await next("decide", { h, kind: "basis", propose: BASIS })).exit, 3);
     const done = await next("decide", { h, kind: "version-reconcile", answers: { "version-reconcile": "continue" } });
     assert.equal(done.exit, 0, JSON.stringify(done));
     const after = work(p);
-    assert.equal(after.pinned.tenet, "0.2.0-m0");
+    assert.equal(after.pinned.tenet, "0.3.0-m0");
     const counters = (w: typeof before) => [w.budget.attempts, w.budget.reviewRounds, w.budget.rechecks, w.budget.delegations, w.budget.checksLaunched, w.budget.tenetTokens];
     assert.deepEqual([after.grants, counters(after), after.obligations.length], [before.grants, counters(before), before.obligations.length]);
     assert.equal((await next("decide", { h, kind: "basis", propose: BASIS })).exit, 0);
@@ -133,7 +134,7 @@ describe("a pinned contract pauses when Tenet changes [LFC-03]", () => {
   it("a patch release of the kernel does not pause", async () => {
     const p = fresh();
     const h = await open(p);
-    const r = await as(p, { version: "0.1.9-m0" })("decide", { h, kind: "basis", propose: BASIS });
+    const r = await as(p, { version: "0.2.9-m0" })("decide", { h, kind: "basis", propose: BASIS });
     assert.equal(r.exit, 0, JSON.stringify(r));
   });
 
@@ -153,7 +154,7 @@ describe("a pinned contract pauses when Tenet changes [LFC-03]", () => {
   it("a downgrade is named as one", async () => {
     const p = fresh();
     const h = await open(p);
-    await as(p, { version: "0.2.0-m0" })("decide", { h, kind: "version-reconcile", answers: { "version-reconcile": "continue" } });
+    await as(p, { version: "0.3.0-m0" })("decide", { h, kind: "version-reconcile", answers: { "version-reconcile": "continue" } });
     const r = await as(p, { version: "0.1.0-m0" })("decide", { h, kind: "basis", propose: BASIS });
     assert.equal(r.exit, 3);
     assert.match(r.reasons[0]!.message, /older|downgrade/i);
@@ -173,7 +174,7 @@ describe("a pinned contract pauses when Tenet changes [LFC-03]", () => {
 
   for (const [label, over] of [
     ["kernel major drift", { version: "1.1.0-m0" }],
-    ["kernel minor drift", { version: "0.2.0-m0" }],
+    ["kernel minor drift", { version: "0.3.0-m0" }],
     ["adapter drift", { adapter: "node-ts@99" }],
     ["no drift", {}],
   ] as const) {

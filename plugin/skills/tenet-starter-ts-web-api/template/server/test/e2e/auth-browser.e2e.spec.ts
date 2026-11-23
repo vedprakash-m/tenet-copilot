@@ -121,14 +121,18 @@ test("a revoked session is rechecked on navigation, without a cached success [QL
   await page.reload(); await expect(page.getByRole("heading", { name: "Sign in", exact: true })).toBeVisible();
 });
 
-test("an unconfirmed sign-out retains the account and can be retried [QLT-14]", async ({ page }) => {
+test("an unconfirmed sign-out clears authenticated UI, reports the network error, and can be retried [QLT-14]", async ({ page }) => {
   await openSignIn(page); await fillSignIn(page); await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page.getByRole("heading", { name: "You're signed in" })).toBeVisible();
   await page.route("**/api/auth/sign-out", route => route.abort());
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
-  await expect(page.getByRole("alert")).toBeFocused();
-  await expect(page.getByRole("heading", { name: "You're signed in" })).toBeVisible();
-  await page.unroute("**/api/auth/sign-out");
-  await page.getByRole("button", { name: "Sign out", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Sign in", exact: true })).toBeVisible();
+  await expect(page.getByRole("alert")).toBeFocused();
+  await expect(page.getByRole("alert")).toContainText("We couldn't connect");
+  await expect(page.getByText(browserEmail, { exact: true })).toHaveCount(0);
+  await page.unroute("**/api/auth/sign-out");
+  await page.getByRole("button", { name: "Retry sign-out", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Sign in", exact: true })).toBeVisible();
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  expect((await page.request.get("/api/auth/me")).status()).toBe(401);
 });

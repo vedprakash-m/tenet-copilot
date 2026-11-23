@@ -2,7 +2,7 @@
 
 ## Source and preservation
 
-Fetched origin and fast-forwarded main from `159caab650dbf38a50409c32ade3d29c0cd98efb` to `8b7bbc4190fc76599b51e1fcfe50f23947a2963c`. HEAD and origin/main have zero commits of divergence. Upstream [CI run 40639090625](https://github.com/vedprakash-m/tenet/actions/runs/40639090625) passed. Local modifications were backed up and stashed, then reapplied; only plan/changelog overlap required resolution. Both histories, initial owner decisions and four inherited worktrees remain intact. The safety stash is retained. No commit or push was requested or performed.
+Fetched origin and fast-forwarded main from `159caab650dbf38a50409c32ade3d29c0cd98efb` to `8b7bbc4190fc76599b51e1fcfe50f23947a2963c`. HEAD and origin/main have zero commits of divergence. Upstream [CI run 40639090625](https://github.com/vedprakash-m/tenet-copilot/actions/runs/40639090625) passed. Local modifications were backed up and stashed, then reapplied; only plan/changelog overlap required resolution. Both histories, initial owner decisions and four inherited worktrees remain intact. The safety stash is retained. No commit or push was requested or performed.
 
 The earlier audit did not fetch first. Its execution measurements remain historical evidence for the earlier source, not validation of this combined tree. This reassessment supersedes its current-work ordering and the specific stale findings below; the broad R1 gaps remain.
 

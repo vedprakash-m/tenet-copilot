@@ -7,7 +7,7 @@ UI → HTTP schemas → services (operations and invariants) → repositories (S
 - `server/src/features/<f>/` is one vertical slice: its routes, services, repository, tests, and an `index.ts` that is its only public face.
 - `web/src/` holds the account UI; `lib/api.ts` handles same-origin requests and validates shared response schemas. Session state is read from the server; credentials are never cached in local storage.
 - `shared/` holds the runtime API schemas used by both sides; it imports nothing from `server/` or `web/`.
-- `server/test/e2e/` holds end-to-end specs run by Playwright against a real started server, on its own dedicated database (`PORT`, `DATABASE_URL`, `TENET_RUN_TOKEN` are provided by whatever started the check, Tenet or a plain `npm run e2e`); `playwright.config.ts`'s `webServer` runs `server/test/support/browser-server.ts`: the real source API on an OS-selected loopback port and a freshly built production UI on the allocated public loopback port, using Vite preview to proxy `/api`. Every invocation builds the current source into a new owned directory beside its dedicated database; it does not reuse workspace output. Its synthetic identity is test-only, and the health token passes through the proxy. Cache, reports and database belong to the check run.
+- `server/test/e2e/` holds end-to-end specs run by Playwright against a real started server, on its own dedicated database (`PORT`, `DATABASE_URL`, `TENET_RUN_TOKEN` are provided by whatever started the check, Tenet Copilot or a plain `npm run e2e`); `playwright.config.ts`'s `webServer` runs `server/test/support/browser-server.ts`: the real source API on an OS-selected loopback port and a freshly built production UI on the allocated public loopback port, using Vite preview to proxy `/api`. Every invocation builds the current source into a new owned directory beside its dedicated database; it does not reuse workspace output. Its synthetic identity is test-only, and the health token passes through the proxy. Cache, reports and database belong to the check run.
 
 The boundaries are lint rules (`eslint.config.js`), each with a failing fixture in `server/test/boundaries.test.ts`. A file splits out when there is a reason (reusable validation, nontrivial domain logic, complex SQL, authorization, an independent change boundary), not by habit.
 
@@ -15,9 +15,26 @@ The boundaries are lint rules (`eslint.config.js`), each with a failing fixture 
 
 Integration references: [Fastify Swagger route discovery](https://github.com/fastify/fastify-swagger#usage) and [Zod provider transforms](https://github.com/turkerdev/fastify-type-provider-zod#how-to-use-together-with-fastifyswagger).
 
+## Current permission inventory
+
+The neutral template has no application feature routes yet. Every new feature
+adds its endpoint/object rows before authorization is treated as complete.
+
+| Endpoint | Actor | Protected object / operation | Enforcement |
+|---|---|---|---|
+| `GET /api/health` | anonymous | operational health only; run token is returned only to the test process that configured it | No session; not an application-data operation |
+| `GET /api/auth/csrf` | anonymous | pre-session CSRF cookie and token | Admission limit; no user/session access |
+| `POST /api/auth/sign-in` | anonymous | credential verification; creates a session for the submitted account | Pre-session CSRF, exact schema, IP/account/password admission, server-side password verification |
+| `GET /api/auth/me` | authenticated user | that user's own account and live session | Current signed session and user row; read-only |
+| `POST /api/auth/sign-out` | authenticated user | that user's own session | Session-bound CSRF; repository deletes the current session row |
+| `POST /api/auth/password` | authenticated user | that user's own password; all of that user's sessions | Session-bound CSRF, current-password verification, common-password policy, server-side transaction, session rotation |
+
+Authorization is backend-only. The UI may hide an action, but every route
+still checks the actor and request-specific capability on the server.
+
 Migration startup and restore share the same read-only checksum/prefix admission. New migration files must follow applied versions; inserting an earlier file is refused before backup or SQL application. Restore additionally checks foreign keys and refuses user tables with no recorded history. Validation runs before the initial move and again on the copied install, including recovery. The frozen schema-1 fixture in the loan golden task tests a populated prior application's actual upgrade, automatic backup, auth, restore and re-upgrade without building the old database through current migration/seed helpers.
 
 - `platform/admission.ts` charges independent coarse/anonymous/user/password counters. It performs bounded read-only identity lookup, never populating `req.actor`; `app.ts` re-reads current session/user authority inside maintenance. `platform/rate-metadata.ts` seals the actual served rate metadata against grouping; its ready diagnostic is deliberately weaker than the request boundary. No actor/session data is cached between requests.
-- The isolated admission browser case forks the same source fixture with its own database, run token and OS-selected loopback port, verifies that identity and cleans it up. The primary E2E server still uses Tenet's allocated port/token. A narrow IPC ready message supports owned test startup; no HTTP reset/admin endpoint or rate exemption is added.
+- The isolated admission browser case forks the same source fixture with its own database, run token and OS-selected loopback port, verifies that identity and cleans it up. The primary E2E server still uses Tenet Copilot's allocated port/token. A narrow IPC ready message supports owned test startup; no HTTP reset/admin endpoint or rate exemption is added.
 
 For authenticated feature mutations, call `refreshActor(db, actor, clock())` from `platform/session/session.ts` inside the immediate `writeTx` callback, before authorization or writes. Admission and `req.actor` are earlier snapshots: every busy retry must read current session expiry/revocation and user role. Pass the application clock through to the service; keep request timestamps separate from authorization time. The helper accepts only an earlier trusted actor, never client-supplied identity.

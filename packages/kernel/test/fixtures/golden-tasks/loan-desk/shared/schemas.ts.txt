@@ -3,7 +3,22 @@
 import { z } from "zod";
 
 export const Email = z.string().trim().toLowerCase().email().max(254);
-export const Password = z.string().min(12).max(256);
+const blockedPasswords = new Set([
+  "123456789012",
+  "letmein123456",
+  "password1234",
+  "password12345",
+  "password123456",
+  "password123!",
+  "password1234!",
+  "p@ssword1234",
+  "p@ssw0rd123!",
+  "qwerty123456",
+]);
+export const Password = z.string().min(12).max(256).refine(
+  (password) => !blockedPasswords.has(password.toLowerCase()),
+  "Choose a password that is not a common password.",
+);
 
 export const SignInRequest = z.object({ email: Email, password: z.string().min(1).max(256) });
 export const ChangePasswordRequest = z.object({ currentPassword: z.string().min(1).max(256), newPassword: Password });
