@@ -144,8 +144,14 @@ function receiptFor(o: RunFacts, norm: Normalized | null, ob: Obligation, i: num
   }
   const early = runProblem(o, c);
   if (early) return stop(early);
-  if (!norm) return stop(o.raw === null ? "report-missing" : "report-invalid");
-  if (norm.invalid) return stop("report-invalid");
+  if (!norm) {
+    rec.limitations.push(o.raw === null ? "report unavailable" : "report unreadable");
+    return stop(o.raw === null ? "report-missing" : "report-invalid");
+  }
+  if (norm.invalid) {
+    rec.limitations.push(norm.invalid);
+    return stop("report-invalid");
+  }
   if ([...norm.files].some(([path, file]) => sensitiveNames([path, ...file.tests, ...file.failures.map(f => f.test)]))) {
     rec.limitations.push("report identifiers contain likely secret material; use placeholders");
     return stop("report-invalid");
