@@ -1065,7 +1065,7 @@ Limits are checked by the coordinator through a helper counter before each new a
 | Coordinator agent instructions, present on every request of a Tenet Copilot session | ≤ 1,000 tokens | Deterministic (Tenet Copilot CI lint) | Provisional |
 | Single skill loaded on demand | ≤ 5,000 tokens | Deterministic (Tenet Copilot CI lint) | Provisional |
 | Peak Tenet-injected context per assignment (excludes code read by tools) | ≤ 20,000 tokens | Observed (qualification measurement) | Provisional |
-| Kernel bookkeeping call latency (all calls except check execution) | p95 ≤ 300 ms warm, ≤ 1 s cold; 5 s timeout with a defined outcome | Observed; timeout deterministic | Provisional |
+| Kernel bookkeeping call latency (all calls except check execution) | p95 ≤ 750 ms warm, ≤ 1 s cold; 5 s timeout with a defined outcome | Observed; timeout deterministic | Provisional |
 | Check execution | Bounded by each check obligation's declared timeout (recipe default 10 min); expiry yields inconclusive | Deterministic | Provisional |
 | Repository map for ≤ 10,000 tracked files | ≤ 30 s without reading all file contents; incremental refresh | Observed | Provisional |
 | `.tenet/` storage, including archives and artifacts | ≤ 50 MB, managed by Section 5.15 | Boundary-checked | Provisional |
