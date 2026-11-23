@@ -66,4 +66,4 @@ The kernel validates all input with size and depth limits; uses no `eval`, `Func
 
 The [release verification procedure](../docs/release/release-verification.md) describes the pinned build inputs, double-build comparison, signed-tag gate, provenance attestation and installed version/source checks. Workflow code exists; no public release has run through the chain. Branch protection, signing identity and the protected release environment remain owner actions. Until publication and verification, a downloaded copy is not authenticated by this policy.
 
-While there is one maintainer, a change to hooks, helpers, permissions, destinations or evaluators waits a public 72-hour review window on an open pull request, and release notes will say that no second maintainer reviewed it.
+While there is one maintainer, a change to hooks, helpers, permissions, destinations or evaluators is reviewed immediately on the pull request with no calendar waiting period. Release notes say whether a second maintainer or external reviewer reviewed it and otherwise state that none did.

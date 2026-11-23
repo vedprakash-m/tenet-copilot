@@ -146,7 +146,7 @@ Whether a person may be in both cohorts is not settled in the sources; the owner
 >
 > **4b. Signing identity.** I need an identity that can sign a release tag and a provenance attestation. Please say which kinds of identity are available (for example a key held by me or one held by an organization), who controls it, and how it can be revoked. Please do not create or send any key.
 >
-> **4c. External reviewer.** With a single maintainer, a change to executable content is held for a public 72-hour review window on an open pull request, and an external reviewer is asked when one is available. The release notes then say that no second-maintainer review occurred. I am asking whether you could act as that reviewer, in what hours you could respond, and what you would need to see. Review by an automated agent does not count in place of a second maintainer.
+> **4c. External reviewer.** With a single maintainer, a change to executable content is reviewed immediately on an open pull request, and an external reviewer is requested when one is available without imposing a calendar waiting period. The release notes disclose whether a second maintainer or external reviewer reviewed it and otherwise state that none did. I am asking whether you could act as that reviewer, when you could respond, and what you would need to see. Review by an automated agent does not count in place of a second maintainer.
 >
 > **4d. Clean environment for an independent rebuild.** I need a machine or account that has never held the Tenet Copilot working copy, where the source and dependencies can be fetched fresh and built twice to compare the results. Please say what operating system, Node.js versions and network access it offers, and who controls it.
 >
@@ -164,7 +164,7 @@ Whether a person may be in both cohorts is not settled in the sources; the owner
 |---|---|---|
 | 4a | Publisher, namespace and final name (`specs/plan.md` §5 and §6) | Finalized `README.md`, `.github/CONTRIBUTING.md`, `.github/SECURITY.md`, `NOTICE`; publication |
 | 4b | Signing identity | Signed tag and provenance attestation (`specs/plan.md` §6); AC-11 (never waivable) |
-| 4c | External reviewer for the 72-hour window | ENG-11 (PRD section 5.9.2) and the disclosure in release notes |
+| 4c | External reviewer for immediate review | ENG-11 (PRD section 5.9.2) and the disclosure in release notes |
 | 4d | Clean environment | Independent source and dependency rebuild (`specs/plan.md` §6) |
 | 4e | Reserved task storage | The 10 reserved qualification tasks, protected grading and the qualification campaign (`specs/plan.md` §6) |
 

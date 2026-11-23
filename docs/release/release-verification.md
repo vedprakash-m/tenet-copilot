@@ -13,9 +13,9 @@ This describes the approved chain of PRD section 5.9.2 implemented in `.github/w
 | Published artifact | Signed annotated tag (checked through GitHub's recorded verification) and a build-provenance attestation over the packed payload. | `gh attestation verify` in the `publish` job, before a draft release is created. | Unobserved. No signing identity exists (external request 4). |
 | Installed artifact | The manual procedure below. `inspect doctor` does not yet verify the installed payload (TS section 18). | A user runs the steps. | Unobserved. |
 
-Other controls the workflow relies on and does not create: mandatory two-factor authentication for maintainers, a protected `release` environment with required reviewers (release credentials stay in `publish` only), and the solo-maintainer review rule with its 72-hour public window. All are settings or practices outside the repository.
+Other controls the workflow relies on and does not create: mandatory two-factor authentication for maintainers, a protected `release` environment with required reviewers (release credentials stay in `publish` only), and immediate solo-maintainer review with explicit disclosure. All are settings or practices outside the repository.
 
-The PR template requires compatibility classification and disclosure of a solo-maintainer review. Release notes retain that disclosure: a public PR waits at least 72 hours, then the owner may merge; without a second maintainer the notes say no second-maintainer review occurred. `npm run verify:semver` checks strict SemVer and kernel/plugin equality; untrusted CI also refuses regression from the event base. These process controls do not infer whether a particular change deserves a major, minor or patch increment.
+The PR template requires compatibility classification and immediate solo-maintainer review disclosure. Required checks gate the merge; there is no calendar waiting period. Release notes state whether a second maintainer or external reviewer reviewed the change and otherwise state that none did. `npm run verify:semver` checks strict SemVer and kernel/plugin equality; untrusted CI also refuses regression from the event base. These process controls do not infer whether a particular change deserves a major, minor or patch increment.
 
 ## What the workflow checks before it builds
 
@@ -23,7 +23,7 @@ The `gate` job fails the run if any of these is false: the commit is on `main`; 
 
 ## Release notes (LFC-02)
 
-**Location (assumption).** The specs do not say where release notes live. This candidate keeps them in the repository at `docs/release/notes/v<version>.md`, so the review window and the release use the same text, and the draft release takes them as its body. If the owner prefers the GitHub release page as the only location, the file can remain the source and only the final copy moves.
+**Location (assumption).** The specs do not say where release notes live. This candidate keeps them in the repository at `docs/release/notes/v<version>.md`, so the review disclosure and the release use the same text, and the draft release takes them as its body. If the owner prefers the GitHub release page as the only location, the file can remain the source and only the final copy moves.
 
 **Contents.** TS section 18 item 3 names five disclosures and a support matrix: changed permissions, destinations, executables, schemas, evaluated behavior, and the support matrix. PRD LFC-02 also names evaluators, which TS section 18 omits (logged in plan section 12.3). The draft has a section for each of those seven, a repository-facts section, and the solo-maintainer disclosure of PRD section 5.9.2 and ENG-11.
 
