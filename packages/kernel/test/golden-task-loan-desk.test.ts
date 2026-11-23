@@ -73,7 +73,9 @@ describe("golden task: the loan desk feature [QLT-01, QLT-12]", { skip: process.
             const install = spec.argv.join("\0") === "npm\0ci\0--ignore-scripts\0--no-audit";
             const rebuild = spec.argv.join("\0") === "npm\0rebuild\0better-sqlite3";
             if (!install && !rebuild) return original(spec);
-            if (install) cpSync(preparedModules, join(root, "node_modules"), { recursive: true, errorOnExist: true });
+            if (install) {
+              cpSync(preparedModules, join(root, "node_modules"), { recursive: true, errorOnExist: true });
+            } else return original(spec);
             return {
               exit: 0, timedOut: false, durationMs: 0, stdout: "", stderr: "",
               startedAt: "2026-01-01T00:00:00.000Z", report: null,

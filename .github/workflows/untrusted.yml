@@ -80,6 +80,7 @@ jobs:
           mkdir -p "$browser_tools"
           cp plugin/skills/tenet-starter-ts-web-api/template/package.json plugin/skills/tenet-starter-ts-web-api/template/package-lock.json "$browser_tools/"
           npm ci --prefix "$browser_tools" --ignore-scripts --no-audit
+          npm rebuild better-sqlite3 --prefix "$browser_tools"
           node "$browser_tools/node_modules/@playwright/test/cli.js" install --with-deps chromium
       - name: Source tests with structured evidence
         run: TENET_STARTER_NODE_MODULES="$RUNNER_TEMP/tenet-browser-tools/node_modules" node --experimental-strip-types tools/test-runner.ts --lane source --concurrency=2 --shard "${{ matrix.shard.value }}" --report "$RUNNER_TEMP/test-source-${{ matrix.os }}-${{ matrix.shard.id }}.json"
@@ -235,6 +236,7 @@ jobs:
           mkdir -p "$browser_tools"
           cp plugin/skills/tenet-starter-ts-web-api/template/package.json plugin/skills/tenet-starter-ts-web-api/template/package-lock.json "$browser_tools/"
           npm ci --prefix "$browser_tools" --ignore-scripts --no-audit
+          npm rebuild better-sqlite3 --prefix "$browser_tools"
           node "$browser_tools/node_modules/@playwright/test/cli.js" install --with-deps chromium
       - name: Full minimum-Node UAT group
         env:

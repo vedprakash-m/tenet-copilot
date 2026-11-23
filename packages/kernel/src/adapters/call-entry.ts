@@ -2,6 +2,7 @@
 import { watchBoundaryParent } from "./call-boundary.ts";
 
 export async function runCallChild(argv: string[], stdin: NodeJS.ReadableStream, env: NodeJS.ProcessEnv, execArgv: string[]) {
+  await import("../zod-jitless.ts");
   const [{ main }, { VERBS }, { createPorts, dropGitLocalVars, markExternal }] = await Promise.all([
     import("../frontends/cli.ts"), import("../verbs/index.ts"), import("../wire.ts"),
   ]);
