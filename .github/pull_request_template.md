@@ -9,14 +9,12 @@ Disclose baseline failures, missing evidence, reduced review independence and ow
 - [ ] Kernel and plugin SemVer agree; versions never regress.
 - [ ] Release notes disclose changed executables, hooks, helpers, permissions, destinations, schemas, evaluators, behavior, support matrix and migration/reconsent requirements, including explicit "No change" statements where applicable.
 
-## Solo-maintainer review (ENG-07, ENG-11)
+## Maintainer review (ENG-07, ENG-11)
 
-- [ ] Changes to executable content, hooks, helpers, permissions, destinations or evaluators remain on this public PR for a **72-hour review window** before owner merge. Record the opening time and earliest merge time below.
+- [ ] Changes to executable content, hooks, helpers, permissions, destinations or evaluators were reviewed immediately; findings were resolved or explicitly disclosed.
 - [ ] An external reviewer was requested when available. Agent review does not count as second-maintainer review.
-- [ ] Release notes state that **no second-maintainer review occurred**, name any external reviewer, and record the actual public review window. Do not claim a window that has not elapsed.
+- [ ] Release notes state whether a second-maintainer or external review occurred, name the reviewer when one did, and otherwise state that none occurred.
 
-Opened:
-Earliest merge:
 External reviewer or unavailable:
 
-The owner merges; this PR does not authorize publication or bypass release gates.
+There is no calendar waiting period. The owner may merge as soon as required checks pass and the review disclosure is complete; this PR does not authorize publication or bypass release gates.

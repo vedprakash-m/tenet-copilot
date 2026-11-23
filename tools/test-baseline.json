@@ -5415,7 +5415,7 @@
         "count": 1
       },
       {
-        "key": "packages/kernel/test/process-policy.test.ts :: release process :: requires a public solo review window and release-note disclosure [ENG-11]",
+        "key": "packages/kernel/test/process-policy.test.ts :: release process :: requires immediate solo review and release-note disclosure without a calendar wait [ENG-11]",
         "count": 1
       },
       {

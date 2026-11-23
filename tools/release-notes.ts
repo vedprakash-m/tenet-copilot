@@ -108,7 +108,7 @@ export function draft(root: string, base: string | null, version = KERNEL_VERSIO
       hit === null ? "Changed paths: not computed (no base). Describe the whole surface." : hit.length ? `Changed paths:\n${hit.map((p) => `- ${p}`).join("\n")}` : "Changed paths: none in the usual locations.",
       "", `Statement: ${PLACEHOLDER}`);
   });
-  out.push("", `## ${SOLO}`, "", "With one maintainer, state that no second-maintainer review occurred, the 72-hour public window used and any external reviewer (PRD §5.9.2, ENG-11).", "", `Statement: ${PLACEHOLDER}`, "");
+  out.push("", `## ${SOLO}`, "", "With one maintainer, state whether a second maintainer or external reviewer reviewed the change and otherwise state that none did. There is no calendar waiting period (PRD §5.9.2, ENG-11).", "", `Statement: ${PLACEHOLDER}`, "");
   return out.join("\n");
 }
 

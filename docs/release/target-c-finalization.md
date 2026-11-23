@@ -36,7 +36,7 @@ treated as complete by a source pass, local CI run or draft release.
 
 ## Public review and repository settings
 
-- [ ] The publication ref is held on a public PR for the required 72 hours.
+- [ ] The publication ref has an immediate completed review and disclosure with no calendar waiting period.
 - [ ] The PR records opening time, earliest merge time, reviewer availability,
   and any external review; automated review is disclosed as not a second
   maintainer.

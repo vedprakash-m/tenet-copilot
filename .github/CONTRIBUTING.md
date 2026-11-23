@@ -9,7 +9,7 @@ Tenet Copilot records what is true about engineering work, so changes to it are 
 - **Security problems** go to the channel in [SECURITY.md](SECURITY.md), not to a public issue.
 - **Maintainers:** one person holds all maintainer roles today. There is no second maintainer, and independent review of consequential work is done by a fresh-context reviewer agent or by the owner (plan section 4.5).
 
-Changes to executable content, hooks, helpers, permissions, destinations or evaluators must wait a public 72-hour window on an open PR before the owner merges. Request an external reviewer when available. Release notes disclose that no second-maintainer review occurred and record the actual window; an agent pass is not a second maintainer. Use the [PR template](pull_request_template.md) and [release-notes procedure](../docs/release/release-verification.md).
+Changes to executable content, hooks, helpers, permissions, destinations or evaluators are reviewed immediately on the pull request. Request an external reviewer when available, but no calendar waiting period blocks merging. Release notes disclose whether a second maintainer or external reviewer reviewed the change and otherwise state that none did; an agent pass is not a second maintainer. Use the [PR template](pull_request_template.md) and [release-notes procedure](../docs/release/release-verification.md).
 
 ## What the specs are
 

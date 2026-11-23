@@ -32,11 +32,11 @@ describe("release process", () => {
     assert.doesNotMatch(security, /PLACEHOLDER/);
   });
 
-  it("requires a public solo review window and release-note disclosure [ENG-11]", () => {
+  it("requires immediate solo review and release-note disclosure without a calendar wait [ENG-11]", () => {
     const template = read(".github/pull_request_template.md");
-    assert.match(template, /72-hour/);
-    assert.match(template, /no second-maintainer review occurred/);
-    assert.match(read("tools/release-notes.ts"), /72-hour public window/);
+    assert.match(template, /no calendar waiting period/i);
+    assert.match(template, /whether a second-maintainer or external review occurred/i);
+    assert.match(read("tools/release-notes.ts"), /no calendar waiting period/i);
   });
 
   it("keeps current-model claims unevaluated without a dated native run and schedules reminders [ENG-05]", () => {
