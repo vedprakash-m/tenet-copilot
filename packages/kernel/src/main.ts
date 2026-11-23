@@ -1,33 +1,16 @@
 // Process entry: the one place that touches process.argv, stdin, stdout and the exit code.
 import "./zod-jitless.ts";
-import { main } from "./frontends/cli.ts";
 import {
-  callBoundaryChild, callTimeoutResponse, createPorts, dropGitLocalVars, markExternal, runBoundedCall, watchBoundaryParent,
+  callBoundaryChild, callTimeoutResponse, runBoundedCall, runCallChild,
 } from "./wire.ts";
-import { VERBS } from "./verbs/index.ts";
 
 const write = (stream: NodeJS.WritableStream, text: string) =>
   new Promise<void>((resolve) => { stream.write(text, () => resolve()); });
 
 if (callBoundaryChild()) {
-  dropGitLocalVars(process.env);
-  const ports = createPorts(process.cwd());
-  const stopParentWatch = watchBoundaryParent(async () => {
-    const state = ports.store.read()?.state;
-    if (!state) return;
-    for (const work of Object.values(state.work)) {
-      const runDir = work.session.inCall?.runDir;
-      if (runDir) await ports.runner.stopRun(runDir);
-    }
-  });
-  try {
-    ports.callBoundary = { external: markExternal };
-    const { response, code } = await main(process.argv.slice(2), ports, VERBS, process.stdin, process.env, process.execArgv);
-    await write(process.stdout, `${JSON.stringify(response)}\n`);
-    process.exitCode = code;
-  } finally {
-    stopParentWatch();
-  }
+  const { response, code } = await runCallChild(process.argv.slice(2), process.stdin, process.env, process.execArgv);
+  await write(process.stdout, `${JSON.stringify(response)}\n`);
+  process.exitCode = code;
 } else {
   const result = await runBoundedCall({
     script: process.argv[1]!,

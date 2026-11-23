@@ -12,6 +12,8 @@
         "packages/kernel/test/marker-bridge-bundle.test.ts"
       ],
       "serialFiles": [
+        "packages/kernel/test/golden-task-loan-desk.test.ts",
+        "packages/kernel/test/starter.test.ts",
         "packages/kernel/test/store.test.ts",
         "packages/kernel/test/sealed-baseline.test.ts"
       ],
