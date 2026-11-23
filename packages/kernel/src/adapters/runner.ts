@@ -247,8 +247,7 @@ function reportFrom(path: string, runDir: string, started: number): string | nul
     if (!file.startsWith(root + sep)) return null;
     fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
     const st = fstatSync(fd);
-    const startedSecond = Math.floor(started / 1000) * 1000;
-    if (!st.isFile() || st.size > MAX_OUTPUT || st.mtimeMs < startedSecond) return null;
+    if (!st.isFile() || st.size > MAX_OUTPUT || st.mtimeMs + 999 < started) return null;
     const buf = Buffer.alloc(st.size + 1);
     let count = 0;
     while (count < buf.length) {
