@@ -10345,7 +10345,7 @@
         "count": 1
       },
       {
-        "key": "packages/kernel/test/invariants.test.ts :: the shipped bundle (INS-07: no runtime beyond Node) :: is one self-contained file within its size budget, and runs with nothing but Node [INS-07]",
+        "key": "packages/kernel/test/invariants.test.ts :: the shipped bundle (INS-07: no runtime beyond Node) :: uses self-contained files within their combined size budget, and runs with nothing but Node [INS-07]",
         "count": 1
       },
       {

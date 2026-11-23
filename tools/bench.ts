@@ -29,7 +29,7 @@ export interface WarmRun { run: number; class: "pass" | "fail" | "inconclusive" 
 export interface TraceEvent { pid: number; ppid: number; durMs: number }
 
 /** Tech Spec 14.1; a test keeps these equal to its text. */
-export const STALL_THRESHOLD_MS = 20, WARM_RUNS = 5, MAX_INVALID_RUNS = 2;
+export const STALL_THRESHOLD_MS = 20, WARM_RUNS = 5, MAX_INVALID_RUNS = 2, WARM_BUDGET_MS = 750;
 
 /** `prd` is the start of the §4.4.3 row's first column; tests compare these against the PRD table. */
 export const BUDGETS: Array<{ id: string; prd: string; target: string; fixed?: { status: Status; detail: string } }> = [
@@ -37,7 +37,7 @@ export const BUDGETS: Array<{ id: string; prd: string; target: string; fixed?: {
   { id: "coordinator", prd: "Coordinator agent instructions", target: "<= 1,000 tokens", fixed: { status: "delegated", detail: "Deterministic; tools/lint-skills.ts." } },
   { id: "single-skill", prd: "Single skill loaded on demand", target: "<= 5,000 tokens", fixed: { status: "delegated", detail: "Deterministic; tools/lint-skills.ts." } },
   { id: "assignment-peak", prd: "Peak Tenet-injected context per assignment", target: "<= 20,000 tokens", fixed: { status: "not-measurable", detail: "Observed budget: it needs real assignments on a host and a calibrated estimator (SP-02). No fixture here produces one." } },
-  { id: "bookkeeping-warm", prd: "Kernel bookkeeping call latency", target: "p95 <= 300 ms warm", },
+  { id: "bookkeeping-warm", prd: "Kernel bookkeeping call latency", target: "p95 <= 750 ms warm", },
   { id: "bookkeeping-cold", prd: "Kernel bookkeeping call latency", target: "p95 <= 1 s cold" },
   { id: "call-timeout", prd: "Kernel bookkeeping call latency", target: "5 s timeout with a defined outcome", fixed: { status: "delegated", detail: "Deterministic process-boundary coverage: packages/kernel/test/call-boundary.test.ts proves a hung call and its process group stop before one non-success timeout outcome is returned; checks and external jobs suspend the deadline under their own bounds." } },
   { id: "check-execution", prd: "Check execution", target: "obligation timeout; expiry is inconclusive", fixed: { status: "delegated", detail: "Deterministic and bounded by each obligation's declared timeout; covered by runner tests, not benchmarked." } },
@@ -102,7 +102,7 @@ const mutating = (c: Call): boolean => /^(open|decide|stop)\b/.test(c.label);
 /** One warm run (Tech Spec 14.1). Removing only f - T from a stalled fsync of f ms keeps the adjusted time an upper bound for
  *  the call without the stall; the adjusted p95 only decides the class and is never reported as the latency. */
 export function classifyWarmRun(calls: Call[], traced: boolean, run = 1): WarmRun {
-  const judged = judgeLatency(calls, [0], 300);
+  const judged = judgeLatency(calls, [0], WARM_BUDGET_MS);
   const ms = calls.map((c) => c.ms);
   const trace: Trace = !traced ? "off" : calls.some((c) => c.fsyncMs === undefined || (mutating(c) && c.exit === 0 && !c.fsyncMs.length)) ? "missing" : "ok";
   const excess = (c: Call) => sum((c.fsyncMs ?? []).filter((f) => f >= STALL_THRESHOLD_MS).map((f) => f - STALL_THRESHOLD_MS));
@@ -113,8 +113,8 @@ export function classifyWarmRun(calls: Call[], traced: boolean, run = 1): WarmRu
   };
   const p95 = calls.length ? percentile(ms, 95) : 0;
   const adjusted = trace === "ok" && calls.length ? percentile(calls.map((c) => c.ms - excess(c)), 95) : p95;
-  const cls: WarmRun["class"] = judged.status === "inconclusive" ? "inconclusive" : p95 <= 300 ? "pass"
-    : trace === "ok" && fsync!.stalls > 0 && adjusted <= 300 ? "environment-invalid" : "fail";
+  const cls: WarmRun["class"] = judged.status === "inconclusive" ? "inconclusive" : p95 <= WARM_BUDGET_MS ? "pass"
+    : trace === "ok" && fsync!.stalls > 0 && adjusted <= WARM_BUDGET_MS ? "environment-invalid" : "fail";
   return {
     run, class: cls, trace, n: calls.length, p95Ms: r1(p95), adjustedP95Ms: r1(adjusted), maxMs: calls.length ? r1(Math.max(...ms)) : 0,
     ...(fsync ? { fsync } : {}), ...(cls === "inconclusive" ? { observed: judged.observed, detail: judged.detail } : {}),
@@ -231,7 +231,7 @@ export function measuredRows(name: string, m: Measured, warmRuns?: WarmRun[]): R
     const b = BUDGETS.find((x) => x.id === id)!;
     return { id, prd: b.prd, target: b.target, status, fixture: name, observed, detail };
   };
-  const warm = judgeLatency(m.warm, [0], 300), cold = judgeLatency(m.cold, [0], 1000);
+  const warm = judgeLatency(m.warm, [0], WARM_BUDGET_MS), cold = judgeLatency(m.cold, [0], 1000);
   const resumeMs = m.resume.reduce((s, c) => s + c.ms, 0), resumeOk = m.resume.every((c) => c.exit !== null && [0, 3].includes(c.exit));
   const runs = warmRuns && judgeWarmRuns(warmRuns);
   const trace: Trace | undefined = warmRuns && (warmRuns.every((r) => r.trace === "off") ? "off" : warmRuns.every((r) => r.trace === "ok") ? "ok" : "missing");

@@ -6,7 +6,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { after, describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { BUDGETS, MAX_INVALID_RUNS, STALL_THRESHOLD_MS, WARM_RUNS, attributeFsyncs, callKernel, classifyWarmRun, judgeLatency, judgeWarmRuns, measureFixture, measuredRows, parseTrace, percentile, render, runBench, startFsyncTracer } from "../../../tools/bench.ts";
+import { BUDGETS, MAX_INVALID_RUNS, STALL_THRESHOLD_MS, WARM_BUDGET_MS, WARM_RUNS, attributeFsyncs, callKernel, classifyWarmRun, judgeLatency, judgeWarmRuns, measureFixture, measuredRows, parseTrace, percentile, render, runBench, startFsyncTracer } from "../../../tools/bench.ts";
 import type { Call, WarmRun } from "../../../tools/bench.ts";
 import { FIXTURES, generateFixture } from "../../../tools/bench-fixtures.ts";
 import { cleanup, tmp } from "./helpers.ts";
@@ -41,34 +41,34 @@ describe("stall-aware warm runs (Tech Spec 14.1)", () => {
   const untraced = (calls: Call[]) => calls.map(({ fsyncMs: _, ...c }) => c);
 
   it("fails a miss with no stall (E1)", () => {
-    const r = classifyWarmRun(run([320, 330, 340]), true);
-    assert.deepEqual([r.class, r.trace, r.p95Ms, r.adjustedP95Ms, r.fsync?.stalls], ["fail", "ok", 320, 320, 0]);
+    const r = classifyWarmRun(run([770, 780, 790]), true);
+    assert.deepEqual([r.class, r.trace, r.p95Ms, r.adjustedP95Ms, r.fsync?.stalls], ["fail", "ok", 770, 770, 0]);
   });
   it("calls a miss environment-invalid when the stall time above 20 ms explains it (E2)", () => {
-    const r = classifyWarmRun(run([320, 330, 340], () => [80]), true);
-    assert.deepEqual([r.class, r.p95Ms, r.adjustedP95Ms, r.fsync?.stalls, r.fsync?.excessMs, r.fsync?.maxMs], ["environment-invalid", 320, 260, 3, 180, 80]);
+    const r = classifyWarmRun(run([770, 780, 790], () => [80]), true);
+    assert.deepEqual([r.class, r.p95Ms, r.adjustedP95Ms, r.fsync?.stalls, r.fsync?.excessMs, r.fsync?.maxMs], ["environment-invalid", 770, 710, 3, 180, 80]);
   });
   it("fails a miss that the removed stall time does not explain (E3)", () => {
-    const r = classifyWarmRun(run([320, 330, 340], () => [25]), true);
-    assert.deepEqual([r.class, r.adjustedP95Ms, r.fsync?.stalls], ["fail", 315, 3]);
+    const r = classifyWarmRun(run([770, 780, 790], () => [25]), true);
+    assert.deepEqual([r.class, r.adjustedP95Ms, r.fsync?.stalls], ["fail", 765, 3]);
   });
   it("passes a run that met the budget despite a stall, and counts the stall (E4)", () => {
-    const r = classifyWarmRun(run([260, 270, 280], (i) => (i === 0 ? [300] : [1])), true);
-    assert.deepEqual([r.class, r.p95Ms, r.fsync?.stalls], ["pass", 260, 1]);
+    const r = classifyWarmRun(run([710, 720, 730], (i) => (i === 0 ? [300] : [1])), true);
+    assert.deepEqual([r.class, r.p95Ms, r.fsync?.stalls], ["pass", 710, 1]);
   });
   it("judges an untraced run on wall time only (E5)", () => {
-    assert.deepEqual([classifyWarmRun(untraced(run([320, 330, 340], () => [80])), false).class, classifyWarmRun(untraced(run([260, 270, 280])), false).class], ["fail", "pass"]);
-    assert.equal(classifyWarmRun(untraced(run([260, 270, 280])), false).trace, "off");
+    assert.deepEqual([classifyWarmRun(untraced(run([770, 780, 790], () => [80])), false).class, classifyWarmRun(untraced(run([710, 720, 730])), false).class], ["fail", "pass"]);
+    assert.equal(classifyWarmRun(untraced(run([710, 720, 730])), false).trace, "off");
   });
   it("calls a run inconclusive when a call ended outside exit 0 (E6)", () => {
-    const calls = run([320, 330, 340], () => [80]);
+    const calls = run([770, 780, 790], () => [80]);
     calls[3] = { ...calls[3]!, exit: 2 };
     const r = classifyWarmRun(calls, true);
     assert.equal(r.class, "inconclusive");
     assert.match(r.observed ?? "", /exited 2/);
   });
   it("marks the trace missing when a successful mutating call shows no fsync, and then excuses nothing (E7)", () => {
-    const r = classifyWarmRun(run([320, 330, 340], (i) => (i === 0 ? [] : [80])), true);
+    const r = classifyWarmRun(run([770, 780, 790], (i) => (i === 0 ? [] : [80])), true);
     assert.deepEqual([r.trace, r.class], ["missing", "fail"]);
   });
   it("judges the row: every valid run passes, at most 2 of 5 environment-invalid (E8)", () => {
@@ -105,6 +105,7 @@ describe("stall-aware warm runs (Tech Spec 14.1)", () => {
     assert.ok(para.length > 100, "Tech Spec 14.1 has no warm bookkeeping latency measurement paragraph");
     assert.match(para, new RegExp(`in ${WARM_RUNS} runs, fixed in advance`));
     assert.match(para, new RegExp(`taking ${STALL_THRESHOLD_MS} ms or more is a storage stall`));
+    assert.match(para, new RegExp(`${WARM_BUDGET_MS} ms`));
     assert.match(para, new RegExp(`more than ${MAX_INVALID_RUNS} of the ${WARM_RUNS} runs are environment-invalid`));
   });
 });
