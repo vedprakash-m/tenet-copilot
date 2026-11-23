@@ -19,6 +19,7 @@ import { githubActionsPosixMetadata } from "./adapters/installed-metadata.ts";
 export {
   callBoundaryChild, callTimeoutResponse, markExternal, runBoundedCall, watchBoundaryParent,
 } from "./adapters/call-boundary.ts";
+export { runCallChild } from "./adapters/call-entry.ts";
 
 /** The workspace is the Git top level when there is one, so every subfolder shares one `.tenet/`. */
 function workspaceRoot(cwd: string): string {
