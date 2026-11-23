@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import { syncBuiltinESMExports } from 'node:module';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { runBoundaryChild } from './boundary-child.mjs';
 const child = process.env.TENET_CALL_BOUNDARY_CHILD === '1';
 if (child) {
  const bundle = process.env.TENET_UAT_CRASH_BUNDLE;
@@ -52,8 +53,7 @@ if (child) {
  await import(pathToFileURL(bundle).href);
 } else {
  const [bundle, point, ...args] = process.argv.slice(2);
- process.env.TENET_UAT_CRASH_BUNDLE = bundle;
- process.env.TENET_UAT_CRASH_POINT = point;
- process.argv = [process.execPath, fileURLToPath(import.meta.url), ...args];
- await import(pathToFileURL(bundle).href);
+ await runBoundaryChild(fileURLToPath(import.meta.url), args, {
+  ...process.env, TENET_UAT_CRASH_BUNDLE: bundle, TENET_UAT_CRASH_POINT: point,
+ });
 }

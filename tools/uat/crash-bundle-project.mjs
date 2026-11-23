@@ -6,14 +6,15 @@ import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { runBoundaryChild } from './boundary-child.mjs';
 const child = process.env.TENET_CALL_BOUNDARY_CHILD === '1';
 const wrapper = fileURLToPath(import.meta.url);
 const configPath = join(tmpdir(), `tenet-crash-project-${createHash('sha256').update(process.cwd()).digest('hex').slice(0, 16)}.json`);
 if (!child) {
  const [bundle, point, outside, ...args] = process.argv.slice(2);
  fs.writeFileSync(configPath, JSON.stringify({ bundle, point, outside }), { mode: 0o600 });
- process.argv = [process.execPath, wrapper, ...args];
- try { await import(pathToFileURL(bundle).href); } finally { fs.rmSync(configPath, { force: true }); }
+ try { await runBoundaryChild(wrapper, args, process.env); }
+ finally { fs.rmSync(configPath, { force: true }); }
 } else {
 const { bundle, point, outside } = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 const args = process.argv.slice(2);

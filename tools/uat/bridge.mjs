@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { existsSync, lstatSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 const terminal = JSON.stringify({
@@ -13,7 +13,7 @@ const snapshot = dir => ({
   return [name, lstatSync(path).mode & 0o777, readFileSync(path).toString('hex')];
  }),
 });
-export function bridgeUat({ create, call, bundle, source, env, observations }) {
+export async function bridgeUat({ create, call, bundle, source, env, observations }) {
  const root = create(), dir = join(root, '.tenet');
  const h = call(root, 'open', { profile: 'plan', request: 'inspect schema-1 bridge' }).handle;
  assert.equal(typeof h, 'string');
@@ -57,9 +57,16 @@ export function bridgeUat({ create, call, bundle, source, env, observations }) {
   const scratch = create(), owned = join(scratch, '.tenet');
   const handle = call(scratch, 'open', { profile: 'plan', request: 'bridge interruption' }).handle;
   const input = { ...config, h: handle };
-  const killed = spawnSync(process.execPath, [join(source, 'tools/uat/crash-bundle-bridge.mjs'), bundle, point, 'decide'],
-   { cwd: scratch, env, input: JSON.stringify(input), encoding: 'utf8', timeout: 15_000 });
-  assert.equal(killed.status, 5, `${point}: signal=${killed.signal ?? 'null'} status=${killed.status ?? 'null'} ${killed.stderr}${killed.stdout}`);
+  const child = spawn(process.execPath, [join(source, 'tools/uat/crash-bundle-bridge.mjs'), 'decide'], {
+   cwd: scratch, stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+   env: { ...env, TENET_CALL_BOUNDARY_CHILD: '1', TENET_UAT_BRIDGE_BUNDLE: bundle, TENET_UAT_BRIDGE_CRASH_POINT: point },
+  });
+  let stdout = '', stderr = '';
+  child.stdout.on('data', chunk => { stdout += chunk; });
+  child.stderr.on('data', chunk => { stderr += chunk; });
+  child.stdin.end(JSON.stringify(input));
+  const killed = await new Promise(resolve => child.on('close', (status, signal) => resolve({ status, signal })));
+  assert.equal(killed.signal, 'SIGKILL', `${point}: signal=${killed.signal ?? 'null'} status=${killed.status ?? 'null'} ${stderr}${stdout}`);
   const protectedBefore = snapshot(owned);
   for (let restart = 0; restart < 2; restart++) {
    const result = call(scratch, 'decide', input);

@@ -61,18 +61,22 @@ describe("release process", () => {
     assert.ok(commands.includes("npm run uat"));
   });
 
-  it("gates actual frozen fixtures and starter peak RSS without ignoring failures", () => {
+  it("gates reference fixtures and starter peak RSS while keeping Linux tracing diagnostic", () => {
     const text = read(".github/workflows/system-budgets.yml");
     const workflow = parse(text);
     const commands = Object.values<{ steps: { run?: string }[] }>(workflow.jobs).flatMap(job => job.steps.map(step => step.run));
     assert.deepEqual(workflow.jobs["system-budgets"].needs, ["skill-experiment", "frozen-fixtures", "starter-memory"]);
     assert.equal(workflow.jobs["system-budgets"].name, "System budgets");
     assert.deepEqual(workflow.jobs["frozen-fixtures"].strategy.matrix.fixture, ["small", "large", "long-history"]);
-    assert.ok(commands.includes('node tools/bench.ts --fixture "${{ matrix.fixture }}" --json --fsync-trace > "system-budgets-${{ matrix.fixture }}.json"'));
+    assert.equal(workflow.jobs["frozen-fixtures"]["runs-on"], "macos-26");
+    assert.ok(commands.includes('node tools/bench.ts --fixture "${{ matrix.fixture }}" --json > "system-budgets-${{ matrix.fixture }}.json"'));
+    assert.equal(workflow.jobs["frozen-fixtures"]["continue-on-error"], undefined);
+    assert.equal(workflow.jobs["linux-fsync-diagnostics"].if, "github.event_name == 'workflow_dispatch'");
+    assert.equal(workflow.jobs["linux-fsync-diagnostics"]["continue-on-error"], true);
+    assert.ok(commands.includes('node tools/bench.ts --fixture "${{ matrix.fixture }}" --json --fsync-trace > "linux-fsync-${{ matrix.fixture }}.json"'));
     assert.ok(commands.includes('node --test --test-name-pattern "fsync tracing" packages/kernel/test/bench.test.ts'));
     assert.match(text, /TENET_FSYNC_TRACE_REQUIRED: "1"/);
     assert.ok(commands.includes('node tools/starter-memory.ts "$RUNNER_TEMP/tenet-memory" > starter-memory.json'));
-    assert.doesNotMatch(text, /continue-on-error|\|\| true/);
     assert.match(read("specs/PRD.md"), /400 MB server peak RSS/);
   });
 });

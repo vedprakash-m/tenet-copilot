@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { cpus, loadavg, release, tmpdir, totalmem } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -44,8 +44,13 @@ export function runComparison(output: string, roots: Record<Arm, string>): 0 | 1
   const arms = (["baseline", "candidate"] as const).map(arm => {
     if (git(roots[arm], ["rev-parse", "HEAD"]) !== COMMITS[arm]) throw new Error(`${arm} source commit is not the frozen identity`);
     git(roots[arm], ["diff", "--exit-code", "HEAD", "--"]);
-    const bundle = join(output, `${arm}.mjs`);
-    copyFileSync(join(roots[arm], "plugin", "kernel", "tenet.mjs"), bundle);
+    const armDir = join(output, arm);
+    mkdirSync(armDir);
+    const bundle = join(armDir, "tenet.mjs");
+    const source = join(roots[arm], "plugin", "kernel");
+    copyFileSync(join(source, "tenet.mjs"), bundle);
+    if (existsSync(join(source, "tenet-runtime.mjs")))
+      copyFileSync(join(source, "tenet-runtime.mjs"), join(armDir, "tenet-runtime.mjs"));
     const sha256 = hash(bundle);
     if (arm === "candidate" && sha256 !== "5376599c1e59b6e5095a769e51b92e3a5670dcf414a4e5d37e6e3b8e6526ace9")
       throw new Error("Candidate bundle differs from the retained failing/passing measurements");

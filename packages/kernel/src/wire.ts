@@ -42,7 +42,7 @@ export function createPorts(cwd: string, env: Record<string, string | undefined>
   const rollbackBridgeDigest = env.TENET_ROLLBACK_BRIDGE_DIGEST;
   const rollbackBridgeInvalid = !!rollbackBridgeDigest && (
     !/^[a-f0-9]{64}$/.test(rollbackBridgeDigest) ||
-    sha256(readFileSync(fileURLToPath(import.meta.url))) !== rollbackBridgeDigest
+    sha256(readFileSync(env.TENET_CALL_BOUNDARY_ARTIFACT ?? fileURLToPath(import.meta.url))) !== rollbackBridgeDigest
   );
   const store = new FsStore(root, systemClock, systemRandom, {
     migrationGuard: createMigrationGuard(

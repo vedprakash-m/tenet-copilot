@@ -256,7 +256,7 @@ const environment = (bundle: string): Record<string, unknown> => ({
   os: `${osPlatform()} ${release()}`, arch: process.arch, cpu: cpus()[0]?.model ?? "unknown", cores: cpus().length, memoryMB: Math.round(totalmem() / MB),
   node: process.version, git: execFileSync("git", ["--version"], { encoding: "utf8" }).trim(),
   bundle: bundleInfo(bundle),
-  referenceHardware: "not defined (PRD 4.4.3 names none); results are for this machine only",
+  referenceHardware: "macos-26 arm64 (PRD 4.4.3); other hosts are diagnostic only",
 });
 
 /** Every fixture is measured `runs` times (Tech Spec 14.1), each on a freshly generated fixture; only the warm row uses

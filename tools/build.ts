@@ -2,6 +2,7 @@
 // and the reviewer read, and enforce the size budget. The bundle has no runtime dependencies besides Node.
 import { execFileSync } from "node:child_process";
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
@@ -12,7 +13,10 @@ import { ReviewResult } from "../packages/kernel/src/core/schemas.ts";
 import { payloadChecksums, payloadFiles, payloadInventory } from "./payload.ts";
 
 const BUDGET_BYTES = 900 * 1024; // Owner D01/D01b, 2026-11-07; binary units (TS §3.2).
-export const GENERATED = ["LICENSE", "NOTICE", "kernel/tenet.mjs", "schemas/review-result.schema.json", "schemas/tenet.policy.schema.json"];
+export const GENERATED = [
+  "LICENSE", "NOTICE", "kernel/tenet.mjs", "kernel/tenet-runtime.mjs",
+  "schemas/review-result.schema.json", "schemas/tenet.policy.schema.json",
+];
 
 /** Zod re-exports every message locale as a namespace that esbuild cannot drop, about 250 KB the kernel never uses; the
  *  English messages Zod configures by default are imported directly and stay. A smaller bundle loads faster (NFR-01). */
@@ -22,6 +26,14 @@ const withoutZodLocales: Plugin = {
     b.onResolve({ filter: /^\.\.\/locales\/index\.js$/ }, (a) =>
       /[\\/]node_modules[\\/]zod[\\/]/.test(a.importer) ? { path: "zod-locales", namespace: "empty" } : undefined);
     b.onLoad({ filter: /.*/, namespace: "empty" }, () => ({ contents: "export {};" }));
+  },
+};
+
+const externalRuntime: Plugin = {
+  name: "external-runtime",
+  setup(b) {
+    b.onResolve({ filter: /^\.\/call-runtime\.ts$/ }, (a) =>
+      /[\\/]call-entry\.ts$/.test(a.importer) ? { path: "./tenet-runtime.mjs", external: true } : undefined);
   },
 };
 
@@ -54,19 +66,29 @@ export async function buildPayload(root: string, output = join(root, "plugin"), 
   if (typecheck) execFileSync(process.execPath, [join(root, "node_modules/typescript/bin/tsc"), "--noEmit"], { cwd: root, stdio: "inherit" });
 
   const bundle = join(output, "kernel/tenet.mjs");
+  const runtime = join(output, "kernel/tenet-runtime.mjs");
   mkdirSync(dirname(bundle), { recursive: true });
   for (const name of ["LICENSE", "NOTICE"]) copyFileSync(join(root, name), join(output, name));
   await build({
+    entryPoints: [join(root, "packages/kernel/src/adapters/runtime-entry.ts")], outfile: runtime, bundle: true, platform: "node",
+    format: "esm", target: "node22", minify: true, legalComments: "none", banner: { js: "#!/usr/bin/env node" },
+    logLevel: "warning", plugins: [withoutZodLocales],
+  });
+  const runtimeSha256 = createHash("sha256").update(readFileSync(runtime)).digest("hex");
+  await build({
     entryPoints: [join(root, "packages/kernel/src/main.ts")], outfile: bundle, bundle: true, platform: "node", format: "esm", target: "node22",
-    minify: true, legalComments: "none", banner: { js: "#!/usr/bin/env node" }, logLevel: "warning", plugins: [withoutZodLocales],
+    minify: true, legalComments: "none", banner: { js: "#!/usr/bin/env node" }, logLevel: "warning",
+    define: { TENET_RUNTIME_SHA256: JSON.stringify(runtimeSha256) }, plugins: [externalRuntime],
   });
 
   mkdirSync(join(output, "schemas"), { recursive: true });
   writeFileSync(join(output, "schemas/review-result.schema.json"), `${JSON.stringify(z.toJSONSchema(ReviewResult), null, 2)}\n`);
   writeFileSync(join(output, "schemas/tenet.policy.schema.json"), `${JSON.stringify(z.toJSONSchema(Policy), null, 2)}\n`);
-  const size = statSync(bundle).size;
-  console.log(`build: plugin/kernel/tenet.mjs ${(size / 1024).toFixed(0)} KB (budget ${BUDGET_BYTES / 1024} KB)`);
-  if (size > BUDGET_BYTES) throw new Error("build: bundle exceeds its size budget");
+  const sizes = { launcher: statSync(bundle).size, runtime: statSync(runtime).size };
+  const size = sizes.launcher + sizes.runtime;
+  console.log(`build: plugin/kernel/tenet.mjs ${(sizes.launcher / 1024).toFixed(0)} KB + runtime ${(sizes.runtime / 1024).toFixed(0)} KB (combined budget ${BUDGET_BYTES / 1024} KB)`);
+  if (size > BUDGET_BYTES)
+    throw new Error("build: kernel bundles exceed their size budgets");
   const sums = payloadChecksums(output, inventory);
   writeFileSync(sumsPath, sums);
   console.log(`build: ${inventory.length} payload files recorded in SHA256SUMS`);
