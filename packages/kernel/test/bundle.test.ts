@@ -18,11 +18,12 @@ describe("built payload-only rules [SEC-03, SEC-07]", () => {
     assert.ok(statSync(join(ROOT, "plugin/kernel/tenet.mjs")).size <= 20 * 1024);
   });
 
-  it("refuses to run the private runtime without the public call boundary [NFR-01]", () => {
+  it("does not expose the private runtime as an executable entrypoint [NFR-01]", () => {
     const result = spawnSync(process.execPath, [
       join(ROOT, "plugin/kernel/tenet-runtime.mjs"), "inspect", "help",
     ], { encoding: "utf8" });
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /launcher-created IPC boundary/);
+    assert.equal(result.status, 0);
+    assert.equal(result.stdout, "");
+    assert.equal(result.stderr, "");
   });
 });

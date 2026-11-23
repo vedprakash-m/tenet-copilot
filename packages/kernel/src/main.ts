@@ -28,7 +28,7 @@ if (callBoundaryChild()) {
   process.exitCode = code;
 } else {
   const result = await runBoundedCall({
-    script: runtime,
+    script: launcher,
     argv: process.argv.slice(2),
     cwd: process.cwd(),
     env: { ...process.env, TENET_CALL_BOUNDARY_ARTIFACT: launcher },
