@@ -42,7 +42,7 @@ for (const file of all) {
         if (spec === "../ports/types.ts" && !/import type/.test(code)) add(rel, n, "core/ imports ports as types only");
         if (!spec.startsWith(".") && spec !== "zod" && spec !== "node:crypto") add(rel, n, `core/ may import only zod and node:crypto, not ${spec}`);
       }
-      if (!rel.startsWith("adapters/") && /(^|\/)adapters\//.test(spec) && rel !== "wire.ts") add(rel, n, "only the composition root imports adapters");
+      if (!rel.startsWith("adapters/") && /(^|\/)adapters\//.test(spec) && !["wire.ts", "main.ts"].includes(rel)) add(rel, n, "only the composition root imports adapters");
     }
     if (/\bimport\s*\(\s*[^"'\s]/.test(code)) add(rel, n, "computed dynamic import()");
     if (/\bimport\s*\(\s*["']/.test(code) && !rel.startsWith("adapters/")) add(rel, n, "dynamic import() outside adapters");

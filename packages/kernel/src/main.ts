@@ -1,8 +1,7 @@
 // Process entry: the one place that touches process.argv, stdin, stdout and the exit code.
 import "./zod-jitless.ts";
-import {
-  callBoundaryChild, callTimeoutResponse, runBoundedCall, runCallChild,
-} from "./wire.ts";
+import { callBoundaryChild, callTimeoutResponse, runBoundedCall } from "./adapters/call-boundary.ts";
+import { runCallChild } from "./adapters/call-entry.ts";
 
 const write = (stream: NodeJS.WritableStream, text: string) =>
   new Promise<void>((resolve) => { stream.write(text, () => resolve()); });

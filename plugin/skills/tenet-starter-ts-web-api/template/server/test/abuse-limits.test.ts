@@ -15,7 +15,8 @@ it("applies the shared IP ceiling to sign-in even across account keys and forwar
   try {
     const pre = await app.inject({ method: "GET", url: "/api/auth/csrf" });
     const { csrfToken } = pre.json();
-    for (let n = 0; n < 119; n++) expect((await app.inject({ method: "GET", url: "/api/health" })).statusCode).toBe(200);
+    const health = await Promise.all(Array.from({ length: 119 }, () => app.inject({ method: "GET", url: "/api/health" })));
+    for (const response of health) expect(response.statusCode).toBe(200);
     for (let n = 0; n < 3; n++) {
       const response = await app.inject({ method: "POST", url: "/api/auth/sign-in", cookies: { pre_csrf: csrfToken }, headers: { "x-csrf-token": csrfToken, "x-forwarded-for": `127.0.0.${n + 2}` }, payload: { email: `unknown.${n}@example.test`, password: "synthetic incorrect password" } });
       expect(response.statusCode, response.body).toBe(429);
