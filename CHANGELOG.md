@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-22 — Remove calendar waiting from maintainer review
+
+- Owner-approved amendment to ENG-11 and the implementation controls removes the 72-hour public review delay. Consequential changes are reviewed immediately, external reviewers are requested when available, release notes disclose whether a second maintainer or external reviewer reviewed the change, and merge proceeds when required checks and review disclosure are complete. Updated the canonical specs, contribution/security guidance, PR template, release tooling, finalization checklist, tests and execution baseline. Historical changelog entries retain their original wording as records of the former policy.
+
 ## 2026-11-22 — Rename the project and repository to Tenet Copilot
 
 - Renamed the public product to **Tenet Copilot**, the repository to `vedprakash-m/tenet-copilot`, the workspace package to `tenet-copilot-workspace`, and the plugin manifest to `tenet-copilot`. Updated repository links, user and contributor documentation, canonical specifications, kernel source reporting, badges, release verification and the local install path. The current kernel/plugin version is `0.2.0-m0`; the v0.1.0 release remains available at its redirected URL and with its original artifact name.

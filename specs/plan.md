@@ -88,7 +88,7 @@ Add one row per stop: date, item, question, options, recommendation. The owner a
 | QLT-11 / QLT-13 traits | ⛔ | Owner semantics in §5. |
 | RSC-08 model qualification | ◐ strict table and lookup exist; 0 records | Authorized campaign records and an observed model and tuple. |
 | Appendix D reason codes | ◐ `alternative-check-missing` and `build-not-fresh` produced | The remaining codes in §5. |
-| Security and release source | ◐ privacy, CI and diagnostics controls reviewed; finalization checklist in `docs/release/target-c-finalization.md` | Signing, publisher identity, a 72-hour public review window on a PR and exact-candidate CI remain. Branch protection, the protected `release` environment, private vulnerability reporting, secret scanning and Dependabot security updates are on. |
+| Security and release source | ◐ privacy, CI and diagnostics controls reviewed; finalization checklist in `docs/release/target-c-finalization.md` | Signing, publisher identity, immediate review disclosure and exact-candidate CI remain. Branch protection, the protected `release` environment, private vulnerability reporting, secret scanning and Dependabot security updates are on. |
 | Full R1 qualification | ⛔ | Spikes SP-03, SP-04, SP-05, SP-06, SP-07, SP-10, SP-11; starter ASVS, WCAG/VoiceOver, concurrency, restore and workload evidence; pilot with 8–12 participants, six formative sessions, calibration; all 181 Musts and 19 Shoulds reviewed; a PRD amendment batch. Needs participants and calendar time. |
 
 ---
@@ -109,6 +109,7 @@ Add one row per stop: date, item, question, options, recommendation. The owner a
 ## 8. Progress log (newest first, one line per event)
 
 - 2026-11-22 — Renamed the public project, repository, package, plugin identity and future release assets to Tenet Copilot while preserving `/tenet`, `.tenet/`, `tenet.policy.json`, `kernel/tenet.mjs`, `Tenet-Work` and existing branch/parameter contracts. Added a legacy artifact alias for the migration release.
+- 2026-11-22 — Owner approved immediate review with no calendar waiting period for ENG-11. Updated active specs, policy, PR/release tooling and tests; merge still requires complete review disclosure and required checks.
 - 2026-11-22 — Ran full local validation and privacy on the accelerated production-readiness checkout: 2,603 pass, 4 skips, 0 failures, 158 UAT observations, and no privacy findings.
 - 2026-11-22 — Expanded the evidence ledger to 167 reviewed `not-qualified` records (153 complete and 14 partial), with 0 integrity errors and no campaign references.
 - 2026-11-22 — Confirmed active `main` ruleset 27421522 and the `release` environment through the GitHub API; the exact latest `main` run still fails because the committed privacy test is stale and the long-history warm p95 is consistently above 300 ms.

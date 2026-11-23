@@ -1493,7 +1493,7 @@ Each link is a separate control with its own verification:
 
 **Review rule:**
 - *With two or more maintainers:* changes to hooks, helpers, permissions, destinations or evaluators need review by a second maintainer.
-- *With one maintainer (solo rule):* the change waits a public 72-hour review window on an open pull request and gets an external reviewer when available, and release notes disclose that no second-maintainer review occurred. Agent passes never count as a second maintainer.
+- *With one maintainer (solo rule):* the change is reviewed immediately on an open pull request, an external reviewer is requested when available, and release notes disclose whether a second-maintainer or external review occurred. Agent passes never count as a second maintainer. No calendar waiting period blocks merging once required checks and review disclosure are complete.
 
 **Other release controls:**
 - **Credentials and permissions:** mandatory 2FA for maintainers; release credentials held outside general CI jobs; minimal workflow permissions.
