@@ -1,4 +1,4 @@
-# Tenet - UX Specification
+# Tenet Copilot - UX Specification
 
 > v0.5 | October 18, 2026 | Draft for review | Implements [PRD v0.17](PRD.md) with [Tech Spec v1.3](tech-spec.md)
 
@@ -6,7 +6,7 @@
 
 ### 0.1 Purpose, precedence and scope
 
-This specification defines **how Tenet feels and reads**: the interaction model, the four recurring shapes, wording, journeys, configuration, recovery, accessibility and how the experience is qualified. It answers the UX obligations of PRD Section 11.4.
+This specification defines **how Tenet Copilot feels and reads**: the interaction model, the four recurring shapes, wording, journeys, configuration, recovery, accessibility and how the experience is qualified. It answers the UX obligations of PRD Section 11.4.
 
 **Precedence:** the PRD owns semantics; the tech spec owns mechanisms. This document owns wording, layout, interaction order and command syntax, and **never changes semantics**: no wording may make a claim stronger, a gate weaker or an authority broader than the kernel records. Experience needs that require a mechanism change are listed in §15.2.
 
@@ -38,13 +38,13 @@ Skill budgets are tight (TS §5.1), so each rule ships in one place:
 
 ### 1.1 Promise
 
-> Describe what you want. Tenet shows what "done" will mean in your own examples, does proportionate engineering, and leaves you with a result you can try, read quickly and trust, plus one clear next step. The project stays an ordinary repository you can maintain without Tenet.
+> Describe what you want. Tenet Copilot shows what "done" will mean in your own examples, does proportionate engineering, and leaves you with a result you can try, read quickly and trust, plus one clear next step. The project stays an ordinary repository you can maintain without Tenet Copilot.
 
 **First value:** about five minutes from install to a real task, and a useful result (a checked change, a review, a plan, a diagnosis or a justified "no change needed") in a provisional median of fifteen minutes on a ready project (PRD Section 1.6), with **no setup unrelated to the task**.
 
 ### 1.2 Six questions a user can always answer
 
-From the screen, or one "status" away: (1) Did Tenet understand what I want? (2) Is it respecting my project, my edits and my earlier decisions? (3) Is it working, waiting for me, or stopped? (4) What has actually been shown to work? (5) What is uncertain, missing or not claimed? (6) How do I steer, interrupt, undo, resume or leave?
+From the screen, or one "status" away: (1) Did Tenet Copilot understand what I want? (2) Is it respecting my project, my edits and my earlier decisions? (3) Is it working, waiting for me, or stopped? (4) What has actually been shown to work? (5) What is uncertain, missing or not claimed? (6) How do I steer, interrupt, undo, resume or leave?
 
 ### 1.3 Principles
 
@@ -78,7 +78,7 @@ A dashboard, panel, kanban or agent graph; a model picker or credit meter; an on
 | **Riley, reviewer** (individual use) | Get a consistent critique, then fix only selected findings | Zero project writes during review; findings worth acting on; PR briefs | That review is not a checked build |
 | **Jordan, contributor** | Improve a recipe, skill or adapter safely | Clear contracts and conformance fixtures | The provenance of what they ship |
 
-Tenet never asks "what kind of user are you?"; it infers the job from the request and adapts to the user's words. Circumstances matter more than titles (familiar or unfamiliar repository, clear or exploratory request, valuable data, external effects, tight allowance, access needs) and are handled by existing mechanisms: lanes, traits, envelopes, resource mode and style.
+Tenet Copilot never asks "what kind of user are you?"; it infers the job from the request and adapts to the user's words. Circumstances matter more than titles (familiar or unfamiliar repository, clear or exploratory request, valuable data, external effects, tight allowance, access needs) and are handled by existing mechanisms: lanes, traits, envelopes, resource mode and style.
 
 ### 2.2 Designed for later
 
@@ -90,7 +90,7 @@ Tenet never asks "what kind of user are you?"; it infers the job from the reques
 
 ### 3.1 The host is the interface
 
-| Surface | Tenet uses it for | Tenet does not |
+| Surface | Tenet Copilot uses it for | Tenet Copilot does not |
 |---|---|---|
 | Chat | The four shapes (§5) | Log every kernel call |
 | Native question picker | Routine choices (`channel: native`, TS §6.6) | Authority or risk acceptance (§5.2) |
@@ -105,18 +105,18 @@ Users learn **`/tenet <anything>`**. Everything else is words after it: "status"
 
 | Request | Does | Writes to the project |
 |---|---|---|
-| A task ("add…", "fix…", "plan…", "prototype…") | Starts or continues work; Tenet picks the profile from the words | Only when implementation or durable memory needs it |
+| A task ("add…", "fix…", "plan…", "prototype…") | Starts or continues work; Tenet Copilot picks the profile from the words | Only when implementation or durable memory needs it |
 | "review …" | Read-only review | Never, including `.tenet/` and Git objects (CON-09) |
 | "status", "why …", "help", or `/tenet` alone | Answers and stops | Never |
 | "setup", "feedback" | A preview first | Only after consent; feedback only to a chosen path |
 
-**Write promises are literal.** "Don't change anything" and "just explain" never create `.tenet/`; the answer stays in chat, and if checks are needed Tenet offers an investigation. "Plan only" means no source changes, and the reply says plans are kept in Tenet's local records. From a non-agent chat mode: "Switch this chat to Agent, then send it again", with the request kept.
+**Write promises are literal.** "Don't change anything" and "just explain" never create `.tenet/`; the answer stays in chat, and if checks are needed Tenet Copilot offers an investigation. "Plan only" means no source changes, and the reply says plans are kept in Tenet Copilot's local records. From a non-agent chat mode: "Switch this chat to Agent, then send it again", with the request kept.
 
 ### 3.3 Inspect versus act
 
 The most important safety-for-ease rule: **asking never starts work.**
 
-| User says | Meaning | Tenet |
+| User says | Meaning | Tenet Copilot |
 |---|---|---|
 | "status", "where are we?" while idle | Tell me what is known | Reads state, reports uncertainty; never repairs, takes ownership or resumes |
 | "status", "how's it going?" during active work | A progress question | Answers in one or two lines and carries on with the authorized work |
@@ -124,7 +124,7 @@ The most important safety-for-ease rule: **asking never starts work.**
 | "continue", "go on" | Act | Reconciles, asks only what's needed, resumes bounded authorized work; never authorizes anything remote or destructive |
 | "show that again", "what was the result?" | Re-show | Shows the last report as it was, plus one line if anything has changed since ("web/dashboard/Reminders.tsx has changed since this result"); never claims fresher evidence than exists, and runs nothing |
 
-### 3.4 What the user steers and what Tenet reports
+### 3.4 What the user steers and what Tenet Copilot reports
 
 **Four dials, spoken:** style ("explain more", "be brief"; default Balanced), check-ins ("only interrupt for decisions", "show each phase"; default milestones), depth ("be more careful" raises the lane; it never goes below the floor) and resource use ("prefer fewer optional agent runs"; Conserve). **Two actions after a result:** accept and integrate (§5.4). **Reported, never set:** the assistance level (§4.3) and the headline (§4.2).
 
@@ -156,7 +156,7 @@ The headline is a plain phrase plus the exact endpoint term in code font (Guided
 
 A demo, mock, screenshot or focused test never receives a headline. Partial work names the increment: "Reservations (step 2 of 4): Checked locally …". Provenance is noted, not mixed into the verdict: "(built with a community recipe)".
 
-### 4.3 What Tenet can do here, in words (INS-12)
+### 4.3 What Tenet Copilot can do here, in words (INS-12)
 
 Said once, in the kickoff:
 
@@ -167,7 +167,7 @@ Said once, in the kickoff:
 | L2 | "I can plan this. To build it, <readiness step> first", or "Planning only, as you asked" |
 | L1 | "I can read and review this project; I can't build or check <stack> yet" |
 | L0 | "I can't work here because <boundary>", plus what still works and who can change it |
-| No Node.js | "Advisory review only: Tenet's helper needs Node 22.12+", with the official installer link |
+| No Node.js | "Advisory review only: Tenet Copilot's helper needs Node 22.12+", with the official installer link |
 
 ### 4.4 Words for internal ideas
 
@@ -206,7 +206,7 @@ Users learn four shapes once (UX-D14). Every message is one of them.
 
 ### 5.1 Kickoff
 
-**When:** the first reply to a task. **Anatomy:** what Tenet will do and can do here · examples (Standard, Deep) · what it won't touch, when there is a real boundary · what it needs from the user, if anything (the stop).
+**When:** the first reply to a task. **Anatomy:** what Tenet Copilot will do and can do here · examples (Standard, Deep) · what it won't touch, when there is a real boundary · what it needs from the user, if anything (the stop).
 
 **Quick variant: no preview, one line, then the work** (intent first; reproduction and cause are claims, so they appear once true):
 
@@ -214,13 +214,13 @@ Users learn four shapes once (UX-D14). Every message is one of them.
 
 **Standard and Deep variant (the contract preview, WRK-01).** About 8 lines when nothing needs deciding:
 - **Outcome**, in one sentence.
-- **Examples**, each marked *new* (should fail before the change) or *keep* (should stay as it is). Tenet's additions are labeled "(added)".
+- **Examples**, each marked *new* (should fail before the change) or *keep* (should stay as it is). Tenet Copilot's additions are labeled "(added)".
 - **Never:** invariants.
 - **Design:** the sketch, one or two lines, when structural (TS §8.7); Guided gives one plain sentence with "show design".
 - **Won't touch:** only an actual boundary (protected paths, stated non-goals).
 - **Checks:** one line, plus anything below "Checked locally" ("this setup can't run the browser journey").
 
-**The stop rule (UX-D1).** The kickoff waits for a reply only when Tenet added something the user did not say: an example, an assumption, or a sketch commitment on behavior, data, access, compatibility or an interface others consume (TS §8.7, `basis-confirm`). Because INT-15 adds at least one boundary or negative case for each new requirement, **a new requirement normally stops once** — this is deliberate, not a gap: the kernel never classifies whether an addition merely restates the user's own words (A13, rejected), so any Tenet-written case gets the stop, always as light as possible:
+**The stop rule (UX-D1).** The kickoff waits for a reply only when Tenet Copilot added something the user did not say: an example, an assumption, or a sketch commitment on behavior, data, access, compatibility or an interface others consume (TS §8.7, `basis-confirm`). Because INT-15 adds at least one boundary or negative case for each new requirement, **a new requirement normally stops once** — this is deliberate, not a gap: the kernel never classifies whether an addition merely restates the user's own words (A13, rejected), so any Tenet-written case gets the stop, always as light as possible:
 
 > **Overdue reminders** · Standard: this changes what the dashboard shows.
 > **Outcome:** borrowers overdue by more than a day see a reminder.
@@ -259,7 +259,7 @@ The screen line (UX-D9) is one sentence, or at most a 6-line text sketch precede
 | Consequence | Examples | Channel |
 |---|---|---|
 | Routine clarification or consent with no outside effect | A product rule, a commit-hook consent, a recovery fact ("has the other chat stopped?") | Native picker |
-| Authority or risk | Widening scope; protected paths; push or PR; delete, reset or undo; accepting a shortcut or residual risk; an envelope that may send project content out | **Plain chat; Tenet ends its turn** |
+| Authority or risk | Widening scope; protected paths; push or PR; delete, reset or undo; accepting a shortcut or residual risk; an envelope that may send project content out | **Plain chat; Tenet Copilot ends its turn** |
 
 Authority questions end with a short, concrete reply cue (Autopilot can answer pickers, so authority is never a picker; the reason is in "why authority"):
 
@@ -268,7 +268,7 @@ Authority questions end with a short, concrete reply cue (Autopilot can answer p
 **Rules:**
 - Search before asking; never ask what the repository, lockfile or history answers.
 - **Implementation detail is never a question.** A newly found code path that the agreed outcome requires is explained and included ("Mobile checkout uses the same discount rule, so it gets the same change"). Ask only when the discovery changes behavior, compatibility, data exposure, a protected path or authority.
-- **A shortcut Tenet can avoid, it removes.** Acceptance is asked, in chat, only when a shortcut is genuinely needed (TS §8.7).
+- **A shortcut Tenet Copilot can avoid, it removes.** Acceptance is asked, in chat, only when a shortcut is genuinely needed (TS §8.7).
 - Apply partial answers to independent work; a bare "yes" after several questions applies only where it is unambiguous.
 - Silence, timeouts and pre-selected options are never consent. Reconfirm only when the facts changed, and say what changed: "You allowed pushing 4e1c2a9; the branch now points to 9b07d1e. Push the new commit?"
 - Never ask about distant plan items before they matter; never ask a routine final approval (RES-03).
@@ -284,9 +284,9 @@ Authority questions end with a short, concrete reply cue (Autopilot can answer p
 **When:** per the check-ins dial: *minimal* (decisions and end); *milestones*, the default (first green, review done, end; TS §6.6) — the kickoff reply itself already confirms the basis, so a check-in never repeats "basis settled"; *each phase*. **Anatomy:** one line, what finished and what's next. A check-in never asks unless a question is due.
 - A planned failing test is progress: "Example 1 fails before the change, as it should."
 - A long check gets one line when it starts ("Running the full checks; about 4 minutes last time"), with no progress percentages.
-- **Before a host approval,** Tenet says what the user is about to approve, worded so it holds whether or not the host actually prompts (approval mode is not observable to the kernel): "Committing the fix now; approve in VS Code if it asks." The approval prompt then makes sense when it appears, a pause is clearly the host waiting and not Tenet stalling, and the line stays true unchanged under an auto-approve rule, where no prompt appears at all.
+- **Before a host approval,** Tenet Copilot says what the user is about to approve, worded so it holds whether or not the host actually prompts (approval mode is not observable to the kernel): "Committing the fix now; approve in VS Code if it asks." The approval prompt then makes sense when it appears, a pause is clearly the host waiting and not Tenet Copilot stalling, and the line stays true unchanged under an auto-approve rule, where no prompt appears at all.
 - The research model is mentioned in the check-in the first time research runs: "Looking up how sessions are stored, with a cheaper read-only model; say 'use my model for research' to change." (PA-6)
-- Tenet never answers host pauses such as "Continue to iterate?" (WRK-10).
+- Tenet Copilot never answers host pauses such as "Continue to iterate?" (WRK-10).
 
 ### 5.4 Report
 
@@ -301,16 +301,16 @@ Every report uses one anatomy: **headline · evidence · read or limits · next.
 > **Read first:** [0007.sql](server/db/migrations/0007.sql): persistence change, read before accepting · [service.ts:40](server/loans/service.ts): the overdue rule · +1 more
 > Say "integrate" to merge into main, or "accept" to keep it on tenet/w-0007.
 
-- **Try it (RES-05, RES-08):** in Guided style, Tenet offers to start the app (under the host's consent), confirms the URL responds, says where the development credentials are (local only, not a shared machine) and how to stop the app, and gives one domain task to try. The running demo is never presented as test evidence, and verification databases stay separate from development data. For a library, CLI or back-end change with nothing to open, the line is **Use it:** a command or call to run instead, and it is omitted entirely when nothing is user-facing.
+- **Try it (RES-05, RES-08):** in Guided style, Tenet Copilot offers to start the app (under the host's consent), confirms the URL responds, says where the development credentials are (local only, not a shared machine) and how to stop the app, and gives one domain task to try. The running demo is never presented as test evidence, and verification databases stay separate from development data. For a library, CLI or back-end change with nothing to open, the line is **Use it:** a command or call to run instead, and it is omitted entirely when nothing is user-facing.
 - **Reading guide (TS §8.3):** Standard and Deep; in Quick only when a shortcut, persistence or auth file, or an unpredicted path changed (UX-D8). **Three entries, then "+N more"**, ordered: what needs judgment (findings, shortcuts, unplanned paths, and `auth`, `persistence` or `external-effects` changes marked "read before accepting", which are never collapsed); then the main path in the order the sketch listed; then tests by example. Each entry says what to look at. It is guidance from records, never a claim that anyone read the code.
 - **Not shown unless abnormal:** routine environment-variable names, containment and usage live in "why". When exposure is unknown, the result's Limits disclose the network, data and credential unknowns and whether the exact envelope was authorized (SEC-15).
-- **Increment versus plan:** an increment names its step ("step 2 of 4"). The last step closes the plan once, stated as what the current candidate just passed, not a replay of each step's separate history: "All 4 planned steps are built; this candidate passed the required checks, including the browse, reserve, return and remind journey end to end. Say 'what's next' for anything beyond this plan." Asked about one earlier step directly, Tenet says whether that step's own result still holds: "Reservations last checked at commit 9f1c2; nothing since has touched it" or "touched by the Reminders change; recheck before relying on it alone" — the same freshness rule as "evidence out of date" (§10).
+- **Increment versus plan:** an increment names its step ("step 2 of 4"). The last step closes the plan once, stated as what the current candidate just passed, not a replay of each step's separate history: "All 4 planned steps are built; this candidate passed the required checks, including the browse, reserve, return and remind journey end to end. Say 'what's next' for anything beyond this plan." Asked about one earlier step directly, Tenet Copilot says whether that step's own result still holds: "Reservations last checked at commit 9f1c2; nothing since has touched it" or "touched by the Reminders change; recheck before relying on it alone" — the same freshness rule as "evidence out of date" (§10).
 - **Incomplete:** "Overdue reminders: Built, not fully checked. Passed: the examples, unit and integration tests, lint, types. Missing: the dashboard journey (Playwright's browser isn't installed). Fix: 'install the browser' (I'll preview the download first), then 'check again'." When a required check actually failed rather than being missing, the headline says so instead (§4.2): "Overdue reminders: Built, a check fails. Passed: the examples, unit tests, lint, types. Failing: the dashboard journey (Reminders.tsx:41, timeout waiting for the toast)."
-- **Mapped flaky alternative:** the report names the primary flaky check and the distinct reviewed check that covers the same obligation. "Evidence: signed-out-session Vitest passed only after a rerun; the reviewed Playwright signed-out-session check passed cleanly and covers that exact property." A missing, stale, flaky or failed alternative says the work remains not fully checked; Tenet never calls the primary an ordinary pass and never changes its acceptance-test lock.
+- **Mapped flaky alternative:** the report names the primary flaky check and the distinct reviewed check that covers the same obligation. "Evidence: signed-out-session Vitest passed only after a rerun; the reviewed Playwright signed-out-session check passed cleanly and covers that exact property." A missing, stale, flaky or failed alternative says the work remains not fully checked; Tenet Copilot never calls the primary an ordinary pass and never changes its acceptance-test lock.
 
 **Accept and integrate (UX-D10).** A clean result never asks for acceptance; its next action names both verbs so neither "ok" nor "accept" is ambiguous (§7.2). "Integrate" records acceptance and integrates in one step (after the conflict prediction and branch-switch note, J-06). "Accept" or "looks good" records acceptance and keeps the work on its branch: "Accepted on tenet/w-0007. Say 'integrate' any time." Acceptance after a preview, wireframe or plan applies only to that artifact. Nothing remote ever follows from an acceptance phrase. **The `integration` setting changes what the next action says, never what "accept" does:** at `offer` (default), and for the accepted legacy `auto-on-accept` value, the result offers separate accept and integrate actions; at `never` the integrate mention is omitted and only "accept" is offered. A setting or prior result never counts as consent to integrate.
 
-**One offer per report (UX-D15).** The next action already covers integrate when relevant, so integrate is never repeated as a separate offer. Besides the next action, at most one offer: adopt shared files (first checked result only, never deferred past it) · the approval rule tip, shown the moment a second routine Tenet approval lands in the same session, ahead of anything else queued ("Approving routine Tenet steps one by one? Say 'reduce approvals' for a safe one-line rule.") · share unshared project settings (batched) · an evidence-backed lesson. An offer is visible without needing a reply; a decline is remembered. The one-time controls note ("How I keep this honest: say 'why controls'") is a footer on the first report in a project, not part of the queue.
+**One offer per report (UX-D15).** The next action already covers integrate when relevant, so integrate is never repeated as a separate offer. Besides the next action, at most one offer: adopt shared files (first checked result only, never deferred past it) · the approval rule tip, shown the moment a second routine Tenet Copilot approval lands in the same session, ahead of anything else queued ("Approving routine Tenet Copilot steps one by one? Say 'reduce approvals' for a safe one-line rule.") · share unshared project settings (batched) · an evidence-backed lesson. An offer is visible without needing a reply; a decline is remembered. The one-time controls note ("How I keep this honest: say 'why controls'") is a footer on the first report in a project, not part of the queue.
 
 **Findings.** Material findings get substance at once, so they can be prioritized without asking:
 
@@ -336,7 +336,7 @@ While parked, it names what's out of date and offers to resume:
 > **Out of date:** the dashboard journey (you edited Reminders.tsx).
 > **Next:** check again, then review. Say "continue" to resume.
 
-Budgets and agent counts appear only at 80% of a limit or in "why budget". After context compaction, Tenet recovers its state silently (TS §5.2); status is shown only when asked.
+Budgets and agent counts appear only at 80% of a limit or in "why budget". After context compaction, Tenet Copilot recovers its state silently (TS §5.2); status is shown only when asked.
 
 When explaining timing (NFR-05), label it "this kernel call": active work and
 tool/check time are measured milliseconds, separate from per-contract budget
@@ -363,7 +363,7 @@ Each journey uses the shapes above; only what is specific is stated. Verificatio
 
 ### J-01 Install and first value
 
-1. **Before install,** the README states what Tenet adds; prerequisites (VS Code with Copilot agent mode, Node 22.12+ or 24, Git); qualified versus experimental environments; that it runs locally and does not deploy in R1; that it ships helpers and, once qualified, observer hooks; the Autopilot limit on answers; how to verify the publisher; how to remove it. Plus three starter requests: a new app, a bug fix, a review.
+1. **Before install,** the README states what Tenet Copilot adds; prerequisites (VS Code with Copilot agent mode, Node 22.12+ or 24, Git); qualified versus experimental environments; that it runs locally and does not deploy in R1; that it ships helpers and, once qualified, observer hooks; the Autopilot limit on answers; how to verify the publisher; how to remove it. Plus three starter requests: a new app, a bug fix, a review.
 2. **Install** through the host's plugin flow, with no cloning, JSON editing, API keys or extra runtime.
 3. **The first message is a real task.** Readiness covers only that task: a review needs no test tools, and an explanation needs no Git.
 4. **Missing prerequisite:** name it, link the official installer, offer what works now; never install machine prerequisites: "I can review this project now. To build and check I need Node 22.12+ (you have 20.11): install it from nodejs.org, then say 'check readiness'. Want a review meanwhile?"
@@ -375,7 +375,7 @@ Request → kickoff with the plan and choices (§5.1, one reply) → scaffold ve
 
 **A thin first answer gets one real follow-up, not a silent pass.** If your reply to "who sees what" or a non-goal is a half-sentence, the kickoff asks one concrete follow-up on that point before drafting the plan — never a second round on the same question, and never on anything you already answered substantively.
 
-**The kickoff also carries two more proposals, shown, not asked as separate questions:** a starter-specific protected-paths default — "I'll protect `platform/auth`, `platform/session` and `migrations/` by default; say 'skip that' to leave nothing protected" — and, only when the instruction file the host loads has no content of your own in it yet, a short draft of general conventions to adopt into it (stack choices, naming, where things live), previewed the same way as everything else Tenet ever writes. Neither repeats once declined or once real content already exists.
+**The kickoff also carries two more proposals, shown, not asked as separate questions:** a starter-specific protected-paths default — "I'll protect `platform/auth`, `platform/session` and `migrations/` by default; say 'skip that' to leave nothing protected" — and, only when the instruction file the host loads has no content of your own in it yet, a short draft of general conventions to adopt into it (stack choices, naming, where things live), previewed the same way as everything else Tenet Copilot ever writes. Neither repeats once declined or once real content already exists.
 
 ### J-03a Bug, Quick
 
@@ -400,7 +400,7 @@ If the fix truly needs a shortcut, one chat question at the end asks to accept i
    > 3. Leave that file out (the change may be incomplete)
    > (Say "don't commit" instead, at any point, to have me edit alongside your changes without committing either set.)
 
-Tenet may draft the command for option 1, but never stages or commits a
+Tenet Copilot may draft the command for option 1, but never stages or commits a
 human-only file set. If the file contains no Tenet-authored change, option 2
 is unavailable and option 1 or 3 is the safe next step.
 
@@ -414,7 +414,7 @@ Quick or Standard by risk: name what must not change → preservation tests that
 
 ### J-04 Review, then selected fixes
 
-Resolve the scope (a document, uncommitted changes, a branch against its base, files) and state it with the revision → findings report (§5.4) → follow-ups: "explain 3", "PR brief", "fix 1 and 2", or "finding 2 is wrong because …" (a dispute is recorded with the user's evidence and either withdrawn or decided by the user, never silently dropped; TS §8.4). "Run the tests too" offers an investigation: "That writes Tenet's local records, not your source."
+Resolve the scope (a document, uncommitted changes, a branch against its base, files) and state it with the revision → findings report (§5.4) → follow-ups: "explain 3", "PR brief", "fix 1 and 2", or "finding 2 is wrong because …" (a dispute is recorded with the user's evidence and either withdrawn or decided by the user, never silently dropped; TS §8.4). "Run the tests too" offers an investigation: "That writes Tenet Copilot's local records, not your source."
 
 ### J-05a Continue after an interruption
 
@@ -443,20 +443,20 @@ The takeover question ("The earlier chat was mid-implementation. Has it stopped?
 | "Fix all of these" after a review | Findings become **one contract** covering the whole accepted set (RES-06), splitting into plan steps only if the combined scope exceeds one increment — never one contract per finding |
 | "Fix all of these" naming independent, unrelated asks | A bounded batch: every item's kickoff and consent gathered into **one combined kickoff** before the first starts, then run in turn to one combined report |
 
-A basis change after checks passed says exactly what is out of date ("the review must run again; the tests still count"). A bug in Tenet's earlier work is linked to the example it contradicts, reproduced and fixed: "Example 3 should have caught this; I've added the missing case."
+A basis change after checks passed says exactly what is out of date ("the review must run again; the tests still count"). A bug in Tenet Copilot's earlier work is linked to the example it contradicts, reproduced and fixed: "Example 3 should have caught this; I've added the missing case."
 
 ### J-06 Integrate, hand off, undo, don't commit
 
-- **Integrate:** Tenet predicts conflicts before anything moves; the integration question itself says "this switches your editor to main". On "integrate" it merges, rechecks the combined result when main moved, and reports where the work now is. Branch cleanup is an offer, never a prompt.
-- **Shared-file merge (GIT-09, `shared-merge`, header "Shared files"):** when only Tenet's shared files conflict: "Integrating into main conflicts only in Tenet's shared files (INTENT.md, …). Tenet merged them by ID and found 2 ID collisions; the proposed 2 files are shown. Use them in the merge?" When Git merges cleanly but an ID was created on both branches: "Integrating into main merges cleanly in Git, but REQ-002-bbb was created on both branches. Tenet proposes renaming the work branch's copy in 2 files; they are shown. Use them in the merge?" A content collision adds "For REQ-001-aaa, the proposal uses the work branch's text; the other branch's change is dropped unless you choose it instead." Options: "Use the merged files" (recommended only when no change is dropped) and "Not now" (nothing moves). The coordinator shows every proposed file and each collision's three texts before asking.
-- **PR brief:** problem and outcome, important choices, validation, compatibility or data effects, open findings and limits; no chat transcript, private intent or credentials. **Pushing or opening a PR is the user's step in R1.** Tenet runs no remote Git command (cut by owner blanket direction 2026-11-03, per decision-packet decision 9B; Tech Spec §10.6), so the brief is shown in chat and the reply says so: "Tenet doesn't push or open pull requests. Copy this brief into your PR." A PR is not a deployment; remote merges stay with the user.
+- **Integrate:** Tenet Copilot predicts conflicts before anything moves; the integration question itself says "this switches your editor to main". On "integrate" it merges, rechecks the combined result when main moved, and reports where the work now is. Branch cleanup is an offer, never a prompt.
+- **Shared-file merge (GIT-09, `shared-merge`, header "Shared files"):** when only Tenet Copilot's shared files conflict: "Integrating into main conflicts only in Tenet Copilot's shared files (INTENT.md, …). Tenet Copilot merged them by ID and found 2 ID collisions; the proposed 2 files are shown. Use them in the merge?" When Git merges cleanly but an ID was created on both branches: "Integrating into main merges cleanly in Git, but REQ-002-bbb was created on both branches. Tenet Copilot proposes renaming the work branch's copy in 2 files; they are shown. Use them in the merge?" A content collision adds "For REQ-001-aaa, the proposal uses the work branch's text; the other branch's change is dropped unless you choose it instead." Options: "Use the merged files" (recommended only when no change is dropped) and "Not now" (nothing moves). The coordinator shows every proposed file and each collision's three texts before asking.
+- **PR brief:** problem and outcome, important choices, validation, compatibility or data effects, open findings and limits; no chat transcript, private intent or credentials. **Pushing or opening a PR is the user's step in R1.** Tenet Copilot runs no remote Git command (cut by owner blanket direction 2026-11-03, per decision-packet decision 9B; Tech Spec §10.6), so the brief is shown in chat and the reply says so: "Tenet Copilot doesn't push or open pull requests. Copy this brief into your PR." A PR is not a deployment; remote merges stay with the user.
 - **Undo** follows §7.2: a preview of the inverse against current state, naming later edits it would touch and saying databases and external effects are not undone, then confirm, apply, check and report. An overlap stops with the conflict shown; there is no partial undo.
 - **"Don't commit"** (UX-D4) is honored for the task: the headline says uncommitted, undo is limited to the diff and editor checkpoints, and a later explicit "commit it" makes one commit only. That one-off commit does not enable later automatic commits, and the task remains no-commit across restart/recovery. A fresh `finish` after restart stays uncommitted. A signing-consent decline has the same no-commit consequence.
 
 ### J-07 Update or leave
 
-- **Update:** "Tenet updated since this work started; your work and evidence are intact." Any state migration is previewed (LFC-04).
-- **Leave:** "help uninstall" lists what remains (`.tenet/`; adopted files, which are the user's documents and stay; test tags and trailers; the user directory; run directories) and offers two previewed cleanups, this project and this machine. Tenet installs no service; known leftover test processes are checked and named before removal rather than promised away.
+- **Update:** "Tenet Copilot updated since this work started; your work and evidence are intact." Any state migration is previewed (LFC-04).
+- **Leave:** "help uninstall" lists what remains (`.tenet/`; adopted files, which are the user's documents and stay; test tags and trailers; the user directory; run directories) and offers two previewed cleanups, this project and this machine. Tenet Copilot installs no service; known leftover test processes are checked and named before removal rather than promised away.
 
 ### J-08 Deep change
 
@@ -464,7 +464,7 @@ Deep kickoff (§5.1) → an architecture pass drafts the sketch, decision record
 
 ### J-09 Prototype, then promote
 
-"Just sketch it quickly" → "Prototype, not checked: I'll keep snapshots so you can undo source changes; the result won't claim checks." The kickoff states the purpose, the synthetic-data boundary, local exposure and the known shortcuts. If the declared sensitive-data assessment is High, `open prototype` asks whether to switch to a checked change or stop and says that Tenet does not inspect project data. The user can record 1–12 hardening gaps with `decide hardening`; finishing without a record names the missing gaps and remains a prototype. A prototype is never offered as a way around failed checks. The result offers to keep exploring, discard, or "make it real": Git, the gaps as proposed requirements, preservation tests, safeguards, a fresh review, and the headline the evidence supports.
+"Just sketch it quickly" → "Prototype, not checked: I'll keep snapshots so you can undo source changes; the result won't claim checks." The kickoff states the purpose, the synthetic-data boundary, local exposure and the known shortcuts. If the declared sensitive-data assessment is High, `open prototype` asks whether to switch to a checked change or stop and says that Tenet Copilot does not inspect project data. The user can record 1–12 hardening gaps with `decide hardening`; finishing without a record names the missing gaps and remains a prototype. A prototype is never offered as a way around failed checks. The result offers to keep exploring, discard, or "make it real": Git, the gaps as proposed requirements, preservation tests, safeguards, a fresh review, and the headline the evidence supports.
 
 ### J-10 Plan or investigate without building
 
@@ -476,7 +476,7 @@ Deep kickoff (§5.1) → an architecture pass drafts the sketch, decision record
 
 > Adding date-fns 4.1.0 (no other packages) · published 5 months ago · MIT · no install scripts. Within your dependency policy. Install? 1. Install (recommended) · 2. Choose another · 3. Skip
 
-A failed rule names the rule and the value ("published 2 days ago; your policy needs 14"). A package the agent installed outside Tenet is verified afterwards, and the result says its install scripts may already have run. For supported single-package npm/pnpm projects, resolution uses one captured manifest/lock snapshot in a private temporary directory; outputs reach the project only after policy permits the preview. Workspaces, competing lockfiles, local/link/workspace sources, patched dependencies, pnpm hooks and a root `.npmrc` are refused before resolution. `.npmrc` is stat-only and is never read or copied. On decline, if the files differ from both the captured originals and the preview, Tenet preserves them and keeps the decision pending; confirmation remains blocked until the previewed files, lockfile layout and supported project configuration are unchanged.
+A failed rule names the rule and the value ("published 2 days ago; your policy needs 14"). A package the agent installed outside Tenet Copilot is verified afterwards, and the result says its install scripts may already have run. For supported single-package npm/pnpm projects, resolution uses one captured manifest/lock snapshot in a private temporary directory; outputs reach the project only after policy permits the preview. Workspaces, competing lockfiles, local/link/workspace sources, patched dependencies, pnpm hooks and a root `.npmrc` are refused before resolution. `.npmrc` is stat-only and is never read or copied. On decline, if the files differ from both the captured originals and the preview, Tenet Copilot preserves them and keeps the decision pending; confirmation remains blocked until the previewed files, lockfile layout and supported project configuration are unchanged.
 
 ### J-12 Repeated failure and limits
 
@@ -499,7 +499,7 @@ Changing an example is a change of direction (§5.2) or a test-defect dispositio
 
 Anything new from the user is handled before the next step (TS §5.2).
 
-| User says | Tenet |
+| User says | Tenet Copilot |
 |---|---|
 | "status", "what's next?", "continue", "show that again" | Per §3.3 |
 | "pause", "stop" | Pauses at the next safe boundary and saves the handoff: "Paused after the check. Say 'continue' any time." |
@@ -512,7 +512,7 @@ Anything new from the user is handled before the next step (TS §5.2).
 | "why …?" | Why report |
 | "accept", "looks good", "integrate" | Per §5.4 |
 | "don't commit" | Honored for this task |
-| "forget that" | Previewed forgetting across every copy Tenet controls |
+| "forget that" | Previewed forgetting across every copy Tenet Copilot controls |
 | "reduce approvals" | Shows the one-line auto-approve rule to paste (TS §4.6) |
 
 ### 7.2 Ambiguous words resolve to the safe meaning
@@ -524,7 +524,7 @@ Anything new from the user is handled before the next step (TS §5.2).
 | "yes", "ok" | Only the question just asked; never several at once unless unambiguous | Several questions were open |
 | "ok" after a result | Acceptance only; never integration or anything remote | — |
 | "do it" after a plan | Start the next step, not all of them | — |
-| "continue" | Resume bounded Tenet work; never answers a host prompt | — |
+| "continue" | Resume bounded Tenet Copilot work; never answers a host prompt | — |
 
 ---
 
@@ -577,8 +577,8 @@ Interpretation guards:
 
 ## 9. Trust, privacy and resources
 
-- **Precise claims instead of reassurance:** "Git gives this project source checkpoints and an undo path; it doesn't reverse database or external effects." "Tenet excludes .env.local from what it sends to the model and from exports; checks that declare it can still use it locally." "The full required checks passed for this candidate."
-- **Autopilot:** the README and "why authority" say Tenet cannot tell a person's answers from automatic ones under Autopilot.
+- **Precise claims instead of reassurance:** "Git gives this project source checkpoints and an undo path; it doesn't reverse database or external effects." "Tenet Copilot excludes .env.local from what it sends to the model and from exports; checks that declare it can still use it locally." "The full required checks passed for this candidate."
+- **Autopilot:** the README and "why authority" say Tenet Copilot cannot tell a person's answers from automatic ones under Autopilot.
 - **Previews** before anything leaves the project's control: adoption, exports, feedback and remote actions show their content and destination.
 - **Suspected exposure:** say what was detected and where it went: "A token-like string appeared in output sent to the model. If it's a real credential, rotate it; I removed my copies and can't remove copies elsewhere." (PRD Section 5.17)
 - **Resources:** effort in words for Deep work; one 80% notice; usage "unknown, see your Copilot usage dashboard" once per contract; no currency, overage, account or model-switch suggestions (RSC-03). "Prefer fewer optional agent runs?" is asked only in a Deep kickoff, where it matters.
@@ -599,11 +599,11 @@ All use the Recovery report (§5.4): name the file, command or policy, never "an
 | No Git identity (`git-identity-missing`) | "Checked locally, uncommitted: Git needs your name and email to commit." | The `git config` command · "commit it" afterwards |
 | Too many untracked files (`inventory-too-large`) | "42,000 untracked files in data/ are too many to scan safely." | Add data/ to .gitignore (the fix that actually shrinks the inventory) · narrow the scope to exclude data/ |
 | Basis too large (`narrow-increment`) | "These examples are too large for one independent review." | Make it smaller |
-| Change Tenet can't explain | "billing.ts changed after my last check, and I didn't change it." | It's mine: keep it out of Tenet's commit · include it in this work · show the change |
+| Change Tenet Copilot can't explain | "billing.ts changed after my last check, and I didn't change it." | It's mine: keep it out of Tenet Copilot's commit · include it in this work · show the change |
 | Another chat owns the work | "Overdue reminders is active in another chat." | Open that chat and say "continue" there · wait (pause it from there) |
 | The user pressed the host's Stop control | "Stopped. The last finished step is kept." | "continue" reconciles what actually happened before going on · look first |
 | Uncertain effect after a crash | "A commit may have happened when VS Code closed. I checked: it did." Or "I can't tell; here's what I see." | Keep · undo · look myself |
-| Interrupted lock repair (`lock-recovery-needed`) | "An earlier Tenet call stopped while recovering its lock; nothing is running now." | Repair and continue |
+| Interrupted lock repair (`lock-recovery-needed`) | "An earlier Tenet Copilot call stopped while recovering its lock; nothing is running now." | Repair and continue |
 | Hook staged extra files | "Your pre-commit hook added package-lock.json to my commit." | Keep it · move the branch back after you review |
 | Hook or signing failed | "Your pre-commit hook failed (lint-staged exit 1); the work is checked but uncommitted." | Show output · fix and retry · leave uncommitted |
 | Undo overlaps later edits | "Undoing would overwrite your later change in lines 40–52." | Show the overlap · cancel |
@@ -615,13 +615,13 @@ All use the Recovery report (§5.4): name the file, command or policy, never "an
 | Same failure twice, budget reached, host limit | J-12; §5.4 recovery example | — |
 | Shared policy changed (`policy-change-needs-acceptance`) | "A pulled change loosens protected_paths in tenet.policy.json." | Accept the change · keep the previous rules (tightening alone applies with a one-line note) |
 | Intent markers damaged (`intent-markers-invalid`) | "INTENT.md has an unbalanced tenet:begin/end marker around REQ-012-q7k at line 41, so I can't tell what's mine to update." | Show the exact lines · restore the marker boundary (previewed) · treat the section as the user's own text from here |
-| Local records missing (CON-07) | "Tenet's local records aren't here (fresh clone or deleted). I recovered the plan, requirements and 6 locked test paths from the repository; no old approvals or results are assumed." | Review and re-adopt · start fresh |
-| Local history incomplete (`state-history-unknown`) | "Local Tenet history is incomplete. No cleanup or dependent work was started; the affected project files are preserved." | Review the recovered records · only inspect · stop an admitted live process |
-| Storage cannot be measured (`storage-accounting-unknown`) | "Tenet could not measure storage safely. No ordinary change was made; inspect or recover the affected path." | Inspect status · repair the admitted evidence |
-| Recovery reserve full (`storage-reserve-full`) | "This change would consume Tenet's recovery reserve. No ordinary change was made; stop existing work or inspect residue before trying again." | Stop admitted work · inspect residue |
-| Protected project storage full (`storage-protected-full`) | "Tenet's protected and recovery storage reached its 50 MB ceiling. No write was made; preserve current data and reduce eligible storage before trying again." | Stop admitted work · inspect residue |
+| Local records missing (CON-07) | "Tenet Copilot's local records aren't here (fresh clone or deleted). I recovered the plan, requirements and 6 locked test paths from the repository; no old approvals or results are assumed." | Review and re-adopt · start fresh |
+| Local history incomplete (`state-history-unknown`) | "Local Tenet Copilot history is incomplete. No cleanup or dependent work was started; the affected project files are preserved." | Review the recovered records · only inspect · stop an admitted live process |
+| Storage cannot be measured (`storage-accounting-unknown`) | "Tenet Copilot could not measure storage safely. No ordinary change was made; inspect or recover the affected path." | Inspect status · repair the admitted evidence |
+| Recovery reserve full (`storage-reserve-full`) | "This change would consume Tenet Copilot's recovery reserve. No ordinary change was made; stop existing work or inspect residue before trying again." | Stop admitted work · inspect residue |
+| Protected project storage full (`storage-protected-full`) | "Tenet Copilot's protected and recovery storage reached its 50 MB ceiling. No write was made; preserve current data and reduce eligible storage before trying again." | Stop admitted work · inspect residue |
 | Protected run files full (`storage-run-cap-full`) | "Protected project run files use the full 200 MB budget. No ordinary change was made; stop existing work or explicitly recover retained files before trying again." | Stop admitted work · inspect residue · recover retained files |
-| Copied or untrusted `.tenet/` | "I found Tenet records I didn't create; I've set them aside and started fresh." | Review them · keep the fresh start |
+| Copied or untrusted `.tenet/` | "I found Tenet Copilot records I didn't create; I've set them aside and started fresh." | Review them · keep the fresh start |
 | Damaged records | "My records were damaged; I restored the previous version. Permissions are suspended until needed." | Each permission is asked again only for a concrete action |
 | Index left alone (`index-sync-needed`) | "Committed. Another tool was using Git's index, so I left it alone: 3 files still show their old version as staged." | "sync my index" (rechecks first) |
 | No temporary space (`run-dir-unavailable`) | "I can't write temporary check files, so checks can't run." | How to fix · review only |
@@ -639,7 +639,7 @@ All use the Recovery report (§5.4): name the file, command or policy, never "an
 | Other languages | Review, explain and plan (Python implementation in R1.1) |
 | Non-Git folder | Git initialized (with consent), or a prototype |
 
-Software families keep the same shapes; only the examples change: API calls with responses and errors; library or CLI calls with outputs, exit codes and a semver note ("this changes a public signature"); data runs with seeds ("I did not reproduce the run"); infrastructure plans ("not applied", with apply as a separate explicit word); regulated domains with the standing software-only line. Lifecycle stages beyond R1 (delivery, operation, software retirement) answer with what Tenet will not do and offer a review or a plan. Nothing unsupported is a dead end.
+Software families keep the same shapes; only the examples change: API calls with responses and errors; library or CLI calls with outputs, exit codes and a semver note ("this changes a public signature"); data runs with seeds ("I did not reproduce the run"); infrastructure plans ("not applied", with apply as a separate explicit word); regulated domains with the standing software-only line. Lifecycle stages beyond R1 (delivery, operation, software retirement) answer with what Tenet Copilot will not do and offer a review or a plan. Nothing unsupported is a dead end.
 
 ---
 
@@ -662,20 +662,20 @@ The **screen-reader check** applies whenever a critical journey changes, in any 
 
 ## 13. Accessibility and localization
 
-### 13.1 Tenet's own interactions (Alpha entry criterion)
+### 13.1 Tenet Copilot's own interactions (Alpha entry criterion)
 
 Behavioral requirements, each tested with VoiceOver and keyboard only on the tuple (PRD Section 6.8):
 - Words carry every meaning; cards are Markdown with headings and lists, so screen readers can jump between findings and examples.
 - Every picker choice also works as a typed number or word; a question can be revised or partly answered in free text; authority replies are short enough to speak.
 - The latest result is always reachable with "show that again".
 - No focus stealing; long checks announce their start and end only.
-- Diffs are inspected through the host's accessible diff viewer and Accessible View, which Tenet links to and never replaces.
+- Diffs are inspected through the host's accessible diff viewer and Accessible View, which Tenet Copilot links to and never replaces.
 - Text sketches are preceded by a one-sentence summary; screenshots are never the only evidence.
 - Guided style doubles as a cognitive-load aid, never a "simple mode".
 
 ### 13.2 Localization
 
-- Tenet's interaction language is English in R1, independent of the app's language.
+- Tenet Copilot's interaction language is English in R1, independent of the app's language.
 - Dates in consequential examples are unambiguous ("Tue Oct 14, 2 days ago").
 - Time zones are explicit decisions wherever behavior depends on them, with a daylight-saving example when relevant.
 - Numbers and currency follow the user's locale in prose and stay raw in code and receipts.
@@ -709,7 +709,7 @@ Metrics are frozen before qualification. Necessary decisions are never optimized
 
 ### 14.2 Session scenarios
 
-Observe complete sessions with people who have never seen Tenet, know or don't know the repository, use assistive technology, misread an example, decline a recommendation, stop halfway, or need recovery. Each scenario must show:
+Observe complete sessions with people who have never seen Tenet Copilot, know or don't know the repository, use assistive technology, misread an example, decline a recommendation, stop halfway, or need recovery. Each scenario must show:
 
 | Scenario | Must show |
 |---|---|
@@ -745,7 +745,7 @@ The consent form, written with the evaluation owner, states:
 - where it is stored, who can access it, and the owner-confirmed research retention period (PRD Section 6.7: deleted 90 days after analysis unless the participant separately agrees otherwise; decision 18 A, 2026-10-24);
 - how to withdraw: delete a local bundle before upload, or request removal by participant ID afterwards.
 
-Product use never implies research consent, and raw recordings are never published. Withdrawal requires deletion of participant data and derived records within Tenet's control. This research policy is separate from operational state, product traces, synthetic evaluation-capture policy and migration-backup retention; its confirmation authorizes no collection, recruitment, paid run or publication.
+Product use never implies research consent, and raw recordings are never published. Withdrawal requires deletion of participant data and derived records within Tenet Copilot's control. This research policy is separate from operational state, product traces, synthetic evaluation-capture policy and migration-backup retention; its confirmation authorizes no collection, recruitment, paid run or publication.
 
 ---
 
@@ -755,7 +755,7 @@ Product use never implies research consent, and raw recordings are never publish
 
 | ID | Decision | Choice | By |
 |---|---|---|---|
-| UX-D1 | When the kickoff stops | Only for Tenet's additions; new requirements therefore stop once (INT-15), as a one-word reply | Owner |
+| UX-D1 | When the kickoff stops | Only for Tenet Copilot's additions; new requirements therefore stop once (INT-15), as a one-word reply | Owner |
 | UX-D2 | Headline wording | Plain activity-aware phrase plus the exact endpoint term | Owner |
 | UX-D3 | Where durable settings go | By kind; project facts on this machine first, shared later on request; plain phrases are temporary | Owner (scope clarified per PRD Section 7.5) |
 | UX-D4 | "Don't commit" | Honored per task | Owner |
@@ -786,9 +786,9 @@ Product use never implies research consent, and raw recordings are never publish
 | A12 | `Result`'s `integration` field and next-action line read the `integration` setting (`offer` / legacy `auto-on-accept` / `never`, GIT-11); only explicit `integrate` may switch branches | TS §8.3, TS §10.4 | Adopted in v1.0 |
 | A13 | Rejected: do not classify a boundary or negative case as `origin: request` unless the user's own words state it. The kernel does not interpret the sketch (§8.7); a "direct logical complement" classifier would be exactly that interpretation, and is how a seeded misreading would ship silently. The one-word "ok" stop (UX-D1) is the mitigation, not a gap to close — see §14.1 and §5.1 | — | Rejected |
 
-Rejected by option A/P47: Tenet never stages or commits a human-only file set
+Rejected by option A/P47: Tenet Copilot never stages or commits a human-only file set
 on the user's behalf. The person commits or sets aside their own edits outside
-Tenet; "wait while you commit" covers that route. Included overlap is eligible
+Tenet Copilot; "wait while you commit" covers that route. Included overlap is eligible
 only when the same file also contains a Tenet-authored change, with explicit
 authorization. Also not adopted, to keep complexity down: an auto-integrate
 offer after repeated integrations (integrating in one word already removes the
