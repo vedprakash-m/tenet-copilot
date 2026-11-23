@@ -97,4 +97,14 @@ describe("run-bound report admission [EVD-05]", () => {
     assert.equal(result.exit, 0);
     assert.equal(result.report, "{}");
   });
+  it("accepts a report whose filesystem rounds the fresh mtime to the call's start second", async () => {
+    const root = fresh(), runDir = join(root, "run"), report = join(runDir, "report.json");
+    const second = Math.floor(Date.now() / 1000);
+    const result = await runner().run({
+      argv: [process.execPath, "-e", "const fs=require('fs');fs.writeFileSync(process.argv[1], '{}');const t=Number(process.argv[2]);fs.utimesSync(process.argv[1],t,t)", report, String(second)],
+      cwd: root, runDir, report, timeoutMs: 5000,
+    });
+    assert.equal(result.exit, 0);
+    assert.equal(result.report, "{}");
+  });
 });
