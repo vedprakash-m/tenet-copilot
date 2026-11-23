@@ -225,7 +225,7 @@ function admitAssertion(a: any, seen: Set<string>): string | undefined {
     a.failureMessages !== undefined &&
     (!Array.isArray(a.failureMessages) || a.failureMessages.some((m: unknown) => typeof m !== "string" || m.length > 2000))
   )
-    return "invalid assertion failure messages";
+    return `invalid assertion failure messages: ${a.fullName.slice(0, 120)}`;
   if (a.status !== "failed" && a.failureMessages?.length) return "the assertion status and its failure messages disagree";
   if (seen.has(a.fullName)) return "duplicate test identity";
   seen.add(a.fullName);

@@ -120,7 +120,7 @@ export function normalizePlaywright(raw: string | null, root = ""): Normalized {
   const parsed = reportSchema.safeParse(data);
   if (!parsed.success) return invalid("invalid Playwright report structure");
   const d = parsed.data;
-  if (d.errors?.length) return invalid("the report contains global errors");
+  if (d.errors?.length) return invalid(`the report contains global errors: ${JSON.stringify(d.errors[0]).slice(0, 200)}`);
   const flat: Array<{ file: string; title: string; spec: PwSpec }> = [];
   flatten(d.suites, undefined, flat);
   if (flat.length > 20000) return invalid("too many specs; the report was not fully normalized");
