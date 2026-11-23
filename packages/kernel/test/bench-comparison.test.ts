@@ -27,7 +27,7 @@ it("freezes five paired repetitions on both failing fixtures and alternates orde
 it("retains every repeated budget failure instead of selecting a passing run", () => {
   const all = results();
   assert.deepEqual(summarize(all), { complete: true, failures: 0, exit: 0 });
-  all[0]!.rows = rows(all[0]!.attempt.fixture, 301);
+  all[0]!.rows = rows(all[0]!.attempt.fixture, 751);
   assert.deepEqual(summarize(all), { complete: true, failures: 1, exit: 1 });
 });
 
