@@ -6896,7 +6896,7 @@
           "kind": "test",
           "tier": "T1",
           "path": "packages/kernel/test/golden-task-loan-desk.test.ts",
-          "sha256": "f8ee2275badcb2dd2828d02978785d31a2b76aabe618a6a0d3e4a94001349bd1",
+          "sha256": "949b9310e6e5c243ac506d87f6fa77bd5c52b0239f20b56fbc1dbe8ce2f2126d",
           "acIds": [
             "AC-20"
           ],
@@ -6927,7 +6927,7 @@
               "kind": "test",
               "tier": "T1",
               "path": "packages/kernel/test/golden-task-loan-desk.test.ts",
-              "sha256": "f8ee2275badcb2dd2828d02978785d31a2b76aabe618a6a0d3e4a94001349bd1",
+              "sha256": "949b9310e6e5c243ac506d87f6fa77bd5c52b0239f20b56fbc1dbe8ce2f2126d",
               "acIds": [
                 "AC-20"
               ],
