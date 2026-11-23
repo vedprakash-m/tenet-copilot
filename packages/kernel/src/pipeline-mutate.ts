@@ -109,6 +109,12 @@ function enforceStorage(
 }
 const needsStoragePreflight = (verb: Verb, input: Input) =>
   verb.name === "decide" && STORAGE_PREFLIGHT_DECISIONS.has(input.kind);
+const stopStoragePreflight = (ports: Ports, verb: Verb, input: Input, tx: Tx, state: State | null) =>
+  verb.name === "stop" ? enforceStorage(ports, verb, input, tx, state, true) : undefined;
+const selectedStorage = (
+  preflight: EvictReport | undefined,
+  after: () => EvictReport | undefined,
+) => preflight || after();
 function persistedExpiry(ports: Ports, report: EvictReport): EvictReport {
   const paths = ports.store.expiredEvidence?.() ?? [];
   return paths.length ? { ...report, expired: [...new Set([...(report.expired ?? []), ...paths])] } : report;
@@ -432,6 +438,7 @@ async function planInLock(ports: Ports, verb: Verb, input: Input, tx: Tx, held: 
     if ("res" in gate) return gate;
     current = gate.current;
   }
+  const stopStorage = stopStoragePreflight(ports, verb, input, tx, current);
   const plan = await verb.run(ports, current, input, { ...tx, state: current });
   clearUnrecordedRecovery(verb, input, tx, recovered);
   addRecovery(plan, recovered);
@@ -439,11 +446,13 @@ async function planInLock(ports: Ports, verb: Verb, input: Input, tx: Tx, held: 
   plan.resp = withShared(plan.resp, shared, plan.state ?? tx.state);
   plan.state = capabilitiesState(ports, plan.state, verb.name);
   if (!plan.state) {
-    addStorageReport(plan, enforceStorage(ports, verb, input, tx, current, true));
+    addStorageReport(plan, selectedStorage(stopStorage, () =>
+      enforceStorage(ports, verb, input, tx, current, true)));
     return { res: render(ports, verb.name, plan.resp, tx.state), plan };
   }
   reserveJobFinalState(ports, plan);
-  const storage = enforceStorage(ports, verb, input, tx, stateAfterPlan(plan, current), true);
+  const storage = selectedStorage(stopStorage, () =>
+    enforceStorage(ports, verb, input, tx, stateAfterPlan(plan, current), true));
   applyExpiredEvidence(plan, current, storage);
   addStorageReport(plan, storage);
   const final = !plan.job;
@@ -530,6 +539,7 @@ export async function mutate(ports: Ports, verb: Verb, input: Input): Promise<Ke
   if (!job) return first.res;
   guardLaunch(ports, verb, ownerOf(first.plan?.state, job.id), job);
   let result: unknown;
+  await ports.callBoundary?.external(true);
   try {
     result = await job.execute();
   } catch (e) {
@@ -537,6 +547,8 @@ export async function mutate(ports: Ports, verb: Verb, input: Input): Promise<Ke
       error: e instanceof Error ? e.message : String(e),
       ...(e instanceof KernelError ? { errorCode: e.reasons[0]?.code } : {}),
     };
+  } finally {
+    await ports.callBoundary?.external(false);
   }
   return publishResult(ports, verb, input, first, job, result, held.world, held.startedAt);
 }

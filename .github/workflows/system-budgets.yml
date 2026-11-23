@@ -123,3 +123,11 @@ jobs:
           path: starter-memory.json
           if-no-files-found: error
           retention-days: 30
+  system-budgets:
+    name: System budgets
+    needs: [skill-experiment, frozen-fixtures, starter-memory]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Confirm every required system-budget lane passed
+        run: test "${{ needs.skill-experiment.result }}" = success && test "${{ needs.frozen-fixtures.result }}" = success && test "${{ needs.starter-memory.result }}" = success

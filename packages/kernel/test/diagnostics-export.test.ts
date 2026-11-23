@@ -58,10 +58,27 @@ describe("diagnostics export", () => {
     assert.ok(!out.text.includes("ghp_"), "unlisted fields are not exported");
     assert.ok(!out.text.includes("secret-plans"), "effect bodies are left out");
     const bundle = JSON.parse(out.text);
-    assert.deepEqual(bundle.calls, [{ t: "2026-11-10T00:00:01Z", verb: "check", exit: 0, revision: 1, work: "W-0001", durationMs: 12 }]);
+    assert.deepEqual(bundle.calls, [{
+      t: "2026-11-10T00:00:01Z", "gen_ai.operation.name": "check", exit: 0,
+      revision: 1, work: "W-0001", durationMs: 12,
+    }]);
     assert.equal(bundle.dropped.calls, 1);
     assert.deepEqual(bundle.effects, { intent: 1 });
     assert.match(out.note, /Nothing has been sent or saved/);
+  });
+
+  it("projects journal call fields to the pinned OpenTelemetry GenAI subset [ENG-06]", () => {
+    const out = build([call(1, {
+      model: "unknown", termination: "completed", checkOutcome: "pass",
+      role: "unknown", permission: "unknown", visibilityGaps: ["role", "model", "permission"],
+    })]);
+    assert.deepEqual(JSON.parse(out.text).calls, [{
+      t: "2026-11-10T00:00:01Z",
+      "gen_ai.operation.name": "check",
+      "gen_ai.request.model": "unknown",
+      exit: 0,
+      revision: 1,
+    }]);
   });
 
   it("never exports outcome or request text from the state", () => {

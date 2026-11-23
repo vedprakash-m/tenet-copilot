@@ -31,6 +31,7 @@ import type { MigrationGuard } from "./marker-rollback.ts";
 import type { CommitProofV1 } from "../core/commit-proof.ts";
 import { addExpiredEvidence, readExpiredEvidence } from "./history-expiry-fs.ts";
 import { runScopeSnapshot } from "./run-scope.ts";
+import { aggregateBlobPlan, ceilingRefusal, evictBlobPlan, blobRefs, storageFootprint } from "./store-eviction.ts";
 
 const COMPACTION_MARKER = "compaction.ever.json";
 const EXPIRED_EVIDENCE = "history-expired.json";
@@ -380,7 +381,7 @@ export class FsStore implements Store {
         }),
         publish: (next) => store.inWrite(context, () => {
           const staged = State.parse({ ...next, revision: (published?.revision ?? 0) + 1 });
-          context.staged.push({ kind: "state", value: staged });
+          context.staged.push({ kind: "state", value: staged, serialized: JSON.stringify(staged) });
           published = staged;
         }),
         reservePublish: (next, reservedJournalBytes = 0) => store.inWrite(context, () => {
@@ -436,7 +437,7 @@ export class FsStore implements Store {
     if (!existsSync(this.p("log"))) writeSynced(this.p("log"), "");
   }
 
-  private statePublication(next: State, reservedJournalBytes: number) {
+  private statePublication(next: State, serialized: string, reservedJournalBytes: number) {
     const context = this.writes.getStore();
     if (context?.creationIdentity) {
       const scope = this.retentionScope();
@@ -446,8 +447,9 @@ export class FsStore implements Store {
     }
     const before = this.exists() ? this.read() : null;
     const current = before?.state;
-    const doc = State.parse({ ...next, revision: (current?.revision ?? 0) + 1 });
-    const serialized = JSON.stringify(doc);
+    const expectedRevision = (current?.revision ?? 0) + 1;
+    if (next.revision !== expectedRevision) throw new KernelError("revision-conflict");
+    const doc = next;
     const checkpoint = doc.workSeq || doc.generationSeq ? accountingCheckpoint(doc, current) : null;
     const checkpointBytes = checkpoint
       ? Buffer.byteLength(JSON.stringify({ t: this.clock.now(), ...checkpoint }), "utf8")
@@ -456,12 +458,12 @@ export class FsStore implements Store {
       Buffer.byteLength(serialized, "utf8") + checkpointBytes + reservedJournalBytes,
       context?.reserveAllowed ?? false,
     );
-    return { before, current, doc, serialized, checkpoint };
+    return { before, current, doc, checkpoint };
   }
 
-  private publishState(next: State, reservedJournalBytes = 0) {
-    const { before, current, doc, serialized, checkpoint } =
-      this.statePublication(next, reservedJournalBytes);
+  private publishState(next: State, serialized: string, reservedJournalBytes = 0) {
+    const { before, current, doc, checkpoint } =
+      this.statePublication(next, serialized, reservedJournalBytes);
     const seen = this.fileId("state");
     if (checkpoint) this.append(checkpoint);
     const tmp = this.p("state.tmp");
@@ -578,7 +580,7 @@ export class FsStore implements Store {
       if (entry.kind === "log") logBytes += Buffer.byteLength(JSON.stringify(entry.value), "utf8") + 1;
       if (entry.kind === "blob") blobBytes += Buffer.byteLength(entry.content, "utf8");
       if (entry.kind === "state") {
-        stateBytes = Math.max(stateBytes, Buffer.byteLength(JSON.stringify(entry.value), "utf8"));
+        stateBytes = Math.max(stateBytes, Buffer.byteLength(entry.serialized, "utf8"));
         const checkpoint = entry.value.workSeq || entry.value.generationSeq
           ? accountingCheckpoint(entry.value, priorState)
           : null;
@@ -645,7 +647,7 @@ export class FsStore implements Store {
       try {
         const staged = [...context.staged];
         for (const entry of staged) {
-          if (entry.kind === "state") this.publishState(entry.value);
+          if (entry.kind === "state") this.publishState(entry.value, entry.serialized);
           if (entry.kind === "log") this.append(entry.value);
           if (entry.kind === "blob") {
             mkdirSync(this.p("blobs"), { recursive: true, mode: 0o700 });
@@ -923,7 +925,10 @@ export class FsStore implements Store {
         }
       }
     }
-    return { protectedIds, protectedPaths };
+    return {
+      protectedIds, protectedPaths,
+      protectedBlobs: blobRefs([states, unresolved, this.writes.getStore()?.staged]),
+    };
   }
   private projectedReduction(
     nowMs: number,
@@ -1125,39 +1130,16 @@ export class FsStore implements Store {
   evict(keep: readonly string[], apply = true, age = 0): EvictReport {
     return this.write(() => this.evictInLock(keep, apply, age));
   }
-  private storeFootprint() {
-    const classes: Array<{ name: string; bytes: number }> = [];
-    let accounting: "known" | "unknown" | "changed" = "known";
-    try {
-      for (const name of readdirSync(this.dir)) {
-        const measured = this.measure(join(this.dir, name));
-        if (measured.accounting !== "known") accounting = measured.accounting;
-        classes.push({ name, bytes: measured.bytes });
-      }
-    } catch { accounting = "unknown"; }
-    return { classes: classes.sort((a, b) => b.bytes - a.bytes), accounting };
-  }
   private evictInLock(keep: readonly string[], apply = true, age = 0): EvictReport {
     const staged = stagedRunGrowth(this.writes.getStore());
     const protection = this.journalProtection([...keep, ...staged.paths]);
     const cap = this.capRuns([...protection.protectedPaths], staged.bytes, age);
     const projectedReduction = this.projectedReduction(Date.parse(this.clock.now()), protection);
-    const { classes, accounting: classAccounting } = this.storeFootprint();
+    const { classes, accounting: classAccounting } =
+      storageFootprint(this.dir, (path) => this.measure(path));
     const total = classes.reduce((n, c) => n + c.bytes, 0);
-    const projected = Math.max(0, total - projectedReduction.savings);
-    const peak = total + projectedReduction.transientBytes;
     const ceiling = this.opts.ceilingBytes ?? 50 * 1024 * 1024;
-    if (projected > ceiling || peak > ceiling) {
-      return {
-        overCeiling: true,
-        largest: classes.slice(0, 3),
-        refusal: {
-          code: "storage-protected-full",
-          message: "Tenet's protected and recovery storage reached its 50 MB ceiling. No write was made; " +
-            "preserve current data and reduce eligible storage before trying again.",
-        },
-      };
-    }
+    const reserve = this.opts.reserveBytes ?? 5 * 1024 * 1024;
     if (classAccounting !== "known" || cap.accounting !== "known") {
       return {
         overCeiling: false,
@@ -1169,7 +1151,17 @@ export class FsStore implements Store {
         },
       };
     }
-    const reserve = this.opts.reserveBytes ?? 5 * 1024 * 1024;
+    const blobPlan = aggregateBlobPlan(
+      this.dir,
+      protection.protectedBlobs,
+      Math.max(0, total - Math.max(0, ceiling - reserve)),
+      (path) => this.measure(path),
+    );
+    const blobSavings = blobPlan.reduce((bytes, entry) => bytes + entry.bytes, 0);
+    const projected = Math.max(0, total - blobSavings - projectedReduction.savings);
+    const peak = Math.max(0, total - blobSavings) + projectedReduction.transientBytes;
+    const refused = ceilingRefusal(projected, peak, ceiling, classes.slice(0, 3));
+    if (refused) return refused;
     const overCeiling = projected > ceiling - reserve || peak > ceiling - reserve;
     if (overCeiling) {
       return {
@@ -1193,7 +1185,7 @@ export class FsStore implements Store {
         },
       };
     }
-    for (const planned of cap.remove) {
+    for (const planned of [...blobPlan, ...cap.remove]) {
       const now = this.measure(planned.path);
       if (now.accounting !== "known" || now.identity !== planned.identity) {
         return {
@@ -1209,12 +1201,14 @@ export class FsStore implements Store {
     }
     this.assertRunScopeUnchanged(cap.scopes);
     if (!apply) return { overCeiling, largest: classes.slice(0, 3) };
+    this.assertCandidatesUnchanged(blobPlan);
+    const blobMessage = evictBlobPlan(blobPlan);
     const red = this.reduceLog(Date.parse(this.clock.now()), protection);
     const changed = cap.remove.length || ("aged" in cap && cap.aged.length)
-      ? this.changedCleanup(cap, red, overCeiling, classes)
+      ? this.changedCleanup(cap, [blobMessage, red].filter((x): x is string => !!x).join(" ") || undefined, overCeiling, classes)
       : undefined;
     if (changed) return changed;
-    return this.applyCap(cap, red, overCeiling, classes);
+    return this.applyCap(cap, [blobMessage, red].filter((x): x is string => !!x).join(" ") || undefined, overCeiling, classes);
   }
   private applyCap(
     cap: ReturnType<FsStore["capRuns"]>, red: string | undefined,

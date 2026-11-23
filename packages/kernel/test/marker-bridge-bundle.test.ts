@@ -62,13 +62,14 @@ async function runBridge(root: string, request: string, digest?: string, expecte
       ...process.env,
       TENET_ROLLBACK_BRIDGE_REQUEST: expectedRequest,
       TENET_HOST_VERSION: "schema2-bridge-fixture",
+      TENET_CALL_BOUNDARY_CHILD: "1",
       ...(digest ? { TENET_ROLLBACK_BRIDGE_DIGEST: digest } : {}),
     }),
-    stdio: ["ignore", "pipe", "pipe"],
+    stdio: ["ignore", "pipe", "pipe", "ipc"],
   });
   let stdout = "", stderr = "";
-  child.stdout.on("data", (chunk: Buffer) => { stdout += chunk; });
-  child.stderr.on("data", (chunk: Buffer) => { stderr += chunk; });
+  child.stdout!.on("data", (chunk: Buffer) => { stdout += chunk; });
+  child.stderr!.on("data", (chunk: Buffer) => { stderr += chunk; });
   const code = await new Promise<number | null>((resolve) => child.on("exit", resolve));
   return { code, stderr, stdout, value: JSON.parse(stdout.trim()) as { exit: number; handle?: string; reasons?: Array<{ code: string }> } };
 }
@@ -90,8 +91,9 @@ async function killAfterAccounting(root: string, request: string, digest: string
       TENET_ROLLBACK_BRIDGE_REQUEST: request,
       TENET_HOST_VERSION: "schema2-bridge-fixture",
       TENET_BRIDGE_KILL: "after-accounting-before-state",
+      TENET_CALL_BOUNDARY_CHILD: "1",
     }),
-    stdio: "ignore",
+    stdio: ["ignore", "ignore", "ignore", "ipc"],
   });
   return new Promise<{ code: number | null; signal: NodeJS.Signals | null }>((resolve) => {
     child.on("exit", (code, signal) => resolve({ code, signal }));

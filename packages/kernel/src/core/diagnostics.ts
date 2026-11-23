@@ -24,7 +24,10 @@ const Verb = z.enum([
 ]);
 const Label = z.string().regex(/^W-\d{4,}$/);
 const Call = z.strictObject({
-  t: z.iso.datetime(), verb: Verb, exit: Nat.max(5), revision: Nat, work: Label.optional(), durationMs: Nat.optional(),
+  t: z.iso.datetime(),
+  "gen_ai.operation.name": Verb,
+  "gen_ai.request.model": z.literal("unknown").optional(),
+  exit: Nat.max(5), revision: Nat, work: Label.optional(), durationMs: Nat.optional(),
 });
 const ReceiptCount = z.record(
   z.string().regex(/^(test|static|build|audit|workload|manual):(pass|fail|inconclusive|skipped)$/), Nat,
@@ -68,7 +71,8 @@ const count = (xs: readonly string[]) => xs.reduce<Record<string, number>>((m, x
 function callOf(e: LogEntry, verbs: ReadonlySet<string>) {
   if (typeof e.verb !== "string" || !verbs.has(e.verb)) return null;
   const parsed = Call.safeParse({
-    t: e.t, verb: e.verb, exit: e.exit, revision: e.revision,
+    t: e.t, "gen_ai.operation.name": e.verb, exit: e.exit, revision: e.revision,
+    ...(e.model === "unknown" ? { "gen_ai.request.model": e.model } : {}),
     ...(Label.safeParse(e.work).success ? { work: e.work } : {}),
     ...(Nat.safeParse(e.durationMs).success ? { durationMs: e.durationMs } : {}),
   });

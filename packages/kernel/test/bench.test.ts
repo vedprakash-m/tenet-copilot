@@ -161,11 +161,12 @@ describe("benchmark budgets", () => {
     assert.equal(new Set(BUDGETS.map((b) => b.id)).size, BUDGETS.length);
   });
   it("lists the unbuilt pieces as not measurable and gives them no number", () => {
-    for (const id of ["repository-map", "tenet-eviction", "call-timeout", "assignment-peak"]) {
+    for (const id of ["repository-map", "assignment-peak"]) {
       const b = BUDGETS.find((x) => x.id === id)!;
       assert.equal(b.fixed?.status, "not-measurable", id);
       assert.ok(b.fixed!.detail.length > 20, id);
     }
+    assert.equal(BUDGETS.find((x) => x.id === "call-timeout")?.fixed?.status, "delegated");
   });
   it("reports every measured row as unobservable on win32 without starting the kernel", () => {
     const report = runBench({ bundle: join(scratch(), "missing.mjs"), fixtures: ["small", "large"], platform: "win32" });

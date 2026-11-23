@@ -6,7 +6,7 @@ import type { LogEntry } from "../ports/types.ts";
 
 export interface LockInfo { pid: number; procStart: string; nonce: string; verb: string }
 export type StagedWrite =
-  | { kind: "state"; value: State }
+  | { kind: "state"; value: State; serialized: string }
   | { kind: "log"; value: LogEntry }
   | { kind: "blob"; hash: string; content: string }
   | { kind: "directory"; path: string }

@@ -1,6 +1,6 @@
 # R1 Should dispositions
 
-Status: **proposed; owner sign-off pending**.
+Status: **owner direction to retain all 19; owner signature pending**.
 
 This register does not approve an omission. The PRD requires every Should to
 pass or have an owner-signed omission before R1. Evidence below identifies
@@ -25,7 +25,7 @@ qualification.
 | LRN-04 | R1 | Retain | The coordinator offers a lesson only from a cited finding, repeated failure or correction and requires user confirmation; add campaign evidence for over-offering/under-offering. |
 | QLT-08 | R1 | Retain | `packages/kernel/test/prerequisite-guidance.test.ts` covers current handover documentation without inventing evidence. Extend the fixture through every required document. |
 | QLT-15 | R1 | Retain | `packages/kernel/test/recipe-guidance.test.ts` requires a reviewed manual recipe migration and rejects replacement of an existing app. |
-| ENG-06 | R1 | Omit only if owner signs; otherwise implement | The pinned OpenTelemetry GenAI trace-field subset is not complete in the current trace schema. Add the closed field projection without exporting data by default. |
+| ENG-06 | R1 | Retain, finish pin and qualification | The diagnostics export now projects the closed journal `verb` and explicit `model: unknown` fields to `gen_ai.operation.name` and `gen_ai.request.model` without exporting by default. The exact OpenTelemetry GenAI semantic-convention version and native-host qualification still need owner approval and evidence. |
 | OSS-03 | R1 | Retain | `CONTRIBUTING.md` now defines RFC inputs, independent review, and cumulative experimental/community/official certification. |
 | OSS-06 | R1 | Retain, host qualification pending | `/tenet feedback` now routes to `inspect --view export --topic feedback`; the kernel returns the redacted, no-save/no-send preview and the coordinator stops. |
 

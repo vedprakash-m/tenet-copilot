@@ -64,6 +64,7 @@ const call = (root, verb, body = {}, flags = [], consentEnvelope = true) => {
      catch (error) { throw new Error(JSON.stringify({ verb, args, status: result.status, signal: result.signal, stdout: result.stdout, stderr: result.stderr, error: error.message })); }
     })();
     assert.equal(result.status, response.exit, JSON.stringify(response));
+    assert.ok(response.timing, JSON.stringify(response));
     assert.equal(response.timing.scope, 'kernel-call', '[NFR-05] built response timing scope');
     for (const field of ['active', 'tool']) {
         assert.equal(response.timing[field].source, 'kernel');
@@ -262,7 +263,7 @@ try {
    for (const name of ['marker', 'state', 'state.prev', 'log']) assert.equal(statSync(join(dir, name)).mode & 0o777, 0o600);
   } else {
    const killed = spawnSync(process.execPath, [join(source, 'tools/uat/crash-bundle-forget.mjs'), bundle, point, 'decide'], { cwd: forgetting, env: metadataEnv(forgetting), input: JSON.stringify(input), encoding: 'utf8' });
-   assert.equal(killed.signal, 'SIGKILL', killed.stderr + killed.stdout);
+   assert.equal(killed.status, 5, killed.stderr + killed.stdout);
   }
   const result = call(forgetting, 'decide', { h, kind: 'config', target: 'style', propose: { value: 'concise' } });
   assert.equal(result.exit, 0, JSON.stringify(result));
@@ -343,7 +344,7 @@ try {
   const uncertain = create(), h = call(uncertain, 'open', { profile: 'plan', request: 'recover before refusing' }).handle;
   const id = call(uncertain, 'decide', { h, kind: 'lesson', quote: 'UAT-ASTER-quote-19452', propose: { statement: 'UAT-ASTER-lesson-83194' } }).data.id;
   const killed = spawnSync(process.execPath, [join(source, 'tools/uat/crash-bundle-forget.mjs'), bundle, 'after-intent', 'decide'], { cwd: uncertain, env: metadataEnv(uncertain), input: JSON.stringify({ h, kind: 'forget', target: id, answers: { 'forget-confirm': 'yes' } }), encoding: 'utf8' });
-  assert.equal(killed.signal, 'SIGKILL', killed.stderr + killed.stdout);
+  assert.equal(killed.status, 5, killed.stderr + killed.stdout);
   const state = JSON.parse(readFileSync(join(uncertain, '.tenet/state'), 'utf8'));
   writeFileSync(join(uncertain, '.tenet/log'), JSON.stringify({ t: new Date().toISOString(), kind: 'intent', effect: 'unrecognized-effect', id: 'uncertain-one', op: { work: Object.keys(state.work)[0] } }) + '\n', { flag: 'a' });
   const r = call(uncertain, 'decide', { h, kind: 'config', target: 'style', propose: { value: 'concise' } });
@@ -581,7 +582,7 @@ try {
   assert.equal(call(interrupted, 'decide', { h: ih, kind: 'envelope-consent', answers: { 'envelope-consent': 'allow-envelope' } }).exit, 0);
   const killed = spawnSync(process.execPath, [join(source, 'tools/uat/crash-bundle-project.mjs'), bundle, 'kill-prepared-call', '<unused>',
    'check', '--h', ih, '--stage', 'baseline'], { cwd: interrupted, env: metadataEnv(interrupted), encoding: 'utf8', timeout: 10000 });
-  assert.equal(killed.error, undefined, killed.error?.message); assert.equal(killed.signal, 'SIGKILL', killed.stderr);
+  assert.equal(killed.error, undefined, killed.error?.message); assert.equal(killed.status, 5, killed.stderr + killed.stdout);
   const before = JSON.parse(readFileSync(join(interrupted, '.tenet/state'), 'utf8'));
   const work = Object.values(before.work)[0], record = join(work.session.inCall.runDir, 'run.json');
   assert.deepEqual(JSON.parse(readFileSync(record, 'utf8')), { prepared: true });
@@ -671,7 +672,7 @@ try {
    : metadata === 'complete' ? 'after-commit-result' : `after-${metadata}-commit-result`;
   const killed = spawnSync(process.execPath, [join(source, 'tools/uat/crash-bundle-index.mjs'), bundle, point,
    'finish', '--h', candidate.h], { cwd: replayed, env: metadataEnv(replayed), encoding: 'utf8' });
-  assert.equal(killed.signal, 'SIGKILL', killed.stderr + killed.stdout);
+  assert.equal(killed.status, 5, killed.stderr + killed.stdout);
   const landed = git(replayed, 'rev-parse', 'HEAD');
   assert.equal(Number(git(replayed, 'rev-list', '--count', 'HEAD')), count + 1);
   const recovered = call(replayed, 'open', { profile: 'investigate', request: 'replay the recorded commit safely' });
@@ -1236,7 +1237,7 @@ try {
   const confirm = { h: ah, kind: 'adopt', target: 'intent', answers: { 'adopt-confirm': 'confirm' } };
   const action = spawnSync(process.execPath, [join(source, 'tools/uat/crash-bundle-project.mjs'), bundle, point === 'unreadable-recovery' ? 'after-temp-fsync' : point, join(outside, 'private'), 'decide'], { cwd: adoption, env: metadataEnv(adoption), input: JSON.stringify(confirm), encoding: 'utf8' });
   if (point === 'predictable-temp-link') { assert.equal(action.signal, null); assert.equal(action.status, 0, action.stderr + action.stdout); }
-  else assert.equal(action.signal, 'SIGKILL', action.stderr + action.stdout);
+  else assert.equal(action.status, 5, action.stderr + action.stdout);
   assert.equal(readFileSync(join(outside, 'private'), 'utf8'), 'PRIVATE_PROJECT_WRITE_CANARY');
   if (point === 'unreadable-recovery') {
    symlinkSync(join(outside, 'private'), join(adoption, 'INTENT.md'));
@@ -1275,7 +1276,7 @@ try {
   assert.equal(call(scaffoldStop, 'decide', { h: ssh, kind: 'adopt', target: 'policy', answers: { 'adopt-confirm': 'confirm' } }).exit, 0);
  }
  const killedScaffold = spawnSync(process.execPath, [join(source, 'tools/uat/crash-bundle-project.mjs'), bundle, 'after-first-link', '-', 'decide'], { cwd: scaffoldStop, env: metadataEnv(scaffoldStop), input: JSON.stringify({ h: ssh, kind: 'scaffold' }), encoding: 'utf8' });
- assert.equal(killedScaffold.signal, 'SIGKILL', killedScaffold.stderr + killedScaffold.stdout);
+ assert.equal(killedScaffold.status, 5, killedScaffold.stderr + killedScaffold.stdout);
  const intent = readFileSync(join(scaffoldStop, '.tenet/log'), 'utf8').split('\n').filter(Boolean).map(line => JSON.parse(line)).find(e => e.kind === 'intent' && e.effect === 'scaffold');
  const first = Object.keys(intent.op.expected).find(path => existsSync(join(scaffoldStop, path))); assert.ok(first);
  const firstBytes = readFileSync(join(scaffoldStop, first));
@@ -1362,7 +1363,7 @@ try {
   if (point === 'failed-directory-sync') {
    assert.equal(killed.signal, null); assert.equal(killed.status, 2, killed.stderr + killed.stdout);
    assert.ok(JSON.parse(killed.stdout).reasons.some(r => r.code === 'effect-uncertain'));
-  } else assert.equal(killed.signal, 'SIGKILL', killed.stderr + killed.stdout);
+  } else assert.equal(killed.status, 5, killed.stderr + killed.stdout);
   const head = git(interrupted, 'rev-parse', 'HEAD');
   assert.ok(readFileSync(join(interrupted, '.tenet/log'), 'utf8').split('\n').filter(Boolean).map(line => JSON.parse(line)).some(e => e.kind === 'intent' && e.effect === 'index-sync'));
   const recovered = call(interrupted, 'open', { profile: 'investigate', request: 'recover interrupted index sync' });

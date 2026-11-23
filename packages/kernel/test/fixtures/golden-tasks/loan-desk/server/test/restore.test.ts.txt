@@ -1,4 +1,4 @@
-import { existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, readdirSync, renameSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, readdirSync, renameSync, rmSync, symlinkSync, truncateSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import Database from "better-sqlite3";
@@ -8,7 +8,7 @@ import { backup } from "../src/platform/backup.ts";
 import { openDb } from "../src/platform/db.ts";
 import { migrate } from "../src/platform/migrate.ts";
 import { takeOwner } from "../src/platform/owner.ts";
-import { pendingRestore, recoverRestore, restore, STEPS } from "../src/platform/restore.ts";
+import { MAX_RESTORE_BYTES, pendingRestore, recoverRestore, restore, STEPS } from "../src/platform/restore.ts";
 
 const dirs: string[] = [];
 const scratch = () => { const d = mkdtempSync(join(tmpdir(), "starter-restore-")); dirs.push(d); return d; };
@@ -93,6 +93,44 @@ describe("restore", () => {
     writeFileSync(copy, "this is not a database");
     expect(() => restore(copy, path)).toThrow(/backup/);
     expect(users(path)).toEqual([]);
+  });
+
+  it("refuses a backup larger than the finite restore byte bound before opening it", () => {
+    const { path, copy } = damaged();
+    truncateSync(copy, MAX_RESTORE_BYTES + 1);
+    expect(() => restore(copy, path)).toThrow(/byte limit|too large/i);
+    expect(users(path)).toEqual([]);
+    expect(pendingRestore(path)).toBeNull();
+    expect(existsSync(`${path}.owner`)).toBe(false);
+  });
+
+  it("refuses a SQLite backup whose filename does not describe the accepted type", () => {
+    const { dir, path, copy } = damaged();
+    const misleading = join(dir, "good.txt");
+    renameSync(copy, misleading);
+    expect(() => restore(misleading, path)).toThrow(/filename.*extension|extension.*SQLite/i);
+    expect(users(path)).toEqual([]);
+    expect(pendingRestore(path)).toBeNull();
+    expect(existsSync(`${path}.owner`)).toBe(false);
+  });
+
+  it("does not accept a permitted extension without SQLite file content", () => {
+    const { path, copy } = damaged();
+    writeFileSync(copy, Buffer.concat([Buffer.from("SQLite format 3\0"), Buffer.alloc(4096, 0x41)]));
+    expect(() => restore(copy, path, { after(step) {
+      if (step === "validated") throw new Error("extension-only admission bypass");
+    } })).toThrow(/backup|SQLite/i);
+    expect(users(path)).toEqual([]);
+    expect(pendingRestore(path)).toBeNull();
+    expect(existsSync(`${path}.owner`)).toBe(false);
+  });
+
+  it.each([".bak", ".db", ".sqlite", ".sqlite3"])("restores a real backup with an accepted %s extension", extension => {
+    const { dir, path, copy } = damaged();
+    const named = join(dir, `verified${extension}`);
+    renameSync(copy, named);
+    restore(named, path);
+    expect(users(path)).toEqual([{ id: "u1" }]);
   });
 
   it("refuses a backup written by newer code than this one", () => {
@@ -334,6 +372,24 @@ describe("a restore killed at every step keeps the data", () => {
 });
 
 describe("restore rollback to an initially absent database [QLT-07]", () => {
+  it("refuses a linked recovery staging file without overwriting its target", () => {
+    const f = twoSided();
+    killedAfter(f.copy, f.path, "moved");
+    const target = join(f.dir, "outside-restore-data"), staging = `${f.path}.restoring`;
+    writeFileSync(target, "do not overwrite\n");
+    symlinkSync(target, staging, "file");
+
+    expect(() => recoverRestore(f.path, "finish")).toThrow(/staging|regular/i);
+    expect(readFileSync(target, "utf8")).toBe("do not overwrite\n");
+    expect(readlinkSync(staging)).toBe(target);
+    expect(pendingRestore(f.path)).toBeTruthy();
+    expect(existsSync(`${f.path}.owner`)).toBe(false);
+
+    rmSync(staging);
+    recoverRestore(f.path, "finish");
+    expect(users(f.path)).toEqual([{ id: "u1" }]);
+  });
+
   it("keeps a dangling restore-marker link fenced without changing files or ownership", () => {
     const { dir, path, copy } = twoSided();
     const marker = `${path}.restore-in-progress`, missing = join(dir, "missing-marker");

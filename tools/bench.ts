@@ -33,17 +33,17 @@ export const STALL_THRESHOLD_MS = 20, WARM_RUNS = 5, MAX_INVALID_RUNS = 2;
 
 /** `prd` is the start of the §4.4.3 row's first column; tests compare these against the PRD table. */
 export const BUDGETS: Array<{ id: string; prd: string; target: string; fixed?: { status: Status; detail: string } }> = [
-  { id: "always-loaded", prd: "Always-loaded Tenet context", target: "<= 2,000 tokens", fixed: { status: "delegated", detail: "Deterministic; tools/lint-skills.ts checks it on every CI run, so it is not re-measured here." } },
+  { id: "always-loaded", prd: "Always-loaded Tenet Copilot context", target: "<= 2,000 tokens", fixed: { status: "delegated", detail: "Deterministic; tools/lint-skills.ts checks it on every CI run, so it is not re-measured here." } },
   { id: "coordinator", prd: "Coordinator agent instructions", target: "<= 1,000 tokens", fixed: { status: "delegated", detail: "Deterministic; tools/lint-skills.ts." } },
   { id: "single-skill", prd: "Single skill loaded on demand", target: "<= 5,000 tokens", fixed: { status: "delegated", detail: "Deterministic; tools/lint-skills.ts." } },
   { id: "assignment-peak", prd: "Peak Tenet-injected context per assignment", target: "<= 20,000 tokens", fixed: { status: "not-measurable", detail: "Observed budget: it needs real assignments on a host and a calibrated estimator (SP-02). No fixture here produces one." } },
   { id: "bookkeeping-warm", prd: "Kernel bookkeeping call latency", target: "p95 <= 300 ms warm", },
   { id: "bookkeeping-cold", prd: "Kernel bookkeeping call latency", target: "p95 <= 1 s cold" },
-  { id: "call-timeout", prd: "Kernel bookkeeping call latency", target: "5 s timeout with a defined outcome", fixed: { status: "not-measurable", detail: "No whole-call timeout exists in packages/kernel/src: only the lock wait (kernel-busy) and the stdin body deadline are bounded." } },
+  { id: "call-timeout", prd: "Kernel bookkeeping call latency", target: "5 s timeout with a defined outcome", fixed: { status: "delegated", detail: "Deterministic process-boundary coverage: packages/kernel/test/call-boundary.test.ts proves a hung call and its process group stop before one non-success timeout outcome is returned; checks and external jobs suspend the deadline under their own bounds." } },
   { id: "check-execution", prd: "Check execution", target: "obligation timeout; expiry is inconclusive", fixed: { status: "delegated", detail: "Deterministic and bounded by each obligation's declared timeout; covered by runner tests, not benchmarked." } },
   { id: "repository-map", prd: "Repository map for", target: "<= 30 s for <= 10,000 files", fixed: { status: "not-measurable", detail: "Not built: the host's language services are the repository map (tech-spec 8.7). Tenet has no component to time. Inventory latency at 10,000 files is bench-inventory.ts, a different thing." } },
   { id: "tenet-storage", prd: "`.tenet/` storage", target: "<= 50 MB", },
-  { id: "tenet-eviction", prd: "`.tenet/` storage", target: "managed by 5.15", fixed: { status: "not-measurable", detail: "Aggregate eviction is not built (storage-retention is partial), so growth beyond the sizes observed here is not shown." } },
+  { id: "tenet-eviction", prd: "`.tenet/` storage", target: "managed by 5.15", fixed: { status: "delegated", detail: "Deterministic aggregate admission and eviction are covered by storage-eviction tests, not re-measured by the workload-size fixture." } },
   { id: "resume", prd: "Resume reconstruction", target: "<= 2 min" },
 ];
 
@@ -239,7 +239,7 @@ export function measuredRows(name: string, m: Measured, warmRuns?: WarmRun[]): R
     runs ? { ...row("bookkeeping-warm", runs.status, runs.observed, runs.detail), stallThresholdMs: STALL_THRESHOLD_MS, trace, runs: warmRuns }
       : row("bookkeeping-warm", warm.status, warm.observed, warm.detail || "Pooled over open, decide, inspect status and stop; check and finish are not timed (see notes)."),
     row("bookkeeping-cold", cold.status, cold.observed, cold.detail || "First kernel call in a fresh clone; the OS file cache is not dropped, so a true cold start is unobserved."),
-    row("tenet-storage", m.storageBytes === null ? "inconclusive" : m.storageBytes <= 50 * MB ? "pass" : "fail", m.storageBytes === null ? "no .tenet/ directory" : `${(m.storageBytes / MB).toFixed(2)} MB`, "Size after this workload only; whether growth stays under the cap depends on eviction, which is not built."),
+    row("tenet-storage", m.storageBytes === null ? "inconclusive" : m.storageBytes <= 50 * MB ? "pass" : "fail", m.storageBytes === null ? "no .tenet/ directory" : `${(m.storageBytes / MB).toFixed(2)} MB`, "Size after this workload; aggregate eviction admission is covered by storage-eviction tests."),
     row("resume", resumeOk ? (resumeMs <= 120_000 ? "pass" : "fail") : "inconclusive", `${resumeMs.toFixed(0)} ms`, "Kernel side only: `open --resume` and the first status. Host re-orientation and an abrupt-kill resume are unobserved."),
   ];
 }

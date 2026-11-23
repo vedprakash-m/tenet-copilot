@@ -1,5 +1,5 @@
 name: Install help
-description: Stuck installing Tenet or getting `/tenet` to appear? Tell us where it stopped and we will fix the steps.
+description: Stuck installing Tenet Copilot or getting `/tenet` to appear? Tell us where it stopped and we will fix the steps.
 title: "Install help: "
 labels: ["install-help"]
 body:

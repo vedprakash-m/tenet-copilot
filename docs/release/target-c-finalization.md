@@ -25,7 +25,7 @@ treated as complete by a source pass, local CI run or draft release.
 - [ ] Owner H1 and H2 records exist from the `tenet-spike` VS Code profile.
 - [ ] The qualified host tuple records VS Code, Copilot extension, observed
   model, macOS/architecture, Node.js and Git versions.
-- [ ] The owner dogfoods one real Tenet change through the installed plugin.
+- [ ] The owner dogfoods one real Tenet Copilot change through the installed plugin.
 - [ ] Native-host acceptance campaigns are repeated on the qualified tuple and
   retain failures, cancellations and inconclusive runs.
 - [ ] The starter ASVS, WCAG/VoiceOver, concurrency, restore and workload
@@ -40,26 +40,27 @@ treated as complete by a source pass, local CI run or draft release.
 - [ ] The PR records opening time, earliest merge time, reviewer availability,
   and any external review; automated review is disclosed as not a second
   maintainer.
-- [ ] `main` branch protection requires the `untrusted`/`system-budgets`
+- [x] `main` branch protection requires the `untrusted`/`system-budgets`
   validation jobs and prevents an unreviewed direct release path. GitHub API
-  observation on 2026-11-21: `main` is not protected and no ruleset is
-  returned.
+  observation on 2026-11-22: active ruleset 27421522 requires the `Tenet Copilot
+  validation` and `System budgets` checks, one approving review, linear
+  history, and the pull-request path.
 - [ ] Required-review, linear-history/rebase, signed-commit or signed-tag
   rules are recorded as actually configured; the source checkout does not
   prove any setting.
 - [x] Private vulnerability reporting is enabled (GitHub API,
   2026-11-21). Secret scanning and push protection are also enabled.
-- [ ] Dependabot security updates are enabled. GitHub API observation on
-  2026-11-21: disabled; Dependabot alerts/status still require an explicit
-  owner check.
-- [ ] The protected `release` environment exists with required reviewers.
-  GitHub API observation on 2026-11-21: no environment is returned.
+- [x] Dependabot security updates are enabled. GitHub API observation on
+  2026-11-22: enabled.
+- [x] The protected `release` environment exists with required reviewers.
+  GitHub API observation on 2026-11-22: required reviewer
+  `vedprakash-m` is configured.
 - [ ] Maintainer multi-factor authentication and release-role ownership are
   confirmed by the repository owner.
 
 ## Publisher and release identity
 
-- [x] Product name is final: "Tenet" (owner, 2026-11-21).
+- [x] Product name is final: "Tenet Copilot" (owner, 2026-11-21).
 - [ ] Repository, publisher and signing identity are approved.
 - [ ] The tag-signing identity exists, is controlled and has a documented
   revocation procedure. Never record a private key in the repository.

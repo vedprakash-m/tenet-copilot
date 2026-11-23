@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import { cleanup } from "./helpers.ts";
 import { BasisElementInput, Obligation, Receipt, ReviewCoverage } from "../src/core/schemas.ts";
 import { buildManifest, isManifest } from "../src/core/review.ts";
+import { KERNEL_VERSION } from "../src/version.ts";
 import { BASIS, GREET_IMPL, GREET_TEST, project, reviewResult, finishFixture } from "./support/fixture.ts";
 import type { Project } from "./support/fixture.ts";
 
@@ -67,7 +68,7 @@ describe("the work contract", () => {
     assert.equal(w.budget.attempts, 0);
     assert.equal(w.git.base, p.git("rev-parse", "main"));
     assert.match(w.git.branch!, /^tenet\/w-0001-/);
-    assert.deepEqual(w.pinned, { tenet: "0.1.0-m0", schema: 2, adapter: p.ports().stack.adapterVersion() });
+    assert.deepEqual(w.pinned, { tenet: KERNEL_VERSION, schema: 2, adapter: p.ports().stack.adapterVersion() });
     assert.equal(w.git.start.head, w.git.base, "the starting HEAD is the recovery point");
   });
 

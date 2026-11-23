@@ -232,7 +232,7 @@ describe("the ts-web-api recipe", () => {
     assert.equal(c.exit, 0, JSON.stringify(c));
     const suite = d(c).receipts.find((r: { obligation: string }) => r.obligation === "OB-suite");
     assert.equal(suite.status, "pass", JSON.stringify(suite));
-    assert.equal(suite.counts.executed, 145, "all platform, client, seed-recovery, restore-crash, marker/owner-admission, dangling-marker, live-WAL-reader, hard-link-alias, kept-aside/staging-collision, unrecorded-data backup/admission, cold-start ownership and generated-contract cases ran");
+    assert.equal(suite.counts.executed, 156, "all platform, client, seed-recovery, restore-crash, marker/owner-admission, dangling-marker, live-WAL-reader, hard-link-alias, kept-aside/staging-collision, unrecorded-data backup/admission, cold-start ownership and generated-contract cases ran");
 
     for (const id of ["OB-types", "OB-lint"]) {
       const receipt = d(c).receipts.find((r: { obligation: string }) => r.obligation === id);

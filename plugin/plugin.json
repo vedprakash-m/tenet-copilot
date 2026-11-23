@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-  "name": "tenet",
-  "version": "0.1.0-m0",
-  "description": "A governed, test-first engineering loop: a small local kernel records what is true, and agents do the work.",
+  "name": "tenet-copilot",
+  "version": "0.2.0-m0",
+  "description": "Tenet Copilot: a governed, test-first engineering loop. A small local kernel records what is true, and agents do the work.",
   "license": "MIT"
 }

@@ -1,10 +1,10 @@
 # Contributing
 
-Tenet records what is true about engineering work, so changes to it are held to the same standard: nothing is called done on a claim alone. This file says how a change gets in. The project rules for people and agents are in [.github/copilot-instructions.md](copilot-instructions.md); read that file first.
+Tenet Copilot records what is true about engineering work, so changes to it are held to the same standard: nothing is called done on a claim alone. This file says how a change gets in. The project rules for people and agents are in [.github/copilot-instructions.md](copilot-instructions.md); read that file first.
 
 ## Before you start
 
-- **License:** Tenet and its own starter-template code use [MIT](../LICENSE), selected by the owner on 2026-10-24. Contributions must be compatible with that license; incorporated third-party code retains its applicable licenses/notices. Remaining contribution and release-process decisions are not settled by license selection.
+- **License:** Tenet Copilot and its own starter-template code use [MIT](../LICENSE), selected by the owner on 2026-10-24. Contributions must be compatible with that license; incorporated third-party code retains its applicable licenses/notices. Remaining contribution and release-process decisions are not settled by license selection.
 - **Code of conduct:** [Contributor Covenant 2.1](CODE_OF_CONDUCT.md) applies to project participation.
 - **Security problems** go to the channel in [SECURITY.md](SECURITY.md), not to a public issue.
 - **Maintainers:** one person holds all maintainer roles today. There is no second maintainer, and independent review of consequential work is done by a fresh-context reviewer agent or by the owner (plan section 4.5).
@@ -13,11 +13,11 @@ Changes to executable content, hooks, helpers, permissions, destinations or eval
 
 ## What the specs are
 
-Three tracked specs say what Tenet is, and a tracked plan holds the remaining work:
+Three tracked specs say what Tenet Copilot is, and a tracked plan holds the remaining work:
 
 | File | Owns |
 |---|---|
-| [specs/PRD.md](../specs/PRD.md) | Meaning: what Tenet must do and why |
+| [specs/PRD.md](../specs/PRD.md) | Meaning: what Tenet Copilot must do and why |
 | [specs/tech-spec.md](../specs/tech-spec.md) | Mechanism: how |
 | [specs/ux-spec.md](../specs/ux-spec.md) | Wording: what the user reads |
 | `specs/plan.md` | Remaining work and the progress record |
@@ -74,7 +74,7 @@ CI uses the versioned `tools/test-inventory.json` and `tools/verify-execution.ts
 
 Run the full mutation, process-group and crash-recovery suite on macOS or Linux. Windows can build the bundle and run the deterministic tooling, pure-rule and platform-refusal tests, but it has no supported mutation port (Tech Spec §4.9). A passing Windows build or focused suite is not a passing full CI gate or host qualification; do not skip the POSIX tests to claim one.
 
-The untrusted workflow runs preflight once, validates the source lane on macOS and Linux, then builds and runs bundle-dependent assertions and the complete minimum-Node UAT on each platform. Node 24 receives a separate extracted-payload smoke instead of a duplicate full UAT. The Windows portability job runs the focused Node 24 and 22.12 selections, including the Windows inverse-patch refusal. The `Tenet validation` aggregate is the workflow result. Synthetic local tooling/evaluation fixtures use unique directories under the existing ignored `.host-runs/test-fixtures/` area so parallel tests cannot change checkout-wide Git status. Each suite removes only its owned directories.
+The untrusted workflow runs preflight once, validates the source lane on macOS and Linux, then builds and runs bundle-dependent assertions and the complete minimum-Node UAT on each platform. Node 24 receives a separate extracted-payload smoke instead of a duplicate full UAT. The Windows portability job runs the focused Node 24 and 22.12 selections, including the Windows inverse-patch refusal. The stable `Tenet validation` aggregate is the workflow result. Synthetic local tooling/evaluation fixtures use unique directories under the existing ignored `.host-runs/test-fixtures/` area so parallel tests cannot change checkout-wide Git status. Each suite removes only its owned directories.
 
 ### Build payload integrity
 
@@ -115,12 +115,12 @@ An RFC review records behavior, architecture, security and compatibility
 findings. The contributor resolves or records each finding's disposition before
 implementation. Certification is cumulative:
 
-- **Experimental:** source is public and passes its own tests, but Tenet makes
+- **Experimental:** source is public and passes its own tests, but Tenet Copilot makes
   no support, compatibility or qualification claim.
 - **Community:** an independent reviewer accepts the RFC, the extension passes
   repository CI and declared acceptance tests, and a named maintainer owns
   compatible updates.
-- **Official:** a Tenet maintainer owns the extension, the exact supported
+- **Official:** a Tenet Copilot maintainer owns the extension, the exact supported
   tuple and model/host evidence are recorded, release and rollback gates pass,
   and the extension appears in the published support matrix.
 

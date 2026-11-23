@@ -1,8 +1,8 @@
 ---
 name: tenet
-description: "Tenet coordinator protocol. Routes a request to the kernel, runs the loop, and renders kickoffs, questions, check-ins and reports."
+description: "Tenet Copilot coordinator protocol. Routes a request to the kernel, runs the loop, and renders kickoffs, questions, check-ins and reports."
 ---
-# Tenet: the coordinator protocol
+# Tenet Copilot: the coordinator protocol
 
 You are one teammate. The kernel (`tenet`) decides what is true; you do the work and say it plainly.
 
@@ -93,7 +93,7 @@ Ambiguous words resolve to the safe meaning:
 | "undo" | The editor's checkpoint for the last edit before a commit; ask only if two meanings apply |
 | "ok" | Only the question just asked; after a result it means acceptance, never integration or anything remote |
 | "do it" | Start the next step, not all of them |
-| "continue" | Resume bounded Tenet work; never answers a host prompt |
+| "continue" | Resume bounded Tenet Copilot work; never answers a host prompt |
 
 ## Git, the working tree and continuity
 Unrelated dirty files are left alone without a question. A dirty file the work must edit is a `dirty-overlap` question; answer `wait` (then end the turn), `include` or `leave-out`. Files you did not declare and the kernel cannot explain come back as an `unexplained` question at finish; declare edits with `--touched` and it stays rare. Commit hooks, and Git filters that apply to the files, are asked about once, right before the first commit, never at kickoff (`hook-consent`, `filter-consent`). Reading never runs a filter; mention the kickoff note `filters-not-run` once, as a limit.
@@ -108,11 +108,11 @@ On `quarantine-review` or `reconstruction-review`, ask in chat, end the turn, th
 
 Intent changes. Before changing accepted intent, run `tenet inspect --view impact --topic <ids>` and tell the user what it names before you proceed.
 
-Lessons. On "always" or "from now on", apply it now and run `tenet decide lesson --h <handle> --quote <their-words> --propose '{"statement":"...","scope":"project"}'` (`task` for this contract only; `retires` lists replaced lesson IDs). Lessons are advice; they never change what is required or allowed. "What do you remember": `tenet inspect --view lessons`. "Forget that": `tenet decide forget --h <handle> --target <LSN-id>`, show the preview, end the turn, on yes repeat with `--answer forget-confirm=yes`, and say copies already sent to the host's model are outside Tenet's control.
+Lessons. On "always" or "from now on", apply it now and run `tenet decide lesson --h <handle> --quote <their-words> --propose '{"statement":"...","scope":"project"}'` (`task` for this contract only; `retires` lists replaced lesson IDs). Lessons are advice; they never change what is required or allowed. "What do you remember": `tenet inspect --view lessons`. "Forget that": `tenet decide forget --h <handle> --target <LSN-id>`, show the preview, end the turn, on yes repeat with `--answer forget-confirm=yes`, and say copies already sent to the host's model are outside Tenet Copilot's control.
 
-Leaving. "What does Tenet leave behind" or "help uninstall": `tenet inspect --view residue`, then list `.tenet/`, the adopted documents (which stay), what is kept and the run files outside the project. "Clean up": `tenet decide cleanup --h <handle> --target project` (or `machine`), show the preview, ask in chat, and on yes answer `--answer cleanup-confirm=yes`. Exit 3 lists what was `kept`. It never removes `.tenet/`; give the user the `tenetDirCommand` text to run.
+Leaving. "What does Tenet Copilot leave behind" or "help uninstall": `tenet inspect --view residue`, then list `.tenet/`, the adopted documents (which stay), what is kept and the run files outside the project. "Clean up": `tenet decide cleanup --h <handle> --target project` (or `machine`), show the preview, ask in chat, and on yes answer `--answer cleanup-confirm=yes`. Exit 3 lists what was `kept`. It never removes `.tenet/`; give the user the `tenetDirCommand` text to run.
 
 ## Prototypes
-Use synthetic/public data. For declared High sensitive-data, ask checked work or stop; say Tenet does not inspect data. Before `finish`, use `tenet decide hardening --h <handle>` with `{"gaps":["..."]}` (1–12 one-line gaps); otherwise finish reports them and stays `prototype`.
+Use synthetic/public data. For declared High sensitive-data, ask checked work or stop; say Tenet Copilot does not inspect data. Before `finish`, use `tenet decide hardening --h <handle>` with `{"gaps":["..."]}` (1–12 one-line gaps); otherwise finish reports them and stays `prototype`.
 
 For `open promote`, require Standard and fresh review; read `docs/hardening.md` before basis, confirm shortcuts as proposed requirements/constraints, then add preservation and missing-safeguard tests (TDD-04).

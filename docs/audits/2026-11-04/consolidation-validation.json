@@ -67,7 +67,7 @@
   },
   "firstPublishedCi": {
     "source": "9c69ada924814cfbee3d5b1e8c2290c2d7d7a3e2",
-    "run": "https://github.com/vedprakash-m/tenet/actions/runs/41964944700",
+    "run": "https://github.com/vedprakash-m/tenet-copilot/actions/runs/41964944700",
     "conclusion": "failure",
     "ubuntu": { "passed": 1685, "failed": 8 },
     "windows": { "passed": 357, "failed": 1 },
@@ -83,7 +83,7 @@
   },
   "repairedPublishedCi": {
     "source": "cc357bbe3ed17fcc151f31390cf8a10cc9042c62",
-    "run": "https://github.com/vedprakash-m/tenet/actions/runs/41967019886",
+    "run": "https://github.com/vedprakash-m/tenet-copilot/actions/runs/41967019886",
     "conclusion": "failure",
     "ubuntuAndMacosEach": { "passed": 1693, "failed": 1 },
     "windows": "pass",
@@ -92,7 +92,7 @@
   },
   "localOnlyPublishedCi": {
     "source": "95ea9e278a46eb6d4f7d6ca38a2a0da8f3926d7e",
-    "run": "https://github.com/vedprakash-m/tenet/actions/runs/41968663955",
+    "run": "https://github.com/vedprakash-m/tenet-copilot/actions/runs/41968663955",
     "conclusion": "failure",
     "windows": "pass",
     "remainingFailure": "Golden loan-desk fixtures overwrite current starter migration/restore safety tests, producing unexpected reviewer attention. Synchronize fixtures rather than accepting weakened checks.",
@@ -105,7 +105,7 @@
   },
   "preservedFixturePublishedCi": {
     "source": "dde2bf2eb1337cb7684840d8c21e4d580e454a25",
-    "run": "https://github.com/vedprakash-m/tenet/actions/runs/41970445046",
+    "run": "https://github.com/vedprakash-m/tenet-copilot/actions/runs/41970445046",
     "conclusion": "failure",
     "macosFullCiAndNode24AndMinimumNodeBuiltUat": "pass",
     "windows": "pass",
@@ -115,7 +115,7 @@
   },
   "observerPublishedCi": {
     "source": "7134b9c5e1b6a18c97a87179ac1781c6e4acdc7a",
-    "run": "https://github.com/vedprakash-m/tenet/actions/runs/41973300603",
+    "run": "https://github.com/vedprakash-m/tenet-copilot/actions/runs/41973300603",
     "conclusion": "failure",
     "ubuntuFullCiAndNode24AndMinimumNodeBuiltUat": "pass",
     "windows": "pass",

@@ -9,7 +9,11 @@ export function callTiming(ports: Ports) {
     guardRun: (dir, admit) => ports.runner.guardRun(dir, admit),
     environmentNames: (extra) => ports.runner.environmentNames(extra),
     planEnvelope: (input) => ports.runner.planEnvelope(input),
-    stopRun: (dir) => ports.runner.stopRun(dir),
+    async stopRun(dir) {
+      await ports.callBoundary?.external(true);
+      try { return await ports.runner.stopRun(dir); }
+      finally { await ports.callBoundary?.external(false); }
+    },
     allocatePort: () => ports.runner.allocatePort(),
     async run(spec) {
       if (running++ === 0) toolStarted = ports.clock.ms();

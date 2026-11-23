@@ -3,7 +3,7 @@
   "base": "d457714d7ba321b8b5bf533dcf8e9d46e930c22f",
   "status": "local-uncommitted-corrections",
   "github": {
-    "repository": "https://github.com/vedprakash-m/tenet",
+    "repository": "https://github.com/vedprakash-m/tenet-copilot",
     "initialLocalHead": "e0bc1a0c7818d3e7176f349f5d0c41618c5db73c",
     "commitsFetched": 12,
     "mainAndCloudHead": "d457714d7ba321b8b5bf533dcf8e9d46e930c22f",
@@ -13,7 +13,7 @@
     "fastForwardOnly": true,
     "remoteWrites": false,
     "ci": {
-      "url": "https://github.com/vedprakash-m/tenet/actions/runs/39511805902",
+      "url": "https://github.com/vedprakash-m/tenet-copilot/actions/runs/39511805902",
       "conclusion": "success",
       "jobs": [
         "t1 (ubuntu-latest)",

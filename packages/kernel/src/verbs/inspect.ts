@@ -110,7 +110,7 @@ export const inspect: Verb<InspectInput> = {
   async run(ports, state, input): Promise<Plan> {
     switch (input.view) {
       case "help": return { resp: { data: {
-        version: KERNEL_VERSION, source: "https://github.com/vedprakash-m/tenet", verbs: VERBS,
+        version: KERNEL_VERSION, source: "https://github.com/vedprakash-m/tenet-copilot", verbs: VERBS,
         capabilityCache: "Status shows cache provenance; doctor reads no state. Unknown host version prevents reuse.",
         timing: "Per kernel call: active and tool/check milliseconds are measured separately. " +
           "Provider, network and user waiting are host observations or unknown with provenance; never estimates. " +

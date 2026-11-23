@@ -1,6 +1,6 @@
 ---
 name: tenet-build
-description: "Test-first implementation inside a Tenet contract: write the red, make it green, keep the change small, declare every edit."
+description: "Test-first implementation inside a Tenet Copilot contract: write the red, make it green, keep the change small, declare every edit."
 ---
 # Build: test first, smallest change
 

@@ -11,7 +11,7 @@ import { migrate } from "../src/platform/migrate.ts";
 import { createSession } from "../src/platform/session/session.ts";
 import { insertUser } from "../src/platform/users.repository.ts";
 
-it.each(["session", "sign-out"])("retries the contended %s write, returns bounded 503, and permits recovery [QLT-01, QLT-12]", async mode => {
+it("retries the contended sign-out write, returns bounded 503, and permits recovery [QLT-01, QLT-12]", async () => {
   const dir = mkdtempSync(join(tmpdir(), "starter-session-busy-")), path = join(dir, "app.db");
   const db = openDb(path), holder = openDb(path);
   const config = loadConfig({ NODE_ENV: "test", LOG_LEVEL: "silent", DATABASE_URL: path });
@@ -19,18 +19,15 @@ it.each(["session", "sign-out"])("retries the contended %s write, returns bounde
   insertUser(db, { id: "member", email: "member@example.test", role: "member", password_hash: "x", created_at: 0 });
   const { cookie, session } = createSession(db, "member", config.cookieSecret, Date.now());
   const app = await buildApp(config, { db });
-  let holdSignOut = mode === "sign-out";
-  // Acquire after the application's session hook, exposing the distinct sign-out delete window.
+  let holdSignOut = true;
+  // Acquire after the application's session hook, exposing the sign-out delete window.
   app.addHook("preHandler", async req => {
     if (holdSignOut && req.url === "/api/auth/sign-out") { holder.exec("BEGIN IMMEDIATE"); holdSignOut = false; }
   });
   try {
     await app.ready();
-    if (mode === "session") holder.exec("BEGIN IMMEDIATE");
     const started = Date.now();
-    const response = await app.inject(mode === "session"
-      ? { method: "GET", url: "/api/auth/me", cookies: { sid: cookie } }
-      : { method: "POST", url: "/api/auth/sign-out", cookies: { sid: cookie }, headers: { "x-csrf-token": session.csrf } });
+    const response = await app.inject({ method: "POST", url: "/api/auth/sign-out", cookies: { sid: cookie }, headers: { "x-csrf-token": session.csrf } });
     expect(holder.inTransaction).toBe(true);
     expect(response.statusCode, response.body).toBe(503);
     expect(response.json()).toMatchObject({ status: 503, type: "urn:problem:busy" });
@@ -40,10 +37,8 @@ it.each(["session", "sign-out"])("retries the contended %s write, returns bounde
     expect(db.prepare("SELECT id FROM sessions WHERE id = ?").get(session.id)).toEqual({ id: session.id });
     holder.exec("ROLLBACK");
     expect((await app.inject({ method: "GET", url: "/api/auth/me", cookies: { sid: cookie } })).statusCode).toBe(200);
-    if (mode === "sign-out") {
-      expect((await app.inject({ method: "POST", url: "/api/auth/sign-out", cookies: { sid: cookie }, headers: { "x-csrf-token": session.csrf } })).statusCode).toBe(204);
-      expect((await app.inject({ method: "GET", url: "/api/auth/me", cookies: { sid: cookie } })).statusCode).toBe(401);
-    }
+    expect((await app.inject({ method: "POST", url: "/api/auth/sign-out", cookies: { sid: cookie }, headers: { "x-csrf-token": session.csrf } })).statusCode).toBe(204);
+    expect((await app.inject({ method: "GET", url: "/api/auth/me", cookies: { sid: cookie } })).statusCode).toBe(401);
   } finally {
     if (holder.inTransaction) holder.exec("ROLLBACK");
     holder.close(); await app.close(); db.close(); rmSync(dir, { recursive: true, force: true });

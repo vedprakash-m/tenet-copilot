@@ -26,17 +26,17 @@ Reply states to use: `not sent`, `sent`, `partial reply`, `answered`, `declined`
 
 ## Request 1: Host access
 
-**Purpose.** Tenet has no recorded qualified tuple, and the VS Code runs so far did not record the Copilot extension version (`docs/user/qualified-tuple.md`). A green GitHub macOS runner is not installed-host evidence. Several spikes cannot start until a native macOS arm64 workstation and a Copilot setup that allows the needed features exist; the exact procedure is `docs/audits/2026-11-21/target-a-host-checklist.md`.
+**Purpose.** Tenet Copilot has no recorded qualified tuple, and the VS Code runs so far did not record the Copilot extension version (`docs/user/qualified-tuple.md`). A green GitHub macOS runner is not installed-host evidence. Several spikes cannot start until a native macOS arm64 workstation and a Copilot setup that allows the needed features exist; the exact procedure is `docs/audits/2026-11-21/target-a-host-checklist.md`.
 
 **Exact ask (draft text).**
 
 > To: `<RECIPIENT>`
 > From: `<OWNER NAME>`, `<CONTACT>`
-> Subject: Request to confirm host access for Tenet host testing
+> Subject: Request to confirm host access for Tenet Copilot host testing
 >
 > I am asking whether the following can be made available, and on what terms. This is a request for information only; please do not set anything up yet.
 >
-> 1. A native macOS machine with an arm64 processor, with a user account that Tenet testing can use alone. Please say who owns the machine, whether the account is isolated from other work, and where VS Code user data and workspaces would be stored.
+> 1. A native macOS machine with an arm64 processor, with a user account that Tenet Copilot testing can use alone. Please say who owns the machine, whether the account is isolated from other work, and where VS Code user data and workspaces would be stored.
 > 2. VS Code, stable channel, desktop. Please say which version is installed and whether the version can be pinned for the length of the testing.
 > 3. The agent harness in VS Code set to run locally (the "Local" agent harness), not a cloud or remote harness.
 > 4. A GitHub Copilot plan, and any organization policy, that allows all of: agent mode, plugins, custom agents, and subagents. Please say which plan this is, which of those four features are enabled or disabled by organization policy, and whether the plugin location setting (`chat.pluginLocations`) is permitted.
@@ -68,13 +68,13 @@ Reply states to use: `not sent`, `sent`, `partial reply`, `answered`, `declined`
 
 ## Request 2: Model tuple and evaluation account
 
-**Purpose.** A qualified tuple names a model, and Tenet needs to know how that model is observed. How `Auto` behaves is SP-04. Labeling a model for RSC-08 needs golden-suite results, which need an evaluation account. Decisions 21 B and 22 A already say: use the existing account in serialized windows, use included allowance only, and allow no overages. The items below remain open in `specs/plan.md` §5.
+**Purpose.** A qualified tuple names a model, and Tenet Copilot needs to know how that model is observed. How `Auto` behaves is SP-04. Labeling a model for RSC-08 needs golden-suite results, which need an evaluation account. Decisions 21 B and 22 A already say: use the existing account in serialized windows, use included allowance only, and allow no overages. The items below remain open in `specs/plan.md` §5.
 
 **Exact ask (draft text).**
 
 > To: `<RECIPIENT>`
 > From: `<OWNER NAME>`, `<CONTACT>`
-> Subject: Request for account and model information for Tenet evaluation
+> Subject: Request for account and model information for Tenet Copilot evaluation
 >
 > I am asking for information about an account that would be used for evaluation runs, in serialized windows, within its included allowance, with overages turned off or impossible. Please do not make any change or start any run.
 >
@@ -99,7 +99,7 @@ Reply states to use: `not sent`, `sent`, `partial reply`, `answered`, `declined`
 
 ## Request 3: Participants (interest request, no commitment)
 
-**Purpose.** The qualification pilot needs 8 to 12 external technical builders, each doing at least 2 task pairs, with a follow-up two weeks later (PRD section 6.6.2). Separately, the formative first-use check for AC-02 needs 5 builders who do not already know Tenet, and `specs/plan.md` §6 requires six formative sessions. Scheduling takes the longest, so the first step is to find out who might be interested.
+**Purpose.** The qualification pilot needs 8 to 12 external technical builders, each doing at least 2 task pairs, with a follow-up two weeks later (PRD section 6.6.2). Separately, the formative first-use check for AC-02 needs 5 builders who do not already know Tenet Copilot, and `specs/plan.md` §6 requires six formative sessions. Scheduling takes the longest, so the first step is to find out who might be interested.
 
 **Exact ask (draft text, for the owner to send to people the owner chooses).**
 
@@ -107,19 +107,19 @@ Reply states to use: `not sent`, `sent`, `partial reply`, `answered`, `declined`
 > From: `<OWNER NAME>`, `<CONTACT>`
 > Subject: Would you be interested in testing a developer tool?
 >
-> I am building Tenet, a tool that works inside GitHub Copilot in VS Code to help it carry out a coding task step by step. I am looking for people who write software and might be willing to try it on real tasks later, and to give their opinion.
+> I am building Tenet Copilot, a tool that works inside GitHub Copilot in VS Code to help it carry out a coding task step by step. I am looking for people who write software and might be willing to try it on real tasks later, and to give their opinion.
 >
 > This message asks for nothing except whether you are interested. Replying "yes, keep me in mind" does not commit you to anything and you can say no at any time.
 >
 > If a study goes ahead, you would first receive a separate description of what is involved, the time required (`<TIME ESTIMATE: owner to set after the study protocol is frozen>`), what would be recorded, and a consent form. Consent to take part in the research is separate from agreeing to use the product, and you could agree to one without the other. Research data would be deleted 90 days after analysis unless you separately agree to a longer period, and you could withdraw at any time.
 >
-> If you are interested, please reply with: whether you write software regularly, whether you use GitHub Copilot in VS Code, and whether you already know Tenet. Do not send any project code or private information.
+> If you are interested, please reply with: whether you write software regularly, whether you use GitHub Copilot in VS Code, and whether you already know Tenet Copilot. Do not send any project code or private information.
 
 **Cohorts the replies are sorted into** (the owner sorts them; the text above does not promise a place in either):
 
 | Cohort | Size and shape | Source |
 |---|---|---|
-| Formative first use | 5 builders who do not know Tenet; six formative sessions in all | PRD AC-02; `specs/plan.md` §6 |
+| Formative first use | 5 builders who do not know Tenet Copilot; six formative sessions in all | PRD AC-02; `specs/plan.md` §6 |
 | Qualification pilot | 8 to 12 external technical builders, at least 2 task pairs each, two-week follow-up | PRD section 6.6.2 |
 
 Whether a person may be in both cohorts is not settled in the sources; the owner decides before sorting replies.
@@ -142,13 +142,13 @@ Whether a person may be in both cohorts is not settled in the sources; the owner
 > From: `<OWNER NAME>`, `<CONTACT>`
 > Subject: `<one of the five subjects below>`
 >
-> **4a. Publisher, namespace and final name.** I need to know under which publisher and namespace Tenet could be published, whether the name `<PROPOSED NAME>` is available there, and what the process and conditions are. Please do not reserve or register anything yet.
+> **4a. Publisher, namespace and final name.** I need to know under which publisher and namespace Tenet Copilot could be published, whether the name `<PROPOSED NAME>` is available there, and what the process and conditions are. Please do not reserve or register anything yet.
 >
 > **4b. Signing identity.** I need an identity that can sign a release tag and a provenance attestation. Please say which kinds of identity are available (for example a key held by me or one held by an organization), who controls it, and how it can be revoked. Please do not create or send any key.
 >
 > **4c. External reviewer.** With a single maintainer, a change to executable content is held for a public 72-hour review window on an open pull request, and an external reviewer is asked when one is available. The release notes then say that no second-maintainer review occurred. I am asking whether you could act as that reviewer, in what hours you could respond, and what you would need to see. Review by an automated agent does not count in place of a second maintainer.
 >
-> **4d. Clean environment for an independent rebuild.** I need a machine or account that has never held the Tenet working copy, where the source and dependencies can be fetched fresh and built twice to compare the results. Please say what operating system, Node.js versions and network access it offers, and who controls it.
+> **4d. Clean environment for an independent rebuild.** I need a machine or account that has never held the Tenet Copilot working copy, where the source and dependencies can be fetched fresh and built twice to compare the results. Please say what operating system, Node.js versions and network access it offers, and who controls it.
 >
 > **4e. Storage for 10 reserved qualification tasks.** I need a location outside the public task catalog, with access limited to named people, where reserved tasks can be kept so evaluated subjects cannot read them. Please say who administers it, who could be given access, and how access is logged.
 >

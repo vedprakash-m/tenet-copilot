@@ -1,4 +1,4 @@
-# The same obligations Tenet runs locally (types, lint, tests), so a green check here means the same thing.
+# The same obligations Tenet Copilot runs locally (types, lint, tests), so a green check here means the same thing.
 name: ci
 on: [push, pull_request]
 permissions:

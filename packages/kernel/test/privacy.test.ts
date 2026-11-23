@@ -79,12 +79,12 @@ describe("privacy check", () => {
       }
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
-  it("keeps archives and noncanonical specs local while allowing exactly the three canonical specs", () => {
+  it("keeps archives and noncanonical specs local while allowing the three canonical specs and plan", () => {
     const dir = mkdtempSync(join(tmpdir(), "tenet-ignore-"));
     try {
       execFileSync("git", ["-c", "init.defaultBranch=main", "-c", "init.templateDir=", "init", "--quiet", dir], { env: GIT_ENV });
       copyFileSync(new URL("../../../.gitignore", import.meta.url), join(dir, ".gitignore"));
-      for (const file of [".archive/consolidation/changes.patch", ".archive/specs/store-lock-admission.md", "specs/plan.md", "specs/new-feature.md", "specs/reviews/review.md", "specs/nested/PRD.md"]) {
+      for (const file of [".archive/consolidation/changes.patch", ".archive/specs/store-lock-admission.md", "specs/new-feature.md", "specs/reviews/review.md", "specs/nested/PRD.md"]) {
         const result = spawnSync("git", ["-c", "core.excludesFile=", "check-ignore", "--no-index", file], { cwd: dir, env: GIT_ENV, encoding: "utf8" });
         assert.equal(result.status, 0, `${file}: ${result.stderr}`);
       }

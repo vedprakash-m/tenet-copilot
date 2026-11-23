@@ -1,7 +1,7 @@
 <!-- DRAFT. Host observations remain the dated observations below. Deterministic source evidence was reconciled on 2026-11-05; CI does not qualify an installed host. -->
 # The qualified tuple, as it stands
 
-A **tuple** is the exact combination Tenet's claims are tested against: host application and version, Copilot extension and version, model, operating system, Node.js and Git. A claim is qualified only for a tuple on which it was tested.
+A **tuple** is the exact combination Tenet Copilot's claims are tested against: host application and version, Copilot extension and version, model, operating system, Node.js and Git. A claim is qualified only for a tuple on which it was tested.
 
 **Today the tuple is unrecorded and nothing is qualified.** No requirement has passed a qualification run on a real host. The first VS Code runs did not record the Copilot extension version, so even the partly observed results below cannot be tied to a complete tuple.
 
@@ -21,13 +21,13 @@ Observations by the development team, on VS Code with a managed model, in throwa
 - Approval behavior beyond one terminal approval per session. The approval mode is recorded as `unknown`.
 - A 15-minute command through the host's terminal tool. The one attempt hit a test-runner timeout first and measured nothing about the host.
 - Enable, disable, uninstall and update of the plugin, and what survives them.
-- Which instruction file the host loads when both `AGENTS.md` and `.github/copilot-instructions.md` exist, whether `.tenet/` is excluded from the host's indexing, and how accurate Tenet's token estimates are.
+- Which instruction file the host loads when both `AGENTS.md` and `.github/copilot-instructions.md` exist, whether `.tenet/` is excluded from the host's indexing, and how accurate Tenet Copilot's token estimates are.
 - Where a plugin can keep persistent data.
 - Hooks (none ship), usage reporting and model resolution.
 
 ## What is tested without a host
 
-Exact-source [`untrusted` 44885756509](https://github.com/vedprakash-m/tenet/actions/runs/44885756509) and [`system-budgets` 44885756487](https://github.com/vedprakash-m/tenet/actions/runs/44885756487), for implementation commit `b7869a09613984b127504503d81b14e08f2e5a90`, pass the hosted source, Ubuntu/macOS bundle/UAT and Windows lanes. They cover the kernel, plugin text checks, starter, real repository/process scenarios and frozen system budgets. The Windows job checks portability and explicit platform refusals; it does not qualify Windows mutating workflows.
+Exact-source [`untrusted` 44885756509](https://github.com/vedprakash-m/tenet-copilot/actions/runs/44885756509) and [`system-budgets` 44885756487](https://github.com/vedprakash-m/tenet-copilot/actions/runs/44885756487), for implementation commit `b7869a09613984b127504503d81b14e08f2e5a90`, pass the hosted source, Ubuntu/macOS bundle/UAT and Windows lanes. They cover the kernel, plugin text checks, starter, real repository/process scenarios and frozen system budgets. The Windows job checks portability and explicit platform refusals; it does not qualify Windows mutating workflows.
 
 This is deterministic source and built-bundle evidence, not an installed VS Code/Copilot qualification. It does not establish reviewer isolation, approval behavior, model effectiveness, human comprehension or a public release chain. Later source changes require their own validation; the separate schema-2 candidate is not covered.
 

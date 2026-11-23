@@ -17,7 +17,7 @@ import { registerHealth } from "./platform/health.ts";
 import { loggerOptions, requestId } from "./platform/logging.ts";
 import { migrate } from "./platform/migrate.ts";
 import { registerAuthRoutes } from "./platform/auth/routes.ts";
-import { COOKIE, resolveSession } from "./platform/session/session.ts";
+import { COOKIE, readSession, resolveSession } from "./platform/session/session.ts";
 
 export interface Deps { db?: Db; now?: () => number }
 
@@ -42,10 +42,15 @@ export async function buildApp(config: Config, deps: Deps = {}): Promise<Fastify
   app.addHook("onRequest", async (req, reply) => { void reply.header("x-request-id", req.id); });
   await registerAdmission(app);
 
-  // Re-read current authority after admission; invalid cookies are cleared for admitted requests.
+  // Re-read current authority after admission. The session status endpoint is a read; other routes retain normal
+  // maintenance inside a write transaction. Invalid cookies are cleared for admitted requests.
   app.addHook("preHandler", async (req, reply) => {
     const raw = req.cookies[COOKIE];
-    const found = raw ? await writeTx(db, () => resolveSession(db, raw, config.cookieSecret, now())) : undefined;
+    const found = raw
+      ? req.method === "GET" && req.routeOptions.url === "/api/auth/me"
+        ? readSession(db, raw, config.cookieSecret, now())
+        : await writeTx(db, () => resolveSession(db, raw, config.cookieSecret, now()))
+      : undefined;
     if (found) req.actor = { user: found.user, session: found.session };
     else if (raw) void reply.clearCookie(COOKIE, { path: "/" });
     // CSRF: bound to the session row, or to the pre-session cookie when there is no session (sign-in).

@@ -122,6 +122,27 @@ describe("store: transactions", () => {
     assert.equal(JSON.parse(readFileSync(join(root, ".tenet/state.prev"), "utf8")).revision, 1);
   });
 
+  it("validates a staged state once before durable publication", async () => {
+    const root = fresh(), store = await initState(root);
+    const parse = State.parse.bind(State);
+    let calls = 0;
+    State.parse = (value) => {
+      calls++;
+      return parse(value);
+    };
+    try {
+      await store.transaction("t", async (tx) => {
+        const next = { ...tx.state!, workSeq: 9 };
+        tx.publish(next);
+        next.workSeq = 42;
+      });
+    } finally {
+      State.parse = parse;
+    }
+    assert.equal(calls, 1);
+    assert.equal(newStore(root).read()!.state.workSeq, 9);
+  });
+
   it("waits when the lock is released between reading it and checking its holder [CON-04]", { skip: NO_POSIX_PROCESSES }, async () => {
     // The race seen in CI: a torn read sends the writer to look at the lock; the holder releases it and exits before the
     // liveness check, so the holder looks dead. The lock no longer names it, so the writer must retry, not refuse.

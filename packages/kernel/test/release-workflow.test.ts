@@ -71,6 +71,16 @@ describe("release workflow candidate", () => {
     assert.equal(jobs.build!.steps[at[4]!]!.with?.["subject-path"], "dist/*.tgz");
   });
 
+  it("publishes the renamed artifact and a same-release compatibility alias", () => {
+    const build = commands("build").join("\n"), publish = commands("publish").join("\n");
+    assert.match(build, /name="tenet-copilot-plugin-\$TAG\.tgz"/);
+    assert.match(build, /legacy="tenet-plugin-\$TAG\.tgz"/);
+    assert.match(build, /cp "dist\/\$name" "dist\/\$legacy"/);
+    assert.match(publish, /tenet-copilot-plugin-\$TAG\.tgz\.sha256/);
+    assert.match(publish, /tenet-plugin-\$TAG\.tgz\.sha256/);
+    assert.match(publish, /--title "Tenet Copilot \$TAG"/);
+  });
+
   it("verifies the attestation before it creates a draft release in a protected environment", () => {
     assert.equal(jobs.publish!.environment, "release");
     const verify = index("publish", /gh attestation verify/), create = index("publish", /gh release create/);

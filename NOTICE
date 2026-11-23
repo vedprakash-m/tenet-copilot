@@ -1,11 +1,11 @@
 NOTICE (third-party inventory draft; release review remains pending)
 
-Tenet
-Copyright (c) 2026 Tenet contributors
-License of Tenet and its own starter-template code: MIT (see LICENSE).
+Tenet Copilot
+Copyright (c) 2026 Tenet Copilot contributors
+License of Tenet Copilot and its own starter-template code: MIT (see LICENSE).
 Third-party components retain their respective licenses and notices below.
 
-This file lists third-party software that Tenet distributes or that its
+This file lists third-party software that Tenet Copilot distributes or that its
 starter template installs into a user's project. Licenses were read from each
 package's own package.json in node_modules (kernel tooling) and from the
 "license" field of the starter's package-lock.json (starter dependencies; the
@@ -87,7 +87,7 @@ dealings in these Data Files or Software without prior written
 authorization of the copyright holder.
 
 ======================================================================
-2. Development tools (used to build and test Tenet; not distributed)
+2. Development tools (used to build and test Tenet Copilot; not distributed)
 ======================================================================
 
 Listed in package.json "devDependencies". None of this code is in the plugin.
@@ -107,7 +107,7 @@ BSD-3-Clause (1).
 The 12 MPL-2.0 entries are lightningcss and its platform-specific binary
 packages. vite (a dependency of vitest) depends on lightningcss; the
 platform packages are optional. They are used only while running tests, are not modified, and are not
-distributed with Tenet.
+distributed with Tenet Copilot.
 
 Not checked: the platform-specific optional packages for other operating
 systems (for example the other @esbuild/*, @rolldown/binding-* and
@@ -120,15 +120,15 @@ the two could be compared.
 3. Starter template (plugin/skills/tenet-starter-ts-web-api/template)
 ======================================================================
 
-When a user asks Tenet to start a new application, the kernel writes this
+When a user asks Tenet Copilot to start a new application, the kernel writes this
 template into the user's project and installs its pinned lockfile. The
-template's own files are part of Tenet and fall under the MIT license in the
-template's LICENSE file. The packages below are NOT copied into Tenet; they are
+template's own files are part of Tenet Copilot and fall under the MIT license in the
+template's LICENSE file. The packages below are NOT copied into Tenet Copilot; they are
 downloaded by the user's package manager into the user's project, and their
-licenses bind the user's project. Using Tenet does not require the user to
-disclose application source and gives Tenet no ownership of it.
+licenses bind the user's project. Using Tenet Copilot does not require the user to
+disclose application source and gives Tenet Copilot no ownership of it.
 
-Direct dependencies of the starter (refreshed 2026-11-04 from package.json
+Direct dependencies of the starter (refreshed 2026-11-22 from package.json
 and the pinned package-lock.json; full release license review remains pending):
 
   Runtime
@@ -156,13 +156,14 @@ and the pinned package-lock.json; full release license review remains pending):
     vite                        8.3.5     MIT
     vitest                      5.0.5     MIT
 
-The lockfile lists 308 packages across all supported platforms; 110 are
+The lockfile lists 304 packages across all supported platforms; 110 are
 classified as production dependencies. License-field counts (not a legal review):
-{"(BSD-2-Clause OR MIT OR Apache-2.0)": 1, "(MIT OR WTFPL)": 1, "Apache-2.0": 20, "BSD-2-Clause": 6, "BSD-3-Clause": 10, "BlueOak-1.0.0": 1, "ISC": 15, "MIT": 239, "MPL-2.0": 14, "Python-2.0": 1}
+{"(BSD-2-Clause OR MIT OR Apache-2.0)": 1, "(MIT OR WTFPL)": 1, "Apache-2.0": 19, "BSD-2-Clause": 6, "BSD-3-Clause": 10, "BlueOak-1.0.0": 2, "ISC": 14, "MIT": 236, "MPL-2.0": 14, "Python-2.0": 1}
 
 Swagger was already installed as the pinned Zod provider peer at 9.9.2; it is
-an explicit runtime dependency. The 2026-11-04 consolidation updates cookie
-and typescript-eslint with their locked transitive dependencies. Optional
+an explicit runtime dependency. The 2026-11-22 update pins minimatch 11.0.9
+through a package override so the starter keeps its Node 22.12 minimum while
+removing a transitive lint advisory. Optional
 binaries for other platforms remain uninspected.
 
 better-sqlite3 downloads a prebuilt SQLite binary at install time; SQLite is
@@ -177,7 +178,7 @@ be regenerated then.
 4. Other material
 ======================================================================
 
-Tenet's skills, agents, commands and specifications are original text in this
+Tenet Copilot's skills, agents, commands and specifications are original text in this
 repository. This draft found no copied third-party text in them; that was not
 checked line by line. The JSON schema URLs in plugin.json and the schema
 files refer to https://agent-plugins.org/schemas/1.0.0/ and are references,

@@ -16,7 +16,7 @@
     "outgoingPrivacyExit": 0,
     "ci": {
       "run": 41176202822,
-      "url": "https://github.com/vedprakash-m/tenet/actions/runs/41176202822",
+      "url": "https://github.com/vedprakash-m/tenet-copilot/actions/runs/41176202822",
       "head": "2bf4c38fb36d2a86557eb123c8a0eb34587ceec5",
       "conclusion": "failure",
       "windows": "success",

@@ -1,5 +1,5 @@
 name: Host observation report
-description: Tell us what Tenet did on your VS Code and Copilot setup. Observations like this are how host behavior moves from "unobserved" to recorded.
+description: Tell us what Tenet Copilot did on your VS Code and Copilot setup. Observations like this are how host behavior moves from "unobserved" to recorded.
 title: "Host report: "
 labels: ["host-observation"]
 body:
@@ -25,7 +25,7 @@ body:
     id: saw
     attributes:
       label: What you saw
-      description: What the host and Tenet showed, including approval prompts and anything unexpected.
+      description: What the host and Tenet Copilot showed, including approval prompts and anything unexpected.
     validations:
       required: true
   - type: dropdown

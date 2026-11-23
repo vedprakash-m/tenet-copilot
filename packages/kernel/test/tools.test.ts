@@ -29,7 +29,7 @@ describe("license packaging", () => {
     assert.match(notice, /Copyright \(c\) 2025 Colin McDonnell/);
     assert.match(notice, /licenses bind the user's project/);
     assert.doesNotMatch(notice, /PLACEHOLDER-LICENSE/);
-    assert.match(notice, /Using Tenet does not require the user to\s+disclose application source and gives Tenet no ownership of it\./);
+    assert.match(notice, /Using Tenet Copilot does not require the user to\s+disclose application source and gives Tenet Copilot no ownership of it\./);
     const starter = join(PLUGIN, "skills/tenet-starter-ts-web-api/template");
     const packageJson = JSON.parse(readFileSync(join(starter, "package.json"), "utf8")) as {
       dependencies?: Record<string, string>;
