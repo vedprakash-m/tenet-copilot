@@ -5399,7 +5399,7 @@
         "count": 1
       },
       {
-        "key": "packages/kernel/test/process-policy.test.ts :: release process :: gates actual frozen fixtures and starter peak RSS without ignoring failures",
+        "key": "packages/kernel/test/process-policy.test.ts :: release process :: gates reference fixtures and starter peak RSS while keeping Linux tracing diagnostic",
         "count": 1
       },
       {
