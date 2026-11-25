@@ -2,23 +2,40 @@
 
 # Tenet Copilot
 
-**A test-first engineering loop for GitHub Copilot.**<br>
-Tenet Copilot makes Copilot write the failing test first, check its own work, and say plainly what it did and did not prove.
+**The full implementation of [Tenet](https://github.com/vedprakash-m/tenet) for GitHub Copilot, in VS Code and the GitHub Copilot app.**<br>
+In progress: Copilot drafting your specifications, working from the ones you bless, and showing proof on every change.
 
 [![CI](https://github.com/vedprakash-m/tenet-copilot/actions/workflows/untrusted.yml/badge.svg)](https://github.com/vedprakash-m/tenet-copilot/actions/workflows/untrusted.yml)
 [![Release](https://img.shields.io/github/v/release/vedprakash-m/tenet-copilot?include_prereleases&label=release)](https://github.com/vedprakash-m/tenet-copilot/releases/tag/v0.1.0)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![Status: preview](https://img.shields.io/badge/status-preview-orange)
+![Status: in progress](https://img.shields.io/badge/status-in%20progress-orange)
 ![Node 22.12+](https://img.shields.io/badge/node-%E2%89%A522.12-339933)
 
-[Quick start](#quick-start) · [How it works](#how-it-works) · [First requests](#three-requests-to-start-with) · [Troubleshooting](#if-something-does-not-work) · [Documentation](#documentation)
+[Where this is going](#where-this-is-going) · [Current preview](#the-current-preview-earlier-design) · [Quick start](#quick-start) · [How it works](#how-it-works) · [First requests](#three-requests-to-start-with) · [Troubleshooting](#if-something-does-not-work) · [Documentation](#documentation)
 
 </div>
+
+> [!IMPORTANT]
+> **Tenet Copilot is becoming the first full implementation of the Tenet standard for GitHub Copilot.** [Tenet](https://github.com/vedprakash-m/tenet) is an open standard and command-line tool for spec-driven development with AI agents: your agent drafts specifications from your code, you bless them, agents work from what you blessed, and every pull request shows proof. This repository started earlier with a different design, the test-first loop described below as the current preview. Now that Tenet has shipped, Tenet Copilot is pivoting to bring all of Tenet into GitHub Copilot. That work starts after Tenet 0.1.0; until it lands, the preview below is the earlier design, not the Tenet implementation.
+
+## Where this is going
+
+Planned, not yet built:
+
+- **Onboarding in Copilot.** Copilot drafts your vision, requirements, design and plan from your code and docs, using Tenet's onboarding, with every statement citing its source.
+- **Blessing where you work.** Read and bless specifications section by section, inside VS Code and the GitHub Copilot app.
+- **Copilot works from blessed intent.** Copilot gets only the blessed specifications its task touches, through Tenet's context and MCP server, and proposes a specification change when the code shows one is wrong.
+- **Proof in the editor.** Tenet's proof card, showing which blessed requirements a change touches and which tests proved them, alongside the pull request and the chat.
+- **Built on Tenet.** The same files, rules and records as the `tenet` command, so a project can move between Copilot and any other agent without losing anything.
+
+Want to follow along or help shape it? [Open an issue](https://github.com/vedprakash-m/tenet-copilot/issues/new/choose) or watch this repository. To use Tenet today with Copilot or any other agent, start with [Tenet](https://github.com/vedprakash-m/tenet).
+
+## The current preview (earlier design)
 
 > [!WARNING]
 > **Tenet Copilot is an unqualified developer preview (v0.1.0).** It works on a branch and commits only files it wrote, but nothing has been qualified on a real host yet. Use it on throwaway projects, not on valuable work, secrets or production credentials. [Known open defects](#before-you-install) are listed below. Tried it? [Tell us what happened](https://github.com/vedprakash-m/tenet-copilot/issues/new/choose).
 
-## What it is
+### What it is
 
 Tenet Copilot is a plugin for GitHub Copilot in VS Code. You type `/tenet` and what you want. Tenet Copilot writes down what "done" means, has Copilot write a failing test first, runs your checks through a small local program that records the results, has a separate reviewer read the change, and ends with one plain label such as `checked-local` or `implemented-unverified`.
 
