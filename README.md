@@ -1,41 +1,74 @@
 <div align="center">
 
-# Tenet Copilot
+# Tenet for GitHub Copilot
 
-**The full implementation of [Tenet](https://github.com/vedprakash-m/tenet) for GitHub Copilot, in VS Code and the GitHub Copilot app.**<br>
-In progress: Copilot drafting your specifications, working from the ones you bless, and showing proof on every change.
+**Copilot builds what you meant, and you can see that it did.**
 
-[![CI](https://github.com/vedprakash-m/tenet-copilot/actions/workflows/untrusted.yml/badge.svg)](https://github.com/vedprakash-m/tenet-copilot/actions/workflows/untrusted.yml)
-[![Release](https://img.shields.io/github/v/release/vedprakash-m/tenet-copilot?include_prereleases&label=release)](https://github.com/vedprakash-m/tenet-copilot/releases/tag/v0.1.0)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Status: in progress](https://img.shields.io/badge/status-in%20progress-orange)
-![Node 22.12+](https://img.shields.io/badge/node-%E2%89%A522.12-339933)
-
-[Where this is going](#where-this-is-going) · [Current preview](#the-current-preview-earlier-design) · [Quick start](#quick-start) · [How it works](#how-it-works) · [First requests](#three-requests-to-start-with) · [Troubleshooting](#if-something-does-not-work) · [Documentation](#documentation)
+[![Built on Tenet](https://img.shields.io/badge/built%20on-Tenet-2b6cb0)](https://github.com/vedprakash-m/tenet)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 </div>
 
-> [!IMPORTANT]
-> **Tenet Copilot is becoming the first full implementation of the Tenet standard for GitHub Copilot.** [Tenet](https://github.com/vedprakash-m/tenet) is an open standard and command-line tool for spec-driven development with AI agents: your agent drafts specifications from your code, you bless them, agents work from what you blessed, and every pull request shows proof. This repository started earlier with a different design, the test-first loop described below as the current preview. Now that Tenet has shipped, Tenet Copilot is pivoting to bring all of Tenet into GitHub Copilot. That work starts after Tenet 0.1.0; until it lands, the preview below is the earlier design, not the Tenet implementation.
+Tenet for GitHub Copilot brings **[Tenet](https://github.com/vedprakash-m/tenet), the intent and proof layer for software built with AI agents**, natively into GitHub Copilot, in VS Code and the GitHub Copilot app. It's being built now that Tenet 0.1.0 has shipped. Until it lands, **you can already use Tenet with Copilot** ([see below](#use-tenet-with-copilot-today)).
 
-## Where this is going
+## Sound familiar?
 
-Planned, not yet built:
+You ask Copilot to add retries to the payment client. It edits a few files, tells you the tests pass, and opens a pull request.
 
-- **Onboarding in Copilot.** Copilot drafts your vision, requirements, design and plan from your code and docs, using Tenet's onboarding, with every statement citing its source.
-- **Blessing where you work.** Read and bless specifications section by section, inside VS Code and the GitHub Copilot app.
-- **Copilot works from blessed intent.** Copilot gets only the blessed specifications its task touches, through Tenet's context and MCP server, and proposes a specification change when the code shows one is wrong.
-- **Proof in the editor.** Tenet's proof card, showing which blessed requirements a change touches and which tests proved them, alongside the pull request and the chat.
-- **Built on Tenet.** The same files, rules and records as the `tenet` command, so a project can move between Copilot and any other agent without losing anything.
+Did it retry once, or forever? Did it quietly skip the flaky test? Was "retry once" even what your team decided last month? You find out the only way you can: by reading the diff, every time.
 
-Want to follow along or help shape it? [Open an issue](https://github.com/vedprakash-m/tenet-copilot/issues/new/choose) or watch this repository. To use Tenet today with Copilot or any other agent, start with [Tenet](https://github.com/vedprakash-m/tenet).
+Copilot is fast. What it doesn't keep is **what you meant**, and it can't **show** that a change honours it.
 
-## The current preview (earlier design)
+## What Tenet for Copilot will do
+
+| Today with Copilot | With Tenet for Copilot |
+|---|---|
+| Intent lives in your head, chat history and old docs | Your intent is written down as specifications Copilot drafted from your code and **you** approved |
+| Copilot guesses from the files it happens to open | Copilot works from the blessed specifications its task touches |
+| "Tests pass" is a sentence in chat | Every pull request shows a proof card: which requirements it touches, which tests proved them on that commit, and whether any test was weakened |
+| When code and docs disagree, someone finds out later | Copilot proposes a spec change in the same pull request, or asks you |
+| You read the diff to know where things stand | You read a short card, and dig into the code only where it matters |
+
+Planned, in the places you already work:
+
+- **Onboard from chat:** Copilot drafts your vision, requirements, design and plan from your code and docs, citing the source of every statement.
+- **Bless in the editor:** read and approve specifications section by section, inside VS Code and the GitHub Copilot app.
+- **Blessed context, automatically:** Copilot gets only the approved intent its task needs.
+- **Proof where you look:** the proof card alongside your pull request and in chat.
+- **Same files as Tenet:** everything is stored in your repository in Tenet's open format, so you can switch between Copilot and any other agent without losing anything.
+
+## Use Tenet with Copilot today
+
+The [Tenet](https://github.com/vedprakash-m/tenet) command-line tool already works with Copilot:
+
+~~~sh
+npm install --global @vedprakash-m/tenet
+tenet init       # adds Tenet's rules to AGENTS.md (and .github/copilot-instructions.md if you have one)
+tenet onboard    # prepares a drafting assignment for your agent
+~~~
+
+- Copilot reads Tenet's rules from `AGENTS.md` and `.github/copilot-instructions.md`.
+- If your repository has a `.vscode` folder, `init` registers Tenet's MCP server in `.vscode/mcp.json`, so Copilot's agent mode can ask Tenet for blessed context and run its checks.
+- Proof cards come from the GitHub Actions workflows `init` sets up.
+
+See Tenet's [getting started guide](https://github.com/vedprakash-m/tenet/blob/main/docs/getting-started.md) for the full walk-through.
+
+## Follow along
+
+Watch this repository for progress, or [open an issue](https://github.com/vedprakash-m/tenet-copilot/issues/new/choose) to tell us how you use Copilot and what you'd want from it. Early input shapes what gets built first.
+
+## Earlier design
+
+This repository began as a different experiment: a test-first loop for Copilot (`/tenet`), released as a developer preview (v0.1.0). It's kept below for reference and is **not** the Tenet implementation described above.
+
+<details>
+<summary><b>The earlier test-first preview: install, usage and status</b></summary>
 
 > [!WARNING]
 > **Tenet Copilot is an unqualified developer preview (v0.1.0).** It works on a branch and commits only files it wrote, but nothing has been qualified on a real host yet. Use it on throwaway projects, not on valuable work, secrets or production credentials. [Known open defects](#before-you-install) are listed below. Tried it? [Tell us what happened](https://github.com/vedprakash-m/tenet-copilot/issues/new/choose).
 
-### What it is
+#### What it is
 
 Tenet Copilot is a plugin for GitHub Copilot in VS Code. You type `/tenet` and what you want. Tenet Copilot writes down what "done" means, has Copilot write a failing test first, runs your checks through a small local program that records the results, has a separate reviewer read the change, and ends with one plain label such as `checked-local` or `implemented-unverified`.
 
@@ -47,14 +80,14 @@ Tenet Copilot is a plugin for GitHub Copilot in VS Code. You type `/tenet` and w
 | The summary can say anything | One outcome label, chosen by fixed rules, that names what was and was not shown |
 | Your uncommitted edits are at risk | Work happens on a branch; Tenet Copilot commits only the files it wrote and asks before touching yours |
 
-## How it works
+### How it works
 
 <p align="center"><img src="docs/assets/loop.svg" alt="A request flows through intent, a failing test, implementation, checks and review, to one stated outcome. A local kernel records the binding facts underneath." width="880"></p>
 
 The kernel is a small deterministic program in this repository. Agents explain and do the work; the kernel alone records the outcome, the receipts and the counters. Records live in `.tenet/` in your project, which is git-ignored. Tenet Copilot does not deploy, push or open pull requests, and it sends nothing anywhere except through Copilot's own model traffic.
 
 
-## Quick start
+### Quick start
 
 _About five minutes._
 
@@ -109,7 +142,7 @@ If you already have `chat.pluginLocations`, add the new line inside it instead o
 
 Tenet Copilot answers from its local program, with its version and what it can do, and starts no work. The first time, VS Code asks you to approve a terminal command; choose "Allow in this Session" and it will not ask again this session. You are set up. If `/tenet` is not offered, see [If something does not work](#if-something-does-not-work).
 
-## Three requests to start with
+### Three requests to start with
 
 Pick the row that matches what you have. Everything else about a task can be said in plain words after `/tenet`.
 
@@ -121,7 +154,7 @@ Pick the row that matches what you have. Everything else about a task can be sai
 
 [docs/user/starter-requests.md](docs/user/starter-requests.md) walks through each. Not sure? Start with the review: it cannot change your files, so it is the cheapest way to see how Tenet Copilot talks and what a finding looks like.
 
-## What to expect, and how long it takes
+### What to expect, and how long it takes
 
 - Tenet Copilot states how careful it will be for this task, and asks only what it cannot decide itself. Expect a few questions at the start of a change.
 - For a change it writes down examples and rules, then asks you to confirm or correct any examples or assumptions it added.
@@ -136,7 +169,7 @@ Handy commands: `/tenet status` (where things stand, starts nothing), `/tenet wh
 
 More: [What Tenet Copilot adds](docs/user/what-tenet-adds.md).
 
-## If something does not work
+### If something does not work
 
 Run this in your project folder for a plain-language preflight (replace the path with yours):
 
@@ -154,7 +187,7 @@ node ~/tenet-copilot-plugin/plugin/kernel/tenet.mjs inspect --view doctor | node
 - **You updated the plugin and nothing changed.** Point `chat.pluginLocations` at the new folder and reload the window.
 - **Anything else, or it surprised you.** Open an [install-help or host-observation issue](https://github.com/vedprakash-m/tenet-copilot/issues/new/choose). Run `/tenet help` and paste only its version line; do not paste code, secrets or personal paths.
 
-## Before you install
+### Before you install
 
 **No host tuple or release is qualified.** Treat this as a developer preview, not a supported installation.
 
@@ -226,7 +259,7 @@ Tenet Copilot states one assistance level for each project and task:
 
 </details>
 
-## Install from source
+### Install from source
 
 Use this route if you want to build the plugin yourself, or to try a newer commit than the release:
 
@@ -239,15 +272,15 @@ npm run build
 
 Then add the repository's `plugin/` folder to `chat.pluginLocations`, as in the quick start. VS Code keeps its own snapshot copy of the plugin and may not pick up edits until it refreshes it. See [docs/user/install-and-remove.md](docs/user/install-and-remove.md).
 
-## Update
+### Update
 
 There is no automatic update path, and plugin update and stored-record migration have not been qualified. To move to a newer release, download and unpack it into a new folder, point `chat.pluginLocations` at that folder and reload. Do not assume an active contract or older `.tenet/` state can migrate safely; finish or abandon work in progress first. See [Install and remove](docs/user/install-and-remove.md).
 
-## Remove
+### Remove
 
 In each project where you used Tenet Copilot, ask "help uninstall" before removing the plugin from `chat.pluginLocations`. The residue listing is incomplete; review it and the cleanup preview before confirming removal. Tenet Copilot removes a run entry only while it still matches the preview; it never removes `.tenet/`. Optionally remove `.tenet/` yourself after uninstalling; this deletes Tenet Copilot's project records. Installed-host uninstall and cleanup behavior remain unobserved. See [docs/user/install-and-remove.md](docs/user/install-and-remove.md).
 
-## Documentation
+### Documentation
 
 | For users | For maintainers |
 |---|---|
@@ -274,6 +307,7 @@ npm run eval:report -- --input <path> --format json|markdown|junit
 
 </details>
 
+</details>
 
 ## License
 
