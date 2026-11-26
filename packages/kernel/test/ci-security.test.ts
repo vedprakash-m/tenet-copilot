@@ -105,6 +105,9 @@ describe("untrusted validation keeps its trust boundary [ENG-10]", () => {
     assert.ok(runs.includes("npm run verify:payload"));
     assert.ok(untrusted.doc.jobs["bundle-uat"].steps.some(
       (step: { with?: { name?: string } }) => step.with?.name === "bundle-payload-shared"));
+    assert.equal(untrusted.doc.jobs["bundle-producer"].steps.find(
+      (step: { with?: { name?: string } }) => step.with?.name === "bundle-payload-shared",
+    )?.with?.path, "plugin/kernel/*.mjs");
   });
 
   it("partitions the protected UAT population into exact independent groups", () => {

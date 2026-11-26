@@ -62,9 +62,11 @@ describe("build native process invocation", () => {
       "LICENSE": "fixture license\n",
       "NOTICE": "fixture notice\n",
       "tools/payload-files.json": JSON.stringify([
-        "LICENSE", "NOTICE", "kernel/tenet.mjs", "schemas/review-result.schema.json", "schemas/tenet.policy.schema.json",
+        "LICENSE", "NOTICE", "kernel/tenet.mjs", "kernel/tenet-runtime.mjs",
+        "schemas/review-result.schema.json", "schemas/tenet.policy.schema.json",
       ]),
       "packages/kernel/src/main.ts": main,
+      "packages/kernel/src/adapters/runtime-entry.ts": "export const runtime = true;",
       "packages/kernel/src/core/policy.ts": 'import { z } from "zod";\nexport const Policy = z.object({ allow: z.boolean() });',
       "packages/kernel/src/core/schemas.ts": 'import { z } from "zod";\nexport const ReviewResult = z.object({ result: z.string() });',
     });
@@ -87,7 +89,7 @@ describe("build native process invocation", () => {
     const root = fixture();
     const result = run(root);
     assert.equal(result.status, 0, result.output);
-    assert.match(result.output, /build: plugin\/kernel\/tenet.mjs .* \(budget 900 KB\)/);
+    assert.match(result.output, /build: plugin\/kernel\/tenet.mjs .* \+ runtime .* \(combined budget 900 KB\)/);
     const bundle = join(root, "plugin/kernel/tenet.mjs");
     assert.ok(statSync(bundle).size <= 900 * 1024);
     const bundled = spawnSync(process.execPath, [bundle], {
@@ -102,9 +104,9 @@ describe("build native process invocation", () => {
       assert.equal(JSON.parse(readFileSync(join(root, `plugin/schemas/${name}.schema.json`), "utf8")).type, "object");
     }
     const sums = readFileSync(join(root, "plugin/SHA256SUMS"), "utf8");
-    assert.equal(sums.trimEnd().split("\n").length, 5);
+    assert.equal(sums.trimEnd().split("\n").length, 6);
     assert.match(sums, /^[a-f0-9]{64}  LICENSE\n/);
-    assert.match(result.output, /build: 5 payload files recorded in SHA256SUMS/);
+    assert.match(result.output, /build: 6 payload files recorded in SHA256SUMS/);
     const verify = () => spawnSync(process.execPath, [join(root, "tools/payload.ts")], {
       cwd: ROOT, encoding: "utf8", env: { ...process.env, NODE_DISABLE_COMPILE_CACHE: "1" },
     });
@@ -142,18 +144,19 @@ describe("build native process invocation", () => {
     const empty = run(root);
     assert.equal(empty.status, 0, empty.output);
     const bundle = join(root, "plugin/kernel/tenet.mjs");
-    const payload = "x".repeat(900 * 1024 - statSync(bundle).size);
+    const runtime = join(root, "plugin/kernel/tenet-runtime.mjs");
+    const payload = "x".repeat(900 * 1024 - statSync(bundle).size - statSync(runtime).size);
     const main = join(root, "packages/kernel/src/main.ts");
     writeFileSync(main, `export const payload = ${JSON.stringify(payload)};`);
     const result = run(root);
     assert.equal(result.status, 0, result.output);
-    assert.equal(statSync(bundle).size, 900 * 1024);
+    assert.equal(statSync(bundle).size + statSync(runtime).size, 900 * 1024);
     assert.ok(existsSync(join(root, "plugin/SHA256SUMS")));
     writeFileSync(main, `export const payload = ${JSON.stringify(`${payload}x`)};`);
     const oversized = run(root);
     assert.notEqual(oversized.status, 0);
-    assert.match(oversized.output, /build: bundle exceeds its size budget/);
-    assert.equal(statSync(bundle).size, 900 * 1024 + 1);
+    assert.match(oversized.output, /build: kernel bundles exceed their size budgets/);
+    assert.equal(statSync(bundle).size + statSync(runtime).size, 900 * 1024 + 1);
     assert.equal(existsSync(join(root, "plugin/SHA256SUMS")), false);
   });
 

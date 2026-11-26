@@ -10,6 +10,7 @@
   "com.github.copilot/descriptor.json",
   "com.github.copilot/model-qualification.json",
   "kernel/tenet.mjs",
+  "kernel/tenet-runtime.mjs",
   "plugin.json",
   "schemas/review-result.schema.json",
   "schemas/tenet.policy.schema.json",

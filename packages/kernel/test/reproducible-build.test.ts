@@ -25,10 +25,11 @@ const fixture = () => {
     "plugin/.hidden": "hidden\r\n",
     "plugin/plugin.json": '{"name":"synthetic"}\n',
     "packages/kernel/src/main.ts": "export const answer = 42;",
+    "packages/kernel/src/adapters/runtime-entry.ts": "export const runtime = true;",
     "packages/kernel/src/core/policy.ts": 'import { z } from "zod";\nexport const Policy = z.object({ allow: z.boolean() });',
     "packages/kernel/src/core/schemas.ts": 'import { z } from "zod";\nexport const ReviewResult = z.object({ result: z.string() });',
     "tools/payload-files.json": JSON.stringify([
-      ".hidden", "LICENSE", "NOTICE", "kernel/tenet.mjs", "plugin.json",
+      ".hidden", "LICENSE", "NOTICE", "kernel/tenet.mjs", "kernel/tenet-runtime.mjs", "plugin.json",
       "schemas/review-result.schema.json", "schemas/tenet.policy.schema.json",
     ]),
   };
@@ -48,7 +49,7 @@ describe("clean-output payload reproducibility", () => {
     const root = fixture(), scratch = projectScratch("repro-owned-");
     roots.push(scratch);
     const result = await verifyReproducible(root, scratch);
-    assert.equal(result.files, 7);
+    assert.equal(result.files, 8);
     assert.match(result.manifestSha256, /^[a-f0-9]{64}$/);
     assert.match(result.kernelSha256, /^[a-f0-9]{64}$/);
     assert.match(result.inputSha256, /^[a-f0-9]{64}$/);

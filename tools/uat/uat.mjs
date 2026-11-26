@@ -195,7 +195,7 @@ try {
  assert.match(interfacePacket.rubric.join(''), /interfaceContext/);
  observations.push({ scenario: '[AGT-12] built packet prioritizes unchanged linked acceptance tests and native direct dependency resolution', investigation: interfacePacket.investigation, resolution: interfacePacket.interfaceContext.resolution });
 
- bridgeUat({ create, call, bundle, source, env, observations });
+ await bridgeUat({ create, call, bundle, source, env, observations });
  const inherited = create(), inheritedNames = ['constructor'];
  const inheritedCandidate = staticCandidate(inherited, 'preserve human files whose names match inherited properties');
  for (const name of inheritedNames) write(inherited, name, `human-owned ${name}\n`);

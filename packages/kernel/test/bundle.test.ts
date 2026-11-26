@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
@@ -7,8 +8,22 @@ const ROOT = join(import.meta.dirname, "../../..");
 
 describe("built payload-only rules [SEC-03, SEC-07]", () => {
   it("contains no runtime network client import beyond the admitted source boundary", () => {
-    const bundle = join(ROOT, "plugin/kernel/tenet.mjs");
-    assert.ok(statSync(bundle).size <= 900 * 1024);
-    assert.doesNotMatch(readFileSync(bundle, "utf8"), /from ["']node:(?:http|https|http2|tls)["']|import\(["']node:(?:net|http|https)["']\)/);
+    const bundles = ["tenet.mjs", "tenet-runtime.mjs"].map(name => join(ROOT, "plugin/kernel", name));
+    assert.ok(bundles.reduce((size, bundle) => size + statSync(bundle).size, 0) <= 900 * 1024);
+    for (const bundle of bundles)
+      assert.doesNotMatch(readFileSync(bundle, "utf8"), /from ["']node:(?:http|https|http2|tls)["']|import\(["']node:(?:net|http|https)["']\)/);
+  });
+
+  it("keeps the public command launcher lightweight [NFR-01]", () => {
+    assert.ok(statSync(join(ROOT, "plugin/kernel/tenet.mjs")).size <= 20 * 1024);
+  });
+
+  it("does not expose the private runtime as an executable entrypoint [NFR-01]", () => {
+    const result = spawnSync(process.execPath, [
+      join(ROOT, "plugin/kernel/tenet-runtime.mjs"), "inspect", "help",
+    ], { encoding: "utf8" });
+    assert.equal(result.status, 0);
+    assert.equal(result.stdout, "");
+    assert.equal(result.stderr, "");
   });
 });

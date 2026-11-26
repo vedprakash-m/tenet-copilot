@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-22 — Keep the CI latency budget on a reference host
+
+- Split the kernel payload into a 3 KiB public `kernel/tenet.mjs` launcher and an approximately 789 KiB private `kernel/tenet-runtime.mjs`. The launcher verifies the embedded runtime SHA-256, preserves the whole-call process boundary and refuses direct runtime execution. The two self-contained files share the unchanged 900 KiB budget.
+- Measured command startup p95 improved from 146.9 ms to 120.3 ms on the same Apple M3 Max host, and the five-run long-history warm p95 improved from 254 ms to 238 ms. Added focused bundle, payload, reproducibility, boundary and bridge controls.
+- The hosted `macos-26` arm64 reference was a 3-core virtual Apple M1, not an M3-class runner. Its first frozen-fixture run observed 655 ms worst long-history warm p95 with no trace or storage-stall evidence. The owner approved raising only the warm limit from 300 ms to 750 ms; cold remains 1 s and timeout remains 5 s.
+- Owner-approved CI measurement policy now gates frozen fixtures at 750 ms warm p95 on `macos-26` arm64. Linux `bpftrace` measurements and historical paired comparisons remain manual diagnostics and cannot qualify or fail the reference-host budget gate. Files: kernel launcher/runtime entry, build and payload tooling, benchmark/comparison tooling, workflow and tests.
+
 ## 2026-11-22 — Remove calendar waiting from maintainer review
 
 - Owner-approved amendment to ENG-11 and the implementation controls removes the 72-hour public review delay. Consequential changes are reviewed immediately, external reviewers are requested when available, release notes disclose whether a second maintainer or external reviewer reviewed the change, and merge proceeds when required checks and review disclosure are complete. Updated the canonical specs, contribution/security guidance, PR template, release tooling, finalization checklist, tests and execution baseline. Historical changelog entries retain their original wording as records of the former policy.
